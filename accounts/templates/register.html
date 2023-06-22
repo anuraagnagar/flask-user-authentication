@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from 'bootstrap5/form.html' import render_field %}
+{% from 'bootstrap5/utils.html' import render_messages %}
+{% block title %}Register{% endblock %}
+
+{% block body %}
+
+<main class="my-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-sm-11 col-md-8 col-lg-6 col-xl-5">
+        {{ render_messages(dismissible=True, dismiss_animate=True) }}
+        <div class="card shadow-lg border-0">
+          <section class="px-4">
+            <form action="{{ url_for('accounts.register') }}" method="post">
+              <div class="my-3">
+                <h2 class="card-title text-center">Create Account</h2>
+                <p class="text-center">Get started with your free account</p>
+              </div>
+              {{ form.csrf_token() }}
+              {{ render_field(form.username, placeholder='Enter Your Username') }}
+              {{ render_field(form.first_name, placeholder='Your First Name') }}
+              {{ render_field(form.last_name, placeholder='Your Last Name') }}
+              {{ render_field(form.email, placeholder='Enter Email Address' ) }}
+              {{ render_field(form.password, placeholder='Enter Your Password') }}
+              {{ render_field(form.remember) }}
+              <div class="d-flex mb-4">
+                {{ render_field(form.submit, class='w-100') }}
+              </div>
+              <hr>
+              <p class="text-center">Have an account? <a href="{{ url_for('accounts.login') }}">Log In</a></p>
+            </form>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

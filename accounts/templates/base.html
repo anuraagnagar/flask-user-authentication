@@ -1,0 +1,49 @@
+{% from 'bootstrap4/utils.html' import render_icon %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}{% endblock %} - Flask Authentication System</title>
+  {{ bootstrap.load_css() }}
+  <!-- Include the above in your HEAD tag -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" />
+</head>
+
+<body style="background-color: #f1f4fc;">
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark static-top">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="{{ url_for('accounts.index') }}">{{ render_icon('lock') }} Flask Auth</a>
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('accounts.change_password') }}">Change</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item text-center me-2">
+            <a class="nav-link text-light" href="{{ url_for('accounts.login') }}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-outline-light" href="{{ url_for('accounts.register') }}">Signup</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  {% block body %} {% endblock %} 
+  {% block scripts %} 
+  {{ bootstrap.load_js()}}
+  {% endblock %}
+</body>
+
+</html>
