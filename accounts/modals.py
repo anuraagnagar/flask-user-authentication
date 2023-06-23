@@ -10,9 +10,9 @@ import uuid
 
 class User(db.Model, UserMixin):
 
-    __tablename__ = 'users'
+    __tablename__ = 'user'
 
-    id = db.Column(primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    id = db.Column(db.String(38), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     username = db.Column(db.String(30), unique=True, nullable=False)
     first_name = db.Column(db.String(25), nullable=False)
     last_name = db.Column(db.String(25), nullable=False)
@@ -32,6 +32,10 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+    
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
         
     def __repr__(self):
         return '<User> {}'.format(self.email)
