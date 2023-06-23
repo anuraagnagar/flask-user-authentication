@@ -8,28 +8,25 @@
 <main class="my-5">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-sm-11 col-md-8 col-lg-6 col-xl-5">
+            <section class="col-sm-11 col-md-8 col-lg-6 col-xl-5">
                 {{ render_messages(dismissible=True, dismiss_animate=True) }}
-                <div class="card shadow-lg mb-4">
-                    <section class="p-4">
+                <div class="card shadow-lg border-0 mb-4">
+                    <div class="p-4">
                         <form action="{{ url_for('accounts.change_email') }}" method="post">
-                            {{ form.csrf_token() }}
                             <div class="mb-4">
                                 <h2 class="card-title text-center">Change Email Address</h2>
                             </div>
-                            {{ render_field(form.email, placeholder='Enter New Email Address' ) }}
+                            {{ form.csrf_token() }}
+                            {{ render_field(form.email) }}
                             {{ render_field(form.remember) }}
-                            <div class="d-flex mb-4">
-                                {{ render_field(form.submit, class='w-100') }}
-                            </div>
+                            {{ render_field(form.submit, class='w-100 mb-3') }}
                         </form>
-                        <hr>
-                        <p class="text-center text-decoration-none"><a href="{{ url_for('accounts.index') }}">Back to Home</a>
+                        <p class="text-center"><a href="{{ url_for('accounts.index') }}"
+                                class="text-decoration-none">Back to Home</a>
                         </p>
-                    </section>
+                    </div>
                 </div>
-                
-            </div>
+            </section>
         </div>
     </div>
 </main>

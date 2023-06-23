@@ -8,31 +8,30 @@
 <main class="my-5">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-sm-11 col-md-8 col-lg-6 col-xl-5">
+      <section class="col-sm-11 col-md-8 col-lg-6 col-xl-5">
         {{ render_messages(dismissible=True, dismiss_animate=True) }}
-        <div class="card shadow-lg border-0">
-          <section class="px-4">
+        <div class="card shadow-lg border-0 mb-4">
+          <div class="p-4">
             <form action="{{ url_for('accounts.register') }}" method="post">
-              <div class="my-3">
+              <div class="mb-3">
                 <h2 class="card-title text-center">Create Account</h2>
                 <p class="text-center">Get started with your free account</p>
               </div>
               {{ form.csrf_token() }}
-              {{ render_field(form.username, placeholder='Enter Your Username') }}
-              {{ render_field(form.first_name, placeholder='Your First Name') }}
-              {{ render_field(form.last_name, placeholder='Your Last Name') }}
-              {{ render_field(form.email, placeholder='Enter Email Address' ) }}
-              {{ render_field(form.password, placeholder='Enter Your Password') }}
+              {{ render_field(form.username) }}
+              {{ render_field(form.first_name) }}
+              {{ render_field(form.last_name) }}
+              {{ render_field(form.email) }}
+              {{ render_field(form.password) }}
               {{ render_field(form.remember) }}
-              <div class="d-flex mb-4">
-                {{ render_field(form.submit, class='w-100') }}
-              </div>
-              <hr>
-              <p class="text-center">Have an account? <a href="{{ url_for('accounts.login') }}">Log In</a></p>
+              {{ render_field(form.submit, class="w-100") }}
             </form>
-          </section>
+          </div>
         </div>
-      </div>
+        <p class="text-center">
+          Have an account? <a href="{{ url_for('accounts.login') }}" class="text-decoration-none">Log In</a>
+        </p>
+      </section>
     </div>
   </div>
 </main>

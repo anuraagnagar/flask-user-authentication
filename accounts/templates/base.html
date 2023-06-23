@@ -46,7 +46,7 @@
           </li>
           {% else %}
           <li class="nav-item">
-            <a class="btn btn-outline-light" href="#">Logout</a>
+            <a class="btn btn-outline-light" href="{{ url_for('accounts.logout') }}">Logout</a>
           </li>
           {% endif %}
         </ul>
@@ -55,8 +55,8 @@
   </nav>
 
   {% block body %} {% endblock %}
-  {% block scripts %}
   {{ bootstrap.load_js()}}
+  {% block scripts %}
   {% endblock %}
 </body>
 
