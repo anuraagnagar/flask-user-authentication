@@ -18,10 +18,10 @@ class RegisterForm(FlaskForm):
 
 class LoginForm(FlaskForm):
 
-    email = EmailField('Email Address', validators=[DataRequired(), Length(8, 150)])
+    email = EmailField('Username or Email Address', validators=[DataRequired(), Length(8, 150)])
     password = PasswordField('Password', validators=[DataRequired(), Length(8, 20)])
     remember = BooleanField('Remember me', validators=[DataRequired()])
-    submit = SubmitField('Login')
+    submit = SubmitField('Continue')
 
 
 class ForgetPasswordForm(FlaskForm):
@@ -37,7 +37,7 @@ class ChangePasswordForm(FlaskForm):
     new_password = PasswordField('New Password', validators=[DataRequired(), Length(8, 20)])
     confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), Length(8, 20)])
     remember = BooleanField('Remember me', validators=[DataRequired()])
-    submit = SubmitField('Submit Changes')
+    submit = SubmitField('Submit')
 
 
 class ChangeEmailForm(FlaskForm):
@@ -45,3 +45,11 @@ class ChangeEmailForm(FlaskForm):
     email = EmailField('Email Address', validators=[DataRequired(), Length(8, 150)])
     remember = BooleanField('I agree & accept all terms of services.', validators=[DataRequired()])
     submit = SubmitField('Send Confirmation Mail')
+
+
+class ResetPasswordForm(FlaskForm):
+
+    password = PasswordField('Password', validators=[DataRequired(), Length(8, 20)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), Length(8, 20)])
+    remember = BooleanField('Remember me', validators=[DataRequired()])
+    submit = SubmitField('Submit')
