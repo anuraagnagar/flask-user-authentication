@@ -19,12 +19,10 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
 
-    bio = db.Column(db.String(200), default='')
-    avator = db.Column(db.String(250), default='')
-
     created_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now, nullable=False)
 
+    account = db.Relationship('Activation', backref='user', cascade='save-update, merge, delete')
     profile = db.Relationship('Profile', backref='user', cascade='save-update, merge, delete')
 
     def set_password(self, password):
@@ -32,10 +30,6 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
-    
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
         
     def __repr__(self):
         return '<User> {}'.format(self.email)
@@ -56,4 +50,21 @@ class Activation(db.Model):
     user_id = db.Column(db.String(38), db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
 
     def __repr__(self):
-        return '<Activation> {}'.format(self.user_id.username)
+        return '<Activation> {}'.format(self.user.username)
+
+
+class Profile(db.Model):
+
+    __tablename__ = 'profile'
+
+    id = db.Column(db.String(38), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    bio = db.Column(db.String(200), default='')
+    avator = db.Column(db.String(250), default='')
+
+    created_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now, nullable=False)
+
+    user_id = db.Column(db.String(38), db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
+
+    def __repr__(self):
+        return '<Profile> {}'.format(self.user.username)
