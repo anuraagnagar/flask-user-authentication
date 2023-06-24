@@ -3,15 +3,13 @@
 A Project in Flask and SQLAlchemy with basic user functionality.
 
 ## 👩‍💻 Live Demo
+
 ### 🔗https://anuraag01.pythonanywhere.com/home
 
 ## Some Screenshots of our Project
 
-
-
-
-
 ## Project features & functionality
+
 - Create account
 - Log In via (Username & Email address)
 - Logout
@@ -21,54 +19,63 @@ A Project in Flask and SQLAlchemy with basic user functionality.
 - Reset new email via confirmation link
 - Update profile & add image
 - Internationalize & Language :
-    - English, Hindi, French, Russian, & Spanish
+  - English, Hindi, French, Russian, & Spanish
 
 ## Framework & Library
 
 1. [Flask](https://flask.palletsprojects.com/)
 2. [Flask-Login](https://flask-login.readthedocs.io/)
 3. [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/)
-4. [Flask-WTF](https://flask-wtf.readthedocs.io/) 
+4. [Flask-WTF](https://flask-wtf.readthedocs.io/)
 5. [Flask-Mail](https://pythonhosted.org/Flask-Mail/)
 6. [Bootstrap-Flask](https://bootstrap-flask.readthedocs.io/)
-
 
 ## Set up & Run locally.
 
 ### 1. Clone the git repository.
 
 ```bash
-  git clone https://github.com/anuraagnagar/flask-user-authentication.git
+git clone https://github.com/anuraagnagar/flask-user-authentication.git
 ```
+
 ### 2. Go to the project directory.
 
 ```bash
-  cd flask-user-authentication
+cd flask-user-authentication
 ```
+
 ### 3. Create virtual environment.
 
 ```bash
-  python3 -m venv venv
+python3 -m venv venv
 ```
+
 ### 4. Activate the environment.
+
 On Windows
+
 ```bash
-  venv\scripts\activate
+venv\scripts\activate
 ```
+
 On MacOS/Linux
+
 ```bash
-  source venv/bin/activate
+source venv/bin/activate
 ```
+
 ### 5. Install the requirement package.
 
 ```bash
-  pip install -r requirements.txt
+pip install -r requirements.txt
 ```
+
 ### 6. Migrate/Create a database.
+
 ```bash
-  flask db init
-  flask db migrate -m "initial_migration"
-  flask db upgrade
+flask db init
+flask db migrate -m "initial_migration"
+flask db upgrade
 ```
 
 To run this project locally, you will need to add .env file on base directory and set following environment variables.
@@ -82,6 +89,7 @@ To run this project locally, you will need to add .env file on base directory an
 `SECRET_KEY=your-super-secret-key-here`
 
 ### 7. Last to run the application.
+
 ```bash
-  flask run
+flask run
 ```
