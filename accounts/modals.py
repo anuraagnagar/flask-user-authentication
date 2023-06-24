@@ -4,15 +4,15 @@ from werkzeug.security import (
         check_password_hash
     )
 from accounts.extentions import database as db
+from accounts.utils import unique_uid
 from datetime import datetime
-import uuid
 
 
 class User(db.Model, UserMixin):
 
     __tablename__ = 'user'
 
-    id = db.Column(db.String(38), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    id = db.Column(db.String(38), primary_key=True, default=unique_uid(), unique=True, nullable=False)
     username = db.Column(db.String(30), unique=True, nullable=False)
     first_name = db.Column(db.String(25), nullable=False)
     last_name = db.Column(db.String(25), nullable=False)
@@ -24,6 +24,14 @@ class User(db.Model, UserMixin):
 
     account = db.Relationship('Activation', backref='user', cascade='save-update, merge, delete')
     profile = db.Relationship('Profile', backref='user', cascade='save-update, merge, delete')
+
+    @classmethod
+    def get_user_by_username(cls, username):
+        return cls.query.filter_by(username=username).first()
+
+    @classmethod
+    def get_user_by_email(cls, email):
+        return cls.query.filter_by(email=email).first()
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -39,7 +47,7 @@ class Activation(db.Model):
 
     __tablename__ = 'activation'
 
-    id = db.Column(db.String(38), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    id = db.Column(db.String(38), primary_key=True, default=unique_uid(), unique=True, nullable=False)
     active = db.Column(db.Boolean, default=False, nullable=False)
     security_code = db.Column(db.String(6), default='', nullable=False)
     security_token = db.Column(db.Boolean, default=True, nullable=False)
@@ -57,7 +65,7 @@ class Profile(db.Model):
 
     __tablename__ = 'profile'
 
-    id = db.Column(db.String(38), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    id = db.Column(db.String(38), primary_key=True, default=unique_uid(), unique=True, nullable=False)
     bio = db.Column(db.String(200), default='')
     avator = db.Column(db.String(250), default='')
 
