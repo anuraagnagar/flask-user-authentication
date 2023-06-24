@@ -12,10 +12,12 @@ def create_app():
 
     # application configuration.
     config_application(app)
-    # register account blueprint.
-    config_blueprint(app)
     # config application extension. 
     config_extention(app)
+    # register account blueprint.
+    config_blueprint(app)
+    # config error handlers
+    config_errorhandler(app)
 
     return app
 
@@ -65,3 +67,34 @@ def config_manager(manager):
     @manager.user_loader
     def user_loader(id):
         return User.query.get_or_404(id)
+
+def config_errorhandler(app):
+    """
+    Configure error handlers for application.
+    """
+    from flask import render_template
+    from flask import redirect
+    from flask import url_for
+    from flask import flash
+
+    @app.errorhandler(400)
+    def bad_request(e):
+        flash("Something went wrong.")
+        return redirect(url_for('accounts.index'))
+    
+    @app.errorhandler(401)
+    def unauthorized(e):
+        return redirect(url_for('accounts.index'))
+    
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('error.html')
+
+    @app.errorhandler(405)
+    def method_not_allowed(e):
+        flash("Method not allowed.", 'error')
+        return redirect(url_for('accounts.index'))
+
+    @app.errorhandler(500)
+    def database_error(e):
+        return redirect(url_for('accounts.index'))
