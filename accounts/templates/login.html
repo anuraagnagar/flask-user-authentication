@@ -17,7 +17,7 @@
                                 <h2 class="card-title text-center">Login Account</h2>
                             </div>
                             {{ form.csrf_token() }}
-                            {{ render_field(form.email ) }}
+                            {{ render_field(form.username ) }}
                             {{ render_field(form.password) }}
                             {{ render_field(form.remember, checked="true") }}
                             <div class="mb-3">
