@@ -25,7 +25,8 @@ def config_application(app):
     app.config["DEBUG"] = True
     app.config["TESTING"] = True
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", None)
-
+    app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = os.environ.get("THEME", None)
+    
     # SQLAlchemy configuration
     app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
