@@ -9,15 +9,17 @@
     <div class="container">
         <div class="row justify-content-center">
             <section class="col-sm-11 col-md-8 col-lg-6 col-xl-5">
-                {{ render_messages(dismissible=True, dismiss_animate=True) }}
-                <div class="card shadow-lg border-0 mb-4">
+                <div class="card shadow-sm border-0 mb-4">
                     <div class="p-4">
                         <form action="{{ url_for('accounts.change_email') }}" method="post">
                             <div class="mb-4">
-                                <h2 class="card-title text-center">Change Email Address</h2>
+                                <h2 class="card-title text-center mb-3">Change Email Address</h2>
+                                {{ render_messages() }}
+                                <p>To reset your email enter new email address and you will receive an
+                                    confirmation link to confirm your email.</p>
                             </div>
                             {{ form.csrf_token() }}
-                            {{ render_field(form.email) }}
+                            {{ render_field(form.email, placeholder="Enter email address", autofocus="true") }}
                             {{ render_field(form.remember) }}
                             {{ render_field(form.submit, class='w-100 mb-3') }}
                         </form>
