@@ -9,16 +9,16 @@
     <div class="container">
         <div class="row justify-content-center">
             <section class="col-sm-10 col-md-8 col-lg-6 col-xl-5">
-                {{ render_messages(dismissible=True, dismiss_animate=True) }}
-                <div class="card shadow-lg border-0 mb-4">
+                <div class="card shadow-sm border-0 mb-4">
                     <div class="p-4">
                         <form action="{{ url_for('accounts.login') }}" method="post">
                             <div class="mb-4">
                                 <h2 class="card-title text-center">Login Account</h2>
                             </div>
+                            {{ render_messages() }}
                             {{ form.csrf_token() }}
-                            {{ render_field(form.username ) }}
-                            {{ render_field(form.password) }}
+                            {{ render_field(form.username, placeholder="Enter username or email", autofocus="true") }}
+                            {{ render_field(form.password, placeholder="Enter your password") }}
                             {{ render_field(form.remember, checked="true") }}
                             <div class="mb-3">
                                 {{ render_field(form.submit, class="w-100") }}
