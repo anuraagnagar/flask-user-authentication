@@ -1,7 +1,48 @@
 {% extends "base.html" %}
+{% from 'bootstrap5/utils.html' import render_messages %}
 {% block title %}Home{% endblock %}
 
 {% block body %}
 
+<div class="my-3">
+    <div class="container-fluid">
+        {{ render_messages(dismissible=True, dismiss_animate=True) }}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="d-flex justify-content-center">
+                        <img src="{{ url_for('static', filename='assets/default_avator.png') }}" alt="profile image"
+                            class="rounded-circle mt-4 mb-3" style="object-fit: cover;width: 200px;height: 200px;" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row my-3">
+                        <div class="mb-3">
+                            <h2 class="mb-1">{{ current_user.first_name }} {{ current_user.last_name }}</h2>
+                            <p>@{{ current_user.username }}</p>
+                        </div>
+                        <h6 class="text-muted mb-4">Web Developer and Designer</h6>
+                        <div class="row">
+                            <label class="fw-bold">First Name</label>
+                            <p>{{ current_user.first_name }}</p>
+                        </div>
+                        <div class="row">
+                            <label class="fw-bold">Last Name</label>
+                            <p>{{ current_user.last_name }}</p>
+                        </div>
+                        <div class="row">
+                            <label class="fw-bold">Email Address</label>
+                            <p>{{ current_user.email }}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('accounts.profile') }}" type="submit" class="btn btn-primary"
+                            value="Edit Profile">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
