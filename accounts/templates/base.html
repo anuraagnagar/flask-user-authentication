@@ -1,4 +1,5 @@
-{% from 'bootstrap4/utils.html' import render_icon %}
+{% from 'bootstrap5/utils.html' import render_icon %}
+{% from 'bootstrap5/nav.html' import render_nav_item %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,16 +8,17 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <title>{% block title %}{% endblock %} - Flask Authentication System</title>
   {{ bootstrap.load_css() }}
-  <!-- Include the above in your HEAD tag -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" />
 </head>
 
 <body style="background-color: #f1f4fc;">
   <nav class="navbar navbar-expand-md navbar-dark bg-dark static-top">
     <div class="container-fluid px-4">
-      <a class="navbar-brand" href="{{ url_for('accounts.index') }}">{{ render_icon('lock') }} Flask Auth</a>
+      <a class="navbar-brand" href="{{ url_for('accounts.index') }}">
+        <span>{{ render_icon('braces') }}</span> 
+        Flask Auth</a>
 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault">
         <span class="navbar-toggler-icon"></span>
@@ -24,24 +26,16 @@
 
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('accounts.index') }}">Home</a>
-          </li>
+          {{ render_nav_item('accounts.index', 'Home') }}
           {% if current_user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('accounts.change_password') }}">Profile</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('accounts.change_password') }}">Change Password</a>
-          </li>
+          {{ render_nav_item('accounts.profile', 'Profile') }}
+          {{ render_nav_item('accounts.change_password', 'Change Password') }}
           {% endif %}
         </ul>
         <ul class="navbar-nav ms-auto">
           {% if not current_user.is_authenticated %}
-          <li class="nav-item text-center me-2">
-            <a class="nav-link text-light" href="{{ url_for('accounts.login') }}">Login</a>
-          </li>
-          <li class="nav-item">
+          {{ render_nav_item('accounts.login', 'Login') }}
+          <li class="nav-item ms-2">
             <a class="btn btn-outline-light" href="{{ url_for('accounts.register') }}">Signup</a>
           </li>
           {% else %}
@@ -55,8 +49,9 @@
   </nav>
 
   {% block body %} {% endblock %}
-  {{ bootstrap.load_js()}}
   {% block scripts %}
+  <!-- Optional JavaScript -->
+  {{ bootstrap.load_js() }}
   {% endblock %}
 </body>
 
