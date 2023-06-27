@@ -12,7 +12,7 @@ class User(db.Model, UserMixin):
 
     __tablename__ = 'user'
 
-    id = db.Column(db.String(38), primary_key=True, default=unique_uid(), unique=True, nullable=False)
+    id = db.Column(db.String(38), primary_key=True, default=unique_uid, unique=True, nullable=False)
     username = db.Column(db.String(30), unique=True, nullable=False)
     first_name = db.Column(db.String(25), nullable=False)
     last_name = db.Column(db.String(25), nullable=False)
@@ -39,9 +39,19 @@ class User(db.Model, UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
+    def save_profile(self):
+        profile = Profile(user_id=self.id)
+        profile.save()
+    
+    def save_activation(self):
+        active = Activation(user_id=self.id)
+        active.save()
+
     def save(self):
         db.session.add(self)
         db.session.commit()
+        self.save_activation()
+        self.save_profile()
         
     def __repr__(self):
         return '<User> {}'.format(self.email)
@@ -51,7 +61,7 @@ class Activation(db.Model):
 
     __tablename__ = 'activation'
 
-    id = db.Column(db.String(38), primary_key=True, default=unique_uid(), unique=True, nullable=False)
+    id = db.Column(db.String(38), primary_key=True, default=unique_uid, unique=True, nullable=False)
     active = db.Column(db.Boolean, default=False, nullable=False)
     security_code = db.Column(db.String(6), default='', nullable=False)
     security_token = db.Column(db.Boolean, default=True, nullable=False)
@@ -64,12 +74,16 @@ class Activation(db.Model):
     def __repr__(self):
         return '<Activation> {}'.format(self.user.username)
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
 
 class Profile(db.Model):
 
     __tablename__ = 'profile'
 
-    id = db.Column(db.String(38), primary_key=True, default=unique_uid(), unique=True, nullable=False)
+    id = db.Column(db.String(38), primary_key=True, default=unique_uid, unique=True, nullable=False)
     bio = db.Column(db.String(200), default='')
     avator = db.Column(db.String(250), default='')
 
@@ -80,3 +94,7 @@ class Profile(db.Model):
 
     def __repr__(self):
         return '<Profile> {}'.format(self.user.username)
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
