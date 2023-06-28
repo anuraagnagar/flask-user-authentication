@@ -3,7 +3,7 @@ from werkzeug.security import (
         generate_password_hash,
         check_password_hash
     )
-from accounts.extentions import database as db
+from accounts.extensions import database as db
 from accounts.utils import unique_uid
 from datetime import datetime
 

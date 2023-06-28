@@ -50,12 +50,12 @@ def config_extention(app):
     """
     Configure application extensions.
     """
-    from .extentions import login_manager
-    from .extentions import bootstrap
-    from .extentions import database
-    from .extentions import migrate
-    from .extentions import csrf
-    from .extentions import mail
+    from .extensions import login_manager
+    from .extensions import bootstrap
+    from .extensions import database
+    from .extensions import migrate
+    from .extensions import csrf
+    from .extensions import mail
     
     login_manager.init_app(app)
     bootstrap.init_app(app)

@@ -6,7 +6,7 @@ from flask_login import (
         login_user,
         logout_user
     )
-from accounts.extentions import database as db
+from accounts.extensions import database as db
 from accounts.modals import User, Profile
 from accounts.forms import (
         RegisterForm, 
