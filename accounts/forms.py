@@ -3,14 +3,14 @@ from wtforms.fields import (
     StringField, PasswordField, EmailField, BooleanField, SubmitField, FileField, TextAreaField
 )
 from wtforms.validators import DataRequired, Length
-from accounts.validators import Unique
+from accounts.validators import Unique, StrongUsername, StrongPassword
 from accounts.modals import User
 
 
 class RegisterForm(FlaskForm):
 
     username = StringField('Username', validators=[
-        DataRequired(), Length(1, 30),
+        DataRequired(), Length(1, 30), StrongUsername(),
         Unique(User, User.username, message='Username already exists choose another.')
     ])
     first_name = StringField('First Name', validators=[DataRequired(), Length(1, 20)])
@@ -19,7 +19,9 @@ class RegisterForm(FlaskForm):
         DataRequired(), Length(8, 150),
         Unique(User, User.email, message='Email Address already exists.')
     ])
-    password = PasswordField('Password', validators=[DataRequired(), Length(8, 20)])
+    password = PasswordField('Password', validators=[
+        DataRequired(), Length(8, 20), StrongPassword()
+    ])
     remember = BooleanField('I agree & accept all terms of services. ', validators=[DataRequired()])
     submit = SubmitField('Continue')
 
