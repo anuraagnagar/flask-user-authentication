@@ -14,11 +14,15 @@
 </head>
 
 <body style="background-color: #f1f4fc;">
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark static-top">
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark static-top py-1">
     <div class="container-fluid px-4">
       <a class="navbar-brand" href="{{ url_for('accounts.index') }}">
-        <span>{{ render_icon('braces') }}</span> 
-        Flask Auth</a>
+        <div class="d-flex p-2 rounded-3" style="border: 1px solid #fff;">
+          <img class="w-100 me-2" src="{{ url_for('static', filename='assets/logo.png') }}" alt=""
+            style="height: 28px;">
+          <h4 class="text-uppercase m-0">Flask Auth</h4>
+        </div>
+      </a>
 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault">
         <span class="navbar-toggler-icon"></span>
@@ -29,6 +33,7 @@
           {{ render_nav_item('accounts.index', 'Home') }}
           {% if current_user.is_authenticated %}
           {{ render_nav_item('accounts.profile', 'Profile') }}
+          {{ render_nav_item('accounts.change_email', 'Reset Email') }}
           {{ render_nav_item('accounts.change_password', 'Change Password') }}
           {% endif %}
         </ul>
