@@ -22,6 +22,7 @@ def create_app():
     return app
 
 def config_application(app):
+    # Application configuration
     app.config["DEBUG"] = True
     app.config["TESTING"] = True
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", None)
@@ -30,6 +31,13 @@ def config_application(app):
     # SQLAlchemy configuration
     app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+    # Flask-Mail configuration
+    app.config['MAIL_SERVER'] = ''
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USERNAME'] = 'your_email@example.com'
+    app.config['MAIL_PASSWORD'] = 'your_email_password'
 
 def config_blueprint(app):
     """
@@ -47,12 +55,14 @@ def config_extention(app):
     from .extentions import database
     from .extentions import migrate
     from .extentions import csrf
+    from .extentions import mail
     
     login_manager.init_app(app)
     bootstrap.init_app(app)
     database.init_app(app)
     migrate.init_app(app, db=database)
     csrf.init_app(app)
+    mail.init_app(app)
     config_manager(login_manager)
 
 def config_manager(manager):
