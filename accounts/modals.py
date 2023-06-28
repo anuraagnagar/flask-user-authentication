@@ -25,6 +25,20 @@ class User(db.Model, UserMixin):
     account = db.Relationship('Activation', backref='user', cascade='save-update, merge, delete')
     profile = db.Relationship('Profile', backref='user', cascade='save-update, merge, delete')
 
+
+    def send_confirmation(self):
+        subject = "Verify Your Account."
+        sender = app.config['MAIL_USERNAME']
+        recipient = self.email
+
+        verification_link = ""
+        content = f"Please click the following link to verify your account: {verification_link}"
+
+        message = Message(subject=subject, sender=sender, recipients=[recipient])
+        message.body = content
+
+        mail.send(message)
+
     @classmethod
     def get_user_by_username(cls, username):
         return cls.query.filter_by(username=username).first()
