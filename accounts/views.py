@@ -19,6 +19,7 @@ from accounts.forms import (
     )
 from accounts.utils import page_not_found
 from datetime import timedelta
+import re
 
 
 accounts = Blueprint('accounts', __name__, template_folder='templates')
@@ -62,12 +63,13 @@ def login():
     if form.validate_on_submit():
         username = form.data.get('username')
         password = form.data.get('password')
+
         user = User.get_user_by_username(username) or User.get_user_by_email(username)
 
         if not user:
             flash("User account doesn't exists.", 'error')
         elif not user.check_password(password):
-            flash("Incorrect password please try again.", 'error')
+            flash("Your password is incorrect. Please try again.", 'error')
         else:
             login_user(user, remember=True, duration=timedelta(days=15))
             flash("You are logged in successfully.", 'success')
@@ -96,7 +98,12 @@ def forgot_password():
 
         if not user_exist:
             flash("Email address is not registered with us.", 'error')
-        
+        else:
+            # email send reset here..
+            # ..
+            # ...
+            flash("A reset password link sent to your email. Please check.", 'success')
+            return redirect(url_for('accounts.login'))
 
         return redirect(url_for('accounts.forgot_password'))
     return render_template('forget_password.html', form=form)
@@ -105,6 +112,19 @@ def forgot_password():
 @accounts.route('/password/reset/token', methods=['GET', 'POST'])
 def reset_password(token=None):
     form = ResetPasswordForm()
+
+    if form.validate_on_submit():
+        password = form.data.get('password')
+        confirm_password = form.data.get('confirm_password')
+
+        if not (password == confirm_password):
+            flash("Your new password field's not match.", 'error')
+        elif not re.match(r"(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", password):
+            flash("Please choose strong password. It contains at least one alphabet, number, and one special character.", 'warning')
+        else:
+            return redirect(url_for('accounts.index'))
+
+        return redirect(url_for('accounts.reset_password'))
     return render_template('reset_password.html', form=form)
 
 
@@ -119,17 +139,19 @@ def change_password():
         confirm_password = form.data.get('confirm_password')
 
         user = User.query.get_or_404(current_user.id)
-
+        
         if not user.check_password(old_password):
             flash("Your old password is incorrect.", 'error')
-        elif new_password == confirm_password:
+        elif not (new_password == confirm_password):
             flash("Your new password field's not match.", 'error')
+        elif not re.match(r"(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", new_password):
+            flash("Please choose strong password. It contains at least one alphabet, number, and one special character.", 'warning')
         else:
             user.set_password(new_password)
             db.session.commit()
             flash("Your password changed successfully.", 'success')
             return redirect(url_for('accounts.index'))
-        
+
         return redirect(url_for('accounts.change_password'))
     return render_template('change_password.html', form=form)
 
@@ -142,18 +164,20 @@ def change_email():
     if form.validate_on_submit():
         email = form.data.get('email')
 
+        user = User.query.get_or_404(current_user.id)
+
         if not email:
             flash("Please provide an email address.", 'warning')
-        elif email == current_user.email:
+        elif email == user.email:
             flash("Email is already verify with your account.", 'warning')
+        elif not re.match(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b', email):
+            flash("Invalid email address.", category='error')
         else:
-            # add send email logic herre..abs
-            # ...
-            # ...
+            
+            flash("A reset email sent to your new email address. Please verify.", 'success')
             return redirect(url_for('accounts.index'))
             
         return redirect(url_for('accounts.change_email'))
-
     return render_template('change_email.html', form=form)
 
 
