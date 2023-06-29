@@ -48,6 +48,9 @@
                                 <label class="form-label">Email Address</label>
                                 <input type="text" class="form-control" value="{{ current_user.email }}" disabled=""
                                     readonly>
+                                <p class="m-0" style="font-size: 14px;">Email address cannot be edited. You can only
+                                    reset it by sending a confirmation link to your newly entered email. If you want to
+                                    make a change, please click the button below.</p>
                             </div>
                             <a href="{{ url_for('accounts.change_email') }}" class="btn btn-primary" type="button"
                                 role="button">Reset</a>
