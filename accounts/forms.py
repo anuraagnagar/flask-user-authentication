@@ -90,8 +90,7 @@ class ChangeEmailForm(FlaskForm):
 class EditUserProfileForm(FlaskForm):
 
     username = StringField('Username', 
-        validators=[DataRequired(), Length(1, 30), StrongUsername(),
-            Unique(User, User.username, message='Username already exists choose another.')]
+        validators=[DataRequired(), Length(1, 30), StrongUsername()]
     )
     first_name = StringField('First Name', validators=[DataRequired(), Length(3, 25)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(3, 25)])
