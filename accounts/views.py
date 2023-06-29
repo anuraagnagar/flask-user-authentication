@@ -17,7 +17,11 @@ from accounts.forms import (
         ChangeEmailForm,
         EditUserProfileForm
     )
-from accounts.utils import page_not_found
+from accounts.utils import (
+        send_reset_password,
+        send_reset_email,
+        page_not_found
+    )
 from datetime import timedelta
 import re
 
@@ -39,17 +43,23 @@ def register():
         email = form.data.get('email')
         password = form.data.get('password')
 
-        user = User(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password
-        )
-        user.set_password(password)
-        user.save()
-        
-        return redirect(url_for('accounts.login'))
+        try:
+            user = User(
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                password=password
+            )
+            user.set_password(password)
+            user.save()
+            user.send_confirmation()
+            flash("A confirmation link sent to your email. Please verify your account.", 'info')
+            return redirect(url_for('accounts.login'))
+        except Exception as e:
+            flash("Something went wrong", 'error')
+            return redirect(url_for('accounts.register'))
+
     return render_template('register.html', form=form)
 
 
@@ -94,18 +104,16 @@ def forgot_password():
 
     if form.validate_on_submit():
         email = form.data.get('email')
-        user_exist = User.get_user_by_email(email=email)
+        user = User.get_user_by_email(email=email)
 
-        if not user_exist:
-            flash("Email address is not registered with us.", 'error')
-        else:
-            # email send reset here..
-            # ..
-            # ...
+        if user:
+            send_reset_password(email=user.email)
             flash("A reset password link sent to your email. Please check.", 'success')
             return redirect(url_for('accounts.login'))
 
+        flash("Email address is not registered with us.", 'error')
         return redirect(url_for('accounts.forgot_password'))
+
     return render_template('forget_password.html', form=form)
 
 
@@ -166,18 +174,18 @@ def change_email():
 
         user = User.query.get_or_404(current_user.id)
 
-        if not email:
-            flash("Please provide an email address.", 'warning')
-        elif email == user.email:
-            flash("Email is already verify with your account.", 'warning')
-        elif not re.match(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b', email):
-            flash("Invalid email address.", category='error')
-        else:
+        if not email == user.email:
+            try:
+                send_reset_email(email=email)
+                flash("A reset email sent to your new email address. Please verify.", 'success')
+                return redirect(url_for('accounts.index'))
+            except Exception as e:
+                flash("Something went wrong.", 'error')
+                return redirect(url_for('accounts.change_email'))
             
-            flash("A reset email sent to your new email address. Please verify.", 'success')
-            return redirect(url_for('accounts.index'))
-            
+        flash("Email is already verify with your account.", 'warning')    
         return redirect(url_for('accounts.change_email'))
+
     return render_template('change_email.html', form=form)
 
 
@@ -186,7 +194,6 @@ def change_email():
 @login_required
 def index():
     profile = Profile.query.filter_by(user_id=current_user.id).first_or_404()
-    print(profile.bio)
     return render_template('index.html', profile=profile)
 
 
@@ -204,15 +211,19 @@ def profile():
         last_name = form.data.get('last_name')
         profile_image = form.profile_image.data
         about = form.data.get('about')
-        print(type(profile_image))
-        # print(profile_image.save('static/assets/profile/{}'.format(profile_image)))
         
-        user.username = username
-        user.first_name = first_name
-        user.last_name = last_name
-        profile.bio = about
-        db.session.commit()
-        flash("Your profile update successfully.", 'success')
-        return redirect(url_for('accounts.index'))
+        # print(profile_image.save('static/assets/profile/{}'.format(profile_image)))
 
+        if username in [user.username for user in User.query.all() if username != current_user.username]:
+            flash("Username already exists. Choose another.", 'error')
+        else:
+            user.username = username
+            user.first_name = first_name
+            user.last_name = last_name
+            profile.bio = about
+            db.session.commit()
+            flash("Your profile update successfully.", 'success')
+            return redirect(url_for('accounts.index'))
+
+        return redirect(url_for('accounts.profile'))
     return render_template('profile.html', form=form, profile=profile)
