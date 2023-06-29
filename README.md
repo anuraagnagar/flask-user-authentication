@@ -14,10 +14,10 @@ A Project in Flask and SQLAlchemy with basic user functionality.
 - Log In via (Username & Email address)
 - Logout
 - Account activation via email
-- Resend account activation code (OTP)
 - Reset password via reset link
 - Reset new email via confirmation link
 - Update profile & add image
+- Change password after login
 - Internationalize & Language :
   - English, Hindi, French, Russian, & Spanish
 
