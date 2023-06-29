@@ -4,7 +4,7 @@ from werkzeug.security import (
         check_password_hash
     )
 from accounts.extensions import database as db
-from accounts.utils import unique_uid
+from accounts.utils import unique_uid, send_mail
 from datetime import datetime
 
 
@@ -28,16 +28,10 @@ class User(db.Model, UserMixin):
 
     def send_confirmation(self):
         subject = "Verify Your Account."
-        sender = app.config['MAIL_USERNAME']
-        recipient = self.email
-
         verification_link = ""
         content = f"Please click the following link to verify your account: {verification_link}"
 
-        message = Message(subject=subject, sender=sender, recipients=[recipient])
-        message.body = content
-
-        mail.send(message)
+        return send_mail(subject, self.email, content)
 
     @classmethod
     def get_user_by_username(cls, username):
