@@ -174,16 +174,19 @@ def change_email():
 
         user = User.query.get_or_404(current_user.id)
 
-        if not email == user.email:
+        if email == user.email:
+            flash("Email is already verify with your account.", 'warning')  
+        elif email in [i.email for i in User.query.all() if email != user.email]:
+            flash("Email address is already registered with us.", 'warning')  
+        else:
             try:
                 send_reset_email(email=email)
-                flash("A reset email sent to your new email address. Please verify.", 'success')
+                flash("A reset link sent to your new email address. Please verify.", 'success')
                 return redirect(url_for('accounts.index'))
             except Exception as e:
                 flash("Something went wrong.", 'error')
                 return redirect(url_for('accounts.change_email'))
             
-        flash("Email is already verify with your account.", 'warning')    
         return redirect(url_for('accounts.change_email'))
 
     return render_template('change_email.html', form=form)
