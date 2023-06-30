@@ -30,8 +30,8 @@ class RegisterForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired(), Length(3, 20)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(3, 20)])
     email = EmailField('Email Address', 
-        validators=[DataRequired(), Length(8, 150),
-            Unique(User, User.email, message='Email Address already exists.')]
+        validators=[DataRequired(), Length(8, 150), Email(),
+            Unique(User, User.email, message='Email Address already registered with us.')]
     )
     password = PasswordField('Password', 
         validators=[DataRequired(), Length(8, 20), StrongPassword()]
