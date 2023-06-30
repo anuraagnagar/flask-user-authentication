@@ -22,7 +22,7 @@ class StrongUsername(object):
     def __init__(self, message=None):
         self.message = message
         if not self.message:
-            self.message = "Please choose a strong username."
+            self.message = "Username contain only (A-Za-z0-9_-.) characters."
 
     def __call__(self, form, field):
         username = field.data
