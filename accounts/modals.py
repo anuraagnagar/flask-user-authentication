@@ -27,9 +27,18 @@ class User(db.Model, UserMixin):
 
 
     def send_confirmation(self):
+        """
+        A method for sending an email for account confirmation.
+        """
         subject = "Verify Your Account."
         verification_link = ""
-        content = f"Please click the following link to verify your account: {verification_link}"
+        content = f"""
+        Hi, {self.username}
+        Your Registration is completed. 
+
+        Please click the following link to verify your account.
+        {verification_link}
+        """
 
         return send_mail(subject, self.email, content)
 
