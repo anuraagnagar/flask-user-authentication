@@ -16,7 +16,6 @@ def page_not_found():
 
 def send_mail(subject, recipients, body):
     sender = os.environ.get('MAIL_USERNAME', None)
-    print(sender)
     message = Message(
             subject=subject, sender=sender, recipients=[recipients]
         )
@@ -25,13 +24,18 @@ def send_mail(subject, recipients, body):
     mail.connect()
     mail.send(message)
 
-def send_reset_password(email=None):
+def send_reset_password(user=None):
 
     subject = "Resest Your Password."
-    recipient = email
+    recipient = user.email
 
-    reset_link = url_for('accounts.reset_password')
-    content = f"Please click the following link to reset your password:\n {reset_link}"
+    reset_link = url_for('accounts.reset_password', token=user.security_token)
+    content = f"""
+    Reset Your Password
+
+    Please click the following link to reset your password
+    {reset_link}
+    """
     send_mail(subject=subject, recipients=recipient, body=content)
 
 def send_reset_email(email=None):
