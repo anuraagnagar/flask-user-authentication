@@ -10,7 +10,7 @@ from accounts.utils import (
         unique_security_token,
         send_mail
     )
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class User(db.Model, UserMixin):
@@ -26,9 +26,10 @@ class User(db.Model, UserMixin):
 
     active = db.Column(db.Boolean, default=False, nullable=False)
     security_token = db.Column(db.String(138), default=unique_security_token, nullable=False)
+    is_send = db.Column(db.DateTime, default=datetime.now)
 
-    created_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
-    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     profile = db.Relationship('Profile', backref='user', cascade='save-update, merge, delete')
 
@@ -37,6 +38,9 @@ class User(db.Model, UserMixin):
         """
         A method for sending an email for account confirmation.
         """
+        self.security_token = unique_security_token()
+        self.is_send = datetime.now()
+        db.session.commit()
         subject = "Verify Your Account."
         verification_link = url_for('accounts.confirm_account', token=self.security_token)
         content = f"""
@@ -46,7 +50,6 @@ class User(db.Model, UserMixin):
         Please click the following link to confirm your account.
         {verification_link}
         """
-
         return send_mail(subject, self.email, content)
 
     @classmethod
@@ -71,6 +74,17 @@ class User(db.Model, UserMixin):
         db.session.add(self)
         db.session.commit()
         self.save_profile()
+    
+    def is_active(self):
+        return self.active
+    
+    def is_token_expire(self):
+        expiry_time = (
+            self.is_send
+            + timedelta(minutes=15)
+        )
+        current_time = datetime.now()
+        return expiry_time <= current_time
         
     def __repr__(self):
         return '<User> {}'.format(self.email)
@@ -84,8 +98,8 @@ class Profile(db.Model):
     bio = db.Column(db.String(200), default='')
     avator = db.Column(db.String(250), default='')
 
-    created_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
-    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     user_id = db.Column(db.String(38), db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
 
