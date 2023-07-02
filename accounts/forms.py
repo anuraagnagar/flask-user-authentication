@@ -60,10 +60,10 @@ class ForgotPasswordForm(FlaskForm):
 class ResetPasswordForm(FlaskForm):
 
     password = PasswordField('Password', 
-        validators=[DataRequired(), Length(8, 20)]
+        validators=[DataRequired(), Length(8, 20), StrongPassword()]
     )
     confirm_password = PasswordField('Confirm Password', 
-        validators=[DataRequired(), Length(8, 20)]
+        validators=[DataRequired(), Length(8, 20), StrongPassword()]
     )
     remember = BooleanField('Remember me', validators=[DataRequired()])
     submit = SubmitField('Submit')
