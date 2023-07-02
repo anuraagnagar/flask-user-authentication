@@ -18,11 +18,12 @@ from accounts.forms import (
         EditUserProfileForm
     )
 from accounts.utils import (
+        unique_security_token,
         send_reset_password,
         send_reset_email,
         page_not_found
     )
-from datetime import timedelta
+from datetime import datetime, timedelta
 import re
 
 
@@ -81,6 +82,11 @@ def login():
         elif not user.check_password(password):
             flash("Your password is incorrect. Please try again.", 'error')
         else:
+            if not user.is_active():
+                user.send_confirmation()
+                flash("Your account is not activate.", 'error')
+                return redirect(url_for('accounts.login'))
+
             login_user(user, remember=True, duration=timedelta(days=15))
             flash("You are logged in successfully.", 'success')
             return redirect(url_for('accounts.index'))
@@ -88,6 +94,23 @@ def login():
         return redirect(url_for('accounts.login'))
 
     return render_template('login.html', form=form)
+
+
+@accounts.route('/account/confirm?token=<string:token>', methods=['GET', 'POST'])
+def confirm_account(token=None):
+    auth_user = User.query.filter_by(security_token=token).first_or_404()
+
+    if auth_user and not auth_user.is_token_expire():
+        if request.method == "POST" and ('submit' and 'csrf_token') in request.form:
+            auth_user.active = True
+            auth_user.security_token = ""
+            db.session.commit()
+            login_user(auth_user, remember=True, duration=timedelta(days=15))
+            flash(f"Welcome {auth_user.username}, You're registered successfully.", 'success')
+            return redirect(url_for('accounts.index'))
+        return render_template('confirm_account.html', token=token)
+
+    return page_not_found()
 
 
 @accounts.route('/logout')
@@ -107,7 +130,10 @@ def forgot_password():
         user = User.get_user_by_email(email=email)
 
         if user:
-            send_reset_password(email=user.email)
+            user.security_token = unique_security_token()
+            user.is_send = datetime.now()
+            db.session.commit()
+            send_reset_password(user)
             flash("A reset password link sent to your email. Please check.", 'success')
             return redirect(url_for('accounts.login'))
 
@@ -117,23 +143,35 @@ def forgot_password():
     return render_template('forget_password.html', form=form)
 
 
-@accounts.route('/password/reset/token', methods=['GET', 'POST'])
+@accounts.route('/password/reset/token?<string:token>', methods=['GET', 'POST'])
 def reset_password(token=None):
-    form = ResetPasswordForm()
+    auth_user = auth_user = User.query.filter_by(security_token=token).first_or_404()
 
-    if form.validate_on_submit():
-        password = form.data.get('password')
-        confirm_password = form.data.get('confirm_password')
+    if auth_user and not auth_user.is_token_expire():
+        form = ResetPasswordForm()
 
-        if not (password == confirm_password):
-            flash("Your new password field's not match.", 'error')
-        elif not re.match(r"(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", password):
-            flash("Please choose strong password. It contains at least one alphabet, number, and one special character.", 'warning')
-        else:
-            return redirect(url_for('accounts.index'))
+        if form.validate_on_submit():
+            password = form.data.get('password')
+            confirm_password = form.data.get('confirm_password')
 
-        return redirect(url_for('accounts.reset_password'))
-    return render_template('reset_password.html', form=form)
+            if not (password == confirm_password):
+                flash("Your new password field's not match.", 'error')
+            elif not re.match(r"(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", password):
+                flash("Please choose strong password. It contains at least one alphabet, number, and one special character.", 'warning')
+            else:
+                auth_user.set_password(password)
+                auth_user.security_token = ""
+                db.session.commit()
+                if not current_user.is_authenticated:
+                    login_user(auth_user, remember=True, duration=timedelta(days=15))
+                flash("Your password is changed successfully.", 'success')
+                return redirect(url_for('accounts.index'))
+
+            return redirect(url_for('accounts.reset_password', token=token))
+
+        return render_template('reset_password.html', form=form, token=token)
+
+    return page_not_found()
 
 
 @accounts.route('/change/password', methods=['GET', 'POST'])
@@ -180,6 +218,9 @@ def change_email():
             flash("Email address is already registered with us.", 'warning')  
         else:
             try:
+                user.security_token = unique_security_token()
+                user.is_send = datetime.now()
+                db.session.commit()
                 send_reset_email(email=email)
                 flash("A reset link sent to your new email address. Please verify.", 'success')
                 return redirect(url_for('accounts.index'))
@@ -191,6 +232,10 @@ def change_email():
 
     return render_template('change_email.html', form=form)
 
+
+@accounts.route('/account/email/confirm?token=<string:token>')
+def confirm_email(token=None):
+    pass
 
 @accounts.route('/')
 @accounts.route('/home')
