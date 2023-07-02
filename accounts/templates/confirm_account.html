@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% from 'bootstrap5/utils.html' import render_messages %}
+{% block title %}Confirm Account{% endblock %}
+
+{% block body %}
+
+<div class="my-3">
+    <div class="container">
+        <div class="row">
+            {{ render_messages(dismissible=True, dismiss_animate=True) }}
+            <form action="{{ url_for('accounts.confirm_account', token=token) }}" method="post">
+                <div class="my-5">
+                    <h5 class="text-center mb-4">To confirm your account please click the button below.</h5>
+                    <div class="d-flex justify-content-center mb-4">
+                        <input id="csrf_token" type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
+                        <input id="submit" type="submit" role="button" name="submit" class="btn btn-primary"
+                            value="Confirm Your Account" />
+                    </div>
+                    <p class="text-center"><a class="text-decoration-none" href="{{ url_for('accounts.login') }}">
+                            back to login
+                        </a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
