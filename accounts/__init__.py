@@ -90,11 +90,12 @@ def config_errorhandler(app):
 
     @app.errorhandler(400)
     def bad_request(e):
-        flash("Something went wrong.")
+        flash("Something went wrong.", 'error')
         return redirect(url_for('accounts.index'))
     
     @app.errorhandler(401)
     def unauthorized(e):
+        flash("You are not authorized to perform this action.", 'error')
         return redirect(url_for('accounts.index'))
     
     @app.errorhandler(404)
@@ -108,4 +109,5 @@ def config_errorhandler(app):
 
     @app.errorhandler(500)
     def database_error(e):
+        flash("Internal server error.", 'error')
         return redirect(url_for('accounts.index'))
