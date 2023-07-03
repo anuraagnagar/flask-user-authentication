@@ -7,7 +7,7 @@ from flask_login import (
         logout_user
     )
 from accounts.extensions import database as db
-from accounts.modals import User, Profile
+from accounts.models import User, Profile
 from accounts.forms import (
         RegisterForm, 
         LoginForm, 
@@ -145,7 +145,7 @@ def forgot_password():
 
 @accounts.route('/password/reset/token?<string:token>', methods=['GET', 'POST'])
 def reset_password(token=None):
-    auth_user = auth_user = User.query.filter_by(security_token=token).first_or_404()
+    auth_user = User.query.filter_by(security_token=token).first_or_404()
 
     if auth_user and not auth_user.is_token_expire():
         form = ResetPasswordForm()

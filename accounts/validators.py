@@ -1,6 +1,6 @@
 from flask import flash
 from wtforms import ValidationError 
-from accounts.modals import User
+from accounts.models import User
 import re
 
 class Unique(object):

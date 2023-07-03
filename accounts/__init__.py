@@ -69,7 +69,7 @@ def config_manager(manager):
     """
     Configure with Flask-Login manager.
     """
-    from .modals import User
+    from .models import User
 
     manager.login_message = "You are not logged in to your account."
     manager.login_message_category = "warning"

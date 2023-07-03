@@ -18,7 +18,7 @@ from accounts.validators import (
     StrongUsername, 
     StrongPassword
 )
-from accounts.modals import User
+from accounts.models import User
 
 
 class RegisterForm(FlaskForm):
