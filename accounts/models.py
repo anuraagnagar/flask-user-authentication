@@ -28,8 +28,9 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(128), nullable=False)
 
     active = db.Column(db.Boolean, default=False, nullable=False)
-    security_token = db.Column(db.String(138), default=unique_security_token, nullable=False)
+    security_token = db.Column(db.String(138), default=unique_security_token)
     is_send = db.Column(db.DateTime, default=datetime.now)
+    change_email = db.Column(db.String(120), default="")
 
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
