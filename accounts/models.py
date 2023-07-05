@@ -14,6 +14,9 @@ from datetime import datetime, timedelta
 
 
 class User(db.Model, UserMixin):
+    """
+    A Base User model class.
+    """
 
     __tablename__ = 'user'
 
@@ -91,6 +94,9 @@ class User(db.Model, UserMixin):
 
 
 class Profile(db.Model):
+    """
+    A User profile model class.
+    """
 
     __tablename__ = 'profile'
 

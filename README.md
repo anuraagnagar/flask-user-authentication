@@ -1,12 +1,10 @@
 # User Authentication System in Flask/Python
 
-A Project in Flask and SQLAlchemy with basic user functionality.
+A Simple Authentication Project in Python Flask and SQLAlchemy with basic user functionality.
 
 ## 👩‍💻 Live Demo
 
 ### 🔗https://anuraag01.pythonanywhere.com/home
-
-## Some Screenshots of our Project
 
 ## Project features & functionality
 
@@ -29,6 +27,8 @@ A Project in Flask and SQLAlchemy with basic user functionality.
 4. [Flask-WTF](https://flask-wtf.readthedocs.io/)
 5. [Flask-Mail](https://pythonhosted.org/Flask-Mail/)
 6. [Bootstrap-Flask](https://bootstrap-flask.readthedocs.io/)
+
+## Some Screenshots of our Project
 
 ## Set up & Run locally.
 
