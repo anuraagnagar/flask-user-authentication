@@ -38,11 +38,11 @@ def send_reset_password(user=None):
     """
     send_mail(subject=subject, recipients=recipient, body=content)
 
-def send_reset_email(email=None):
+def send_reset_email(user=None):
 
     subject = "Please Confirm Your Email."
-    recipient = email
+    recipient = user.change_email
 
-    confirmation_link = ""
+    confirmation_link = url_for('accounts.confirm_email', token=user.security_token)
     content = f"Please click the following link to confirm your email:\n {confirmation_link}"
     send_mail(subject=subject, recipients=recipient, body=content)
