@@ -213,15 +213,16 @@ def change_email():
         user = User.query.get_or_404(current_user.id)
 
         if email == user.email:
-            flash("Email is already verify with your account.", 'warning')  
-        elif email in [i.email for i in User.query.all() if email != user.email]:
+            flash("Email is already verified with your account.", 'warning')  
+        elif email in [u.email for u in User.query.all() if email != user.email]:
             flash("Email address is already registered with us.", 'warning')  
         else:
             try:
+                user.change_email = email
                 user.security_token = unique_security_token()
                 user.is_send = datetime.now()
                 db.session.commit()
-                send_reset_email(email=email)
+                send_reset_email(user=user)
                 flash("A reset link sent to your new email address. Please verify.", 'success')
                 return redirect(url_for('accounts.index'))
             except Exception as e:
@@ -233,9 +234,26 @@ def change_email():
     return render_template('change_email.html', form=form)
 
 
-@accounts.route('/account/email/confirm?token=<string:token>')
+@accounts.route('/account/email/confirm?token=<string:token>', methods=['GET', 'POST'])
 def confirm_email(token=None):
-    pass
+    user = User.query.filter_by(security_token=token).first_or_404()
+
+    if user and not user.is_token_expire():
+        if request.method == "POST" and ('submit' and 'csrf_token') in request.form:
+            # try:
+            user.email = user.change_email
+            user.change_email = None
+            user.security_token = None
+            db.session.commit()
+            flash(f"Your email address updated successfully.", 'success')
+            return redirect(url_for('accounts.index'))
+            # except Exception as e:
+                # flash("Something went wrong", 'error')
+                # return redirect(url_for('accounts.index'))
+
+        return render_template('confirm_email.html', token=token)
+
+    return page_not_found()
 
 @accounts.route('/')
 @accounts.route('/home')
