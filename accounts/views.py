@@ -6,6 +6,7 @@ from flask_login import (
         login_user,
         logout_user
     )
+from accounts import UPLOAD_FOLDER
 from accounts.extensions import database as db
 from accounts.models import User, Profile
 from accounts.forms import (
@@ -19,16 +20,16 @@ from accounts.forms import (
     )
 from accounts.utils import (
         unique_security_token,
+        remove_existing_file,
+        get_unique_filename,
         send_reset_password,
-        send_reset_email,
-        page_not_found
+        send_reset_email
     )
 from datetime import datetime, timedelta
 import re
-
+import os
 
 accounts = Blueprint('accounts', __name__, template_folder='templates')
-
 
 @accounts.route('/register', methods=['GET', 'POST'])
 def register():
@@ -103,7 +104,7 @@ def confirm_account(token=None):
     if auth_user and not auth_user.is_token_expire():
         if request.method == "POST" and ('submit' and 'csrf_token') in request.form:
             auth_user.active = True
-            auth_user.security_token = ""
+            auth_user.security_token = None
             db.session.commit()
             login_user(auth_user, remember=True, duration=timedelta(days=15))
             flash(f"Welcome {auth_user.username}, You're registered successfully.", 'success')
@@ -145,9 +146,9 @@ def forgot_password():
 
 @accounts.route('/password/reset/token?<string:token>', methods=['GET', 'POST'])
 def reset_password(token=None):
-    auth_user = User.query.filter_by(security_token=token).first_or_404()
+    user = User.query.filter_by(security_token=token).first_or_404()
 
-    if auth_user and not auth_user.is_token_expire():
+    if user and not user.is_token_expire():
         form = ResetPasswordForm()
 
         if form.validate_on_submit():
@@ -159,13 +160,11 @@ def reset_password(token=None):
             elif not re.match(r"(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", password):
                 flash("Please choose strong password. It contains at least one alphabet, number, and one special character.", 'warning')
             else:
-                auth_user.set_password(password)
-                auth_user.security_token = ""
+                user.set_password(password)
+                user.security_token = None
                 db.session.commit()
-                if not current_user.is_authenticated:
-                    login_user(auth_user, remember=True, duration=timedelta(days=15))
-                flash("Your password is changed successfully.", 'success')
-                return redirect(url_for('accounts.index'))
+                flash("Your password is changed successfully. Please login.", 'success')
+                return redirect(url_for('accounts.login'))
 
             return redirect(url_for('accounts.reset_password', token=token))
 
@@ -223,7 +222,7 @@ def change_email():
                 user.is_send = datetime.now()
                 db.session.commit()
                 send_reset_email(user=user)
-                flash("A reset link sent to your new email address. Please verify.", 'success')
+                flash("A reset email link sent to your new email address. Please verify.", 'success')
                 return redirect(url_for('accounts.index'))
             except Exception as e:
                 flash("Something went wrong.", 'error')
@@ -240,16 +239,16 @@ def confirm_email(token=None):
 
     if user and not user.is_token_expire():
         if request.method == "POST" and ('submit' and 'csrf_token') in request.form:
-            # try:
-            user.email = user.change_email
-            user.change_email = None
-            user.security_token = None
-            db.session.commit()
-            flash(f"Your email address updated successfully.", 'success')
-            return redirect(url_for('accounts.index'))
-            # except Exception as e:
-                # flash("Something went wrong", 'error')
-                # return redirect(url_for('accounts.index'))
+            try:
+                user.email = user.change_email
+                user.change_email = None
+                user.security_token = None
+                db.session.commit()
+                flash(f"Your email address updated successfully.", 'success')
+                return redirect(url_for('accounts.index'))
+            except Exception as e:
+                flash("Something went wrong", 'error')
+                return redirect(url_for('accounts.index'))
 
         return render_template('confirm_email.html', token=token)
 
@@ -267,18 +266,16 @@ def index():
 @login_required
 def profile():
     form = EditUserProfileForm()
+
     user = User.query.get_or_404(current_user.id)
     profile = Profile.query.filter_by(user_id=user.id).first_or_404()
-    form.about.data = profile.bio
 
     if form.validate_on_submit():
         username = form.data.get('username')
         first_name = form.data.get('first_name')
         last_name = form.data.get('last_name')
-        profile_image = form.profile_image.data
+        profile_image = form.data.get('profile_image')
         about = form.data.get('about')
-        
-        # print(profile_image.save('static/assets/profile/{}'.format(profile_image)))
 
         if username in [user.username for user in User.query.all() if username != current_user.username]:
             flash("Username already exists. Choose another.", 'error')
@@ -287,9 +284,19 @@ def profile():
             user.first_name = first_name
             user.last_name = last_name
             profile.bio = about
+            if profile_image and not getattr(profile_image, "filename") == "":
+                if profile.avator != None or "":
+                    path = os.path.join(UPLOAD_FOLDER, profile.avator)
+                    remove_existing_file(path=path)
+                profile.avator = get_unique_filename(profile_image.filename)
+                profile_image.save(os.path.join(UPLOAD_FOLDER, profile.avator))
             db.session.commit()
             flash("Your profile update successfully.", 'success')
             return redirect(url_for('accounts.index'))
 
         return redirect(url_for('accounts.profile'))
     return render_template('profile.html', form=form, profile=profile)
+
+
+def page_not_found():
+    return render_template('error.html')
