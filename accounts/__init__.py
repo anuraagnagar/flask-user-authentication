@@ -4,6 +4,10 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+MEDIA_ROOT = os.path.join(BASE_DIR, "accounts", "static", "assets")
+
+UPLOAD_FOLDER = os.path.join(MEDIA_ROOT, "profile")
+
 def create_app():
     """
     Create and configure the Flask application instance.
@@ -26,6 +30,8 @@ def config_application(app):
     app.config["DEBUG"] = True
     app.config["TESTING"] = True
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", None)
+    app.config["WTF_CSRF_SECRET_KEY"] = os.environ.get("CSRF_SECRET_KEY", None)
+    app.config["WTF_CSRF_ENABLED"] = True
     app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = os.environ.get("THEME", None)
     
     # SQLAlchemy configuration
