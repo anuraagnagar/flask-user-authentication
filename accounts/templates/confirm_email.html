@@ -4,30 +4,40 @@
 
 {% block body %}
 
-<div class="my-3">
+<div class="my-5">
     <div class="container">
-        <div class="h-100vh">
-            <div class="row align-items-center">
+        <div class="h-100">
+            <div class="row justify-content-center">
                 {{ render_messages(dismissible=True, dismiss_animate=True) }}
-                <form action="{{ url_for('accounts.confirm_email', token=token) }}" method="post">
-                    <div class="my-5">
-                        <h5 class="text-center">To confirm your email address please click the button below.</h5>
-                        <div class="d-flex justify-content-center mb-4">
-                            <input id="csrf_token" type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input id="submit" type="submit" role="button" name="submit" class="btn btn-primary"
-                                value="Confirm" />
+                <div class="col-sm-10 col-md-8 col-lg-7 col-xl-7">
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="{{ url_for('accounts.confirm_email', token=token) }}" method="post">
+                                <div class="my-4">
+                                    <h5 class="text-center">To confirm your email address please click the button below.
+                                    </h5>
+                                    <div class="d-flex justify-content-center my-4">
+                                        <input id="csrf_token" type="hidden" name="csrf_token"
+                                            value="{{ csrf_token() }}">
+                                        <input id="submit" type="submit" role="button" name="submit"
+                                            class="btn btn-primary" value="Confirm" />
+                                    </div>
+                                    {% if current_user.is_authenticated %}
+                                    <p class="text-center"><a class="text-decoration-none"
+                                            href="{{ url_for('accounts.index') }}">
+                                            back to home
+                                        </a></p>
+                                    {% else %}
+                                    <p class="text-center"><a class="text-decoration-none"
+                                            href="{{ url_for('accounts.login') }}">
+                                            back to login
+                                        </a></p>
+                                    {% endif %}
+                                </div>
+                            </form>
                         </div>
-                        {% if current_user.is_authenticated %}
-                        <p class="text-center"><a class="text-decoration-none" href="{{ url_for('accounts.index') }}">
-                                back to home
-                            </a></p>
-                        {% else %}
-                        <p class="text-center"><a class="text-decoration-none" href="{{ url_for('accounts.login') }}">
-                                back to login
-                            </a></p>
-                        {% endif %}
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
