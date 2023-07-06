@@ -1,4 +1,5 @@
 from flask_wtf.form import FlaskForm
+from flask_wtf.file import FileAllowed, FileSize
 from wtforms.fields import (
     StringField, 
     PasswordField, 
@@ -94,6 +95,11 @@ class EditUserProfileForm(FlaskForm):
     )
     first_name = StringField('First Name', validators=[DataRequired(), Length(3, 25)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(3, 25)])
-    profile_image = FileField('Profile Image')
+    profile_image = FileField('Profile Image', 
+        validators=[
+            FileAllowed(['jpg', 'jpeg', 'png', 'svg'], 'Please upload images only.'),
+            FileSize(max_size=2000000, message='Profile image size should not greater than 2MB.')
+        ]
+    )
     about = TextAreaField('About')
     submit = SubmitField('Save Profile')
