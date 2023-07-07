@@ -26,7 +26,9 @@ A Simple Authentication Project in Python Flask and SQLAlchemy with basic user f
 3. [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/)
 4. [Flask-WTF](https://flask-wtf.readthedocs.io/)
 5. [Flask-Mail](https://pythonhosted.org/Flask-Mail/)
-6. [Bootstrap-Flask](https://bootstrap-flask.readthedocs.io/)
+6. [Flask-Migrate](https://flask-migrate.readthedocs.io)
+7. [Bootstrap-Flask](https://bootstrap-flask.readthedocs.io/)
+8. [Jinja2](https://jinja.palletsprojects.com/)
 
 ## Some Screenshots of our Project
 
