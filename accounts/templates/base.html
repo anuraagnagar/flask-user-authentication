@@ -24,11 +24,11 @@
         </div>
       </a>
 
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <div class="collapse navbar-collapse" id="mainNavbar">
         <ul class="navbar-nav">
           {{ render_nav_item('accounts.index', 'Home') }}
           {% if current_user.is_authenticated %}
@@ -37,10 +37,10 @@
           {{ render_nav_item('accounts.change_password', 'Change Password') }}
           {% endif %}
         </ul>
-        <ul class="navbar-nav ms-auto">
+        <ul class="navbar-nav ms-auto my-2">
           {% if not current_user.is_authenticated %}
           {{ render_nav_item('accounts.login', 'Login') }}
-          <li class="nav-item ms-2">
+          <li class="nav-item my-2 my-md-0 ms-md-2">
             <a class="btn btn-outline-light" href="{{ url_for('accounts.register') }}">Signup</a>
           </li>
           {% else %}
