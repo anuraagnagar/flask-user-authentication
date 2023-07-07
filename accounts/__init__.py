@@ -1,12 +1,15 @@
 import os
 from flask import Flask
 from pathlib import Path
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "accounts", "static", "assets")
 
 UPLOAD_FOLDER = os.path.join(MEDIA_ROOT, "profile")
+
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 def create_app():
     """
@@ -29,10 +32,10 @@ def config_application(app):
     # Application configuration
     app.config["DEBUG"] = True
     app.config["TESTING"] = True
-    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", None)
-    app.config["WTF_CSRF_SECRET_KEY"] = os.environ.get("CSRF_SECRET_KEY", None)
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", None)
+    app.config["WTF_CSRF_SECRET_KEY"] = os.getenv("CSRF_SECRET_KEY", None)
     app.config["WTF_CSRF_ENABLED"] = True
-    app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = os.environ.get("THEME", None)
+    app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = os.getenv("THEME", None)
     
     # SQLAlchemy configuration
     app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
