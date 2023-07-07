@@ -38,7 +38,7 @@ def config_application(app):
     app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = os.getenv("THEME", None)
     
     # SQLAlchemy configuration
-    app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('MYSQL_URI', None)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # Flask-Mail configuration
