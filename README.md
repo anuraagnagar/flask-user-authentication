@@ -34,27 +34,27 @@ A Simple Authentication Project in Python Flask and SQLAlchemy with basic user f
 
 ### Register Page
 
-![Register](https://github.com/anuraagnagar/flask-user-authentication/screenshots/register_page.jpg)
+![Register](https://github.com/anuraagnagar/flask-user-authentication/tree/main/screenshots/register_page.jpg)
 
 ### Login Page
 
-![Login](https://github.com/anuraagnagar/flask-user-authentication/screenshots/login_page.jpg)
+![Login](https://github.com/anuraagnagar/flask-user-authentication/tree/main/screenshots/login_page.jpg)
 
 ### Forgot Password Page
 
-![Forgot Password](https://github.com/anuraagnagar/flask-user-authentication/screenshots/forgot_password_page.jpg)
+![Forgot Password](https://github.com/anuraagnagar/flask-user-authentication/tree/main/screenshots/forgot_password_page.jpg)
 
 ### Reset Password Page
 
-![Reset Password](https://github.com/anuraagnagar/flask-user-authentication/screenshots/reset_password_page.jpg)
+![Reset Password](https://github.com/anuraagnagar/flask-user-authentication/tree/main/screenshots/reset_password_page.jpg)
 
 ### Reset Email Page
 
-![Reset Email](https://github.com/anuraagnagar/flask-user-authentication/screenshots/reset_email_page.jpg)
+![Reset Email](https://github.com/anuraagnagar/flask-user-authentication/tree/main/screenshots/reset_email_page.jpg)
 
 ### Change Password Page
 
-![Change Password](https://github.com/anuraagnagar/flask-user-authentication/screenshots/change_password_page.jpg)
+![Change Password](https://github.com/anuraagnagar/flask-user-authentication/tree/main/screenshots/change_password_page.jpg)
 
 ## Set up & Run locally.
 
