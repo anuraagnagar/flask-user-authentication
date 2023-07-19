@@ -32,6 +32,10 @@ A Simple Authentication Project in Python Flask and SQLAlchemy with basic user f
 
 ## Some Screenshots of our Project
 
+### Register Page
+
+![About ](https://github.com/anuraagnagar/flask-user-authentication/screenshots/register_page.jpg)
+
 ## Set up & Run locally.
 
 ### 1. Clone the git repository.
