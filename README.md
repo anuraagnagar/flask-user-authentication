@@ -52,6 +52,14 @@ A Simple Authentication Project in Python Flask and SQLAlchemy with basic user f
 
 ![Reset Email](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/reset_email_page.jpg)
 
+### Home Page
+
+![Home](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/home_page.jpg)
+
+### Edit Profile Page
+
+![Edit Profile](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/profile_page.jpg)
+
 ### Change Password Page
 
 ![Change Password](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/change_password_page.jpg)
