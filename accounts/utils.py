@@ -9,8 +9,8 @@ import os
 def unique_uid():
     return str(uuid.uuid4())
 
-def unique_security_token(token_len=48):
-    return secrets.token_hex(token_len)
+def unique_security_token():
+    return str(secrets.token_hex())
 
 def get_unique_filename(filename=None):
     if not filename:
