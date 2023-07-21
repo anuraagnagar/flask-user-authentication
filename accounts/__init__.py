@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask as FlaskAuth
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -9,13 +9,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "accounts", "static", "assets")
 
 UPLOAD_FOLDER = os.path.join(MEDIA_ROOT, "profile")
 
-load_dotenv(os.path.join(BASE_DIR, '.env'))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 def create_app():
     """
     Create and configure the Flask application instance.
     """
-    app = Flask(__name__, template_folder="templates")
+    app = FlaskAuth(__name__, template_folder="templates")
 
     # application configuration.
     config_application(app)
@@ -32,21 +32,21 @@ def config_application(app):
     # Application configuration
     app.config["DEBUG"] = True
     app.config["TESTING"] = True
-    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", None)
-    app.config["WTF_CSRF_SECRET_KEY"] = os.getenv("CSRF_SECRET_KEY", None)
+    app.config["SECRET_KEY"] = os.getenv('SECRET_KEY', None)
+    app.config["WTF_CSRF_SECRET_KEY"] = os.getenv('CSRF_SECRET_KEY', None)
     app.config["WTF_CSRF_ENABLED"] = True
-    app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = os.getenv("THEME", None)
+    app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = os.getenv('THEME', None)
     
     # SQLAlchemy configuration
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('MYSQL_URI', None)
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URI', None)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # Flask-Mail configuration
-    app.config['MAIL_SERVER'] = 'your_mail_server'
-    app.config['MAIL_PORT'] = 587
-    app.config['MAIL_USE_TLS'] = True
-    app.config['MAIL_USERNAME'] = 'your_email@example.com'
-    app.config['MAIL_PASSWORD'] = 'your_email_password'
+    app.config["MAIL_SERVER"] = os.getenv('MAIL_SERVER', None)
+    app.config["MAIL_PORT"] = 587
+    app.config["MAIL_USE_TLS"] = True
+    app.config["MAIL_USERNAME"] = os.getenv('MAIL_USERNAME', None)
+    app.config["MAIL_PASSWORD"] = os.getenv('MAIL_PASSWORD', None)
 
 def config_blueprint(app):
     """

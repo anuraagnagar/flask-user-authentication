@@ -120,7 +120,19 @@ To run this project locally, you will need to add .env file on base directory an
 
 `FLASK_ENV=development`
 
-`SECRET_KEY=your-super-secret-key-here`
+`SECRET_KEY=your_super_secret_key_here`
+
+`CSRF_SECRET_KEY=your_csrf_secret_key_here`
+
+`DATABASE_URI=your_database_url_here`
+
+`THEME=Pulse`
+
+`MAIL_SERVER=your_mail_server`
+
+`MAIL_USERNAME=your_email@example.com`
+
+`MAIL_PASSWORD=your_mail_password`
 
 ### 7. Last to run the application.
 
