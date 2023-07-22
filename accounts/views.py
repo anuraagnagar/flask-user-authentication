@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash
+from flask import abort, render_template, request, redirect, url_for, flash
 from flask import Blueprint
 from flask_login import (
         current_user,
@@ -31,7 +31,7 @@ import os
 
 accounts = Blueprint('accounts', __name__, template_folder='templates')
 
-@accounts.route('/register', methods=['GET', 'POST'])
+@accounts.route('/register', methods=['GET', 'POST'], strict_slashes=False)
 def register():
     form = RegisterForm()
 
@@ -65,7 +65,7 @@ def register():
     return render_template('register.html', form=form)
 
 
-@accounts.route('/login', methods=['GET', 'POST'])
+@accounts.route('/login', methods=['GET', 'POST'], strict_slashes=False)
 def login():
     form = LoginForm()
 
@@ -97,7 +97,7 @@ def login():
     return render_template('login.html', form=form)
 
 
-@accounts.route('/account/confirm?token=<string:token>', methods=['GET', 'POST'])
+@accounts.route('/account/confirm?token=<string:token>', methods=['GET', 'POST'], strict_slashes=False)
 def confirm_account(token=None):
     auth_user = User.query.filter_by(security_token=token).first_or_404()
 
@@ -111,10 +111,10 @@ def confirm_account(token=None):
             return redirect(url_for('accounts.index'))
         return render_template('confirm_account.html', token=token)
 
-    return page_not_found()
+    return abort(404)
 
 
-@accounts.route('/logout')
+@accounts.route('/logout', strict_slashes=False)
 @login_required
 def logout():
     logout_user()
@@ -122,7 +122,7 @@ def logout():
     return redirect(url_for('accounts.login'))
 
 
-@accounts.route('/forgot/password', methods=['GET', 'POST'])
+@accounts.route('/forgot/password', methods=['GET', 'POST'], strict_slashes=False)
 def forgot_password():
     form = ForgotPasswordForm()
 
@@ -144,7 +144,7 @@ def forgot_password():
     return render_template('forget_password.html', form=form)
 
 
-@accounts.route('/password/reset/token?<string:token>', methods=['GET', 'POST'])
+@accounts.route('/password/reset/token?<string:token>', methods=['GET', 'POST'], strict_slashes=False)
 def reset_password(token=None):
     user = User.query.filter_by(security_token=token).first_or_404()
 
@@ -170,10 +170,10 @@ def reset_password(token=None):
 
         return render_template('reset_password.html', form=form, token=token)
 
-    return page_not_found()
+    return abort(404)
 
 
-@accounts.route('/change/password', methods=['GET', 'POST'])
+@accounts.route('/change/password', methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def change_password():
     form = ChangePasswordForm()
@@ -201,7 +201,7 @@ def change_password():
     return render_template('change_password.html', form=form)
 
 
-@accounts.route('/change/email', methods=['GET', 'POST'])
+@accounts.route('/change/email', methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def change_email():
     form = ChangeEmailForm()
@@ -233,7 +233,7 @@ def change_email():
     return render_template('change_email.html', form=form)
 
 
-@accounts.route('/account/email/confirm?token=<string:token>', methods=['GET', 'POST'])
+@accounts.route('/account/email/confirm?token=<string:token>', methods=['GET', 'POST'], strict_slashes=False)
 def confirm_email(token=None):
     user = User.query.filter_by(security_token=token).first_or_404()
 
@@ -252,17 +252,17 @@ def confirm_email(token=None):
 
         return render_template('confirm_email.html', token=token)
 
-    return page_not_found()
+    return abort(404)
 
-@accounts.route('/')
-@accounts.route('/home')
+@accounts.route('/', strict_slashes=False)
+@accounts.route('/home', strict_slashes=False)
 @login_required
 def index():
     profile = Profile.query.filter_by(user_id=current_user.id).first_or_404()
     return render_template('index.html', profile=profile)
 
 
-@accounts.route('/profile', methods=['GET', 'POST'])
+@accounts.route('/profile', methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def profile():
     form = EditUserProfileForm()
@@ -295,8 +295,6 @@ def profile():
             return redirect(url_for('accounts.index'))
 
         return redirect(url_for('accounts.profile'))
+        
     return render_template('profile.html', form=form, profile=profile)
 
-
-def page_not_found():
-    return render_template('error.html')
