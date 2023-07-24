@@ -109,7 +109,7 @@ def config_errorhandler(app):
     
     @app.errorhandler(404)
     def page_not_found(e):
-        return render_template('error.html')
+        return render_template('error.html'), 404
 
     @app.errorhandler(405)
     def method_not_allowed(e):
