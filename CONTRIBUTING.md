@@ -25,11 +25,11 @@ If you have an idea to enhance the project, please create a new enhancement requ
 ### Submitting Changes
 
 Before submitting any changes, please ensure the following:
-    - Check the existing issues and pull requests to see if your contribution is already being addressed.
-    - Fork the repository and create a new branch for your changes.
-    - Make your changes following the coding guidelines.
-    - Write clear and concise commit messages that describe your changes.
-    - Test your changes thoroughly.
+  - Check the existing issues and pull requests to see if your contribution is already being addressed.
+  - Fork the repository and create a new branch for your changes.
+  - Make your changes following the coding guidelines.
+  - Write clear and concise commit messages that describe your changes.
+  - Test your changes thoroughly.
 
 Once your changes are ready, submit a pull request. We'll review your contribution, provide feedback if necessary, and merge it into the project if everything looks good.
 
