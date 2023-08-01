@@ -126,8 +126,6 @@ To run this project locally, you will need to add .env file on base directory an
 
 `DATABASE_URI=your_database_url_here`
 
-`THEME=Pulse`
-
 `MAIL_SERVER=your_mail_server`
 
 `MAIL_USERNAME=your_email@example.com`
