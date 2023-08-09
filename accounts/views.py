@@ -102,13 +102,18 @@ def confirm_account(token=None):
     auth_user = User.query.filter_by(security_token=token).first_or_404()
 
     if auth_user and not auth_user.is_token_expire():
-        if request.method == "POST" and ('submit' and 'csrf_token') in request.form:
-            auth_user.active = True
-            auth_user.security_token = None
-            db.session.commit()
-            login_user(auth_user, remember=True, duration=timedelta(days=15))
-            flash(f"Welcome {auth_user.username}, You're registered successfully.", 'success')
-            return redirect(url_for('accounts.index'))
+        if request.method == "POST":
+            try:
+                auth_user.active = True
+                auth_user.security_token = None
+                db.session.commit()
+                login_user(auth_user, remember=True, duration=timedelta(days=15))
+                flash(f"Welcome {auth_user.username}, You're registered successfully.", 'success')
+                return redirect(url_for('accounts.index'))
+            except Exception as e:
+                flash("Something went wrong.", 'error')
+                return redirect(url_for('accounts.login'))
+
         return render_template('confirm_account.html', token=token)
 
     return abort(404)
@@ -238,7 +243,7 @@ def confirm_email(token=None):
     user = User.query.filter_by(security_token=token).first_or_404()
 
     if user and not user.is_token_expire():
-        if request.method == "POST" and ('submit' and 'csrf_token') in request.form:
+        if request.method == "POST":
             try:
                 user.email = user.change_email
                 user.change_email = None
@@ -288,6 +293,8 @@ def profile():
                 if profile.avator != None or "":
                     path = os.path.join(UPLOAD_FOLDER, profile.avator)
                     remove_existing_file(path=path)
+                if not UPLOAD_FOLDER:
+                    os.makedirs(os.path.join(UPLOAD_FOLDER), exist_ok=True)
                 profile.avator = get_unique_filename(profile_image.filename)
                 profile_image.save(os.path.join(UPLOAD_FOLDER, profile.avator))
             db.session.commit()
