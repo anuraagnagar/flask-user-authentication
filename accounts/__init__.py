@@ -19,23 +19,27 @@ def create_app():
 
     # application configuration.
     config_application(app)
-    # config application extension. 
+    # configure application extension. 
     config_extention(app)
-    # register account blueprint.
+    # configure application blueprints.
     config_blueprint(app)
-    # config error handlers
+    # configure error handlers
     config_errorhandler(app)
 
     return app
 
 def config_application(app):
     # Application configuration
-    app.config["DEBUG"] = True
-    app.config["TESTING"] = True
+    app.config["DEBUG"] = False
+    app.config["TESTING"] = False
     app.config["SECRET_KEY"] = os.getenv('SECRET_KEY', None)
+    app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = 'Pulse'
+
+    # WTF Form and recaptcha configuration
     app.config["WTF_CSRF_SECRET_KEY"] = os.getenv('CSRF_SECRET_KEY', None)
     app.config["WTF_CSRF_ENABLED"] = True
-    app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = os.getenv('THEME', None)
+    app.config["RECAPTCHA_PUBLIC_KEY"] = os.getenv('PUBLIC_KEY', None)
+    app.config["RECAPTCHA_PRIVATE_KEY"] = os.getenv('RECAPTCHA_KEY', None)
     
     # SQLAlchemy configuration
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URI', None)
