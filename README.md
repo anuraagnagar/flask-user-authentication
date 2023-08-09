@@ -104,14 +104,6 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 6. Migrate/Create a database.
-
-```bash
-flask db init
-flask db migrate -m "initial_migration"
-flask db upgrade
-```
-
 To run this project locally, you will need to add .env file on base directory and set following environment variables.
 
 `FLASK_DEBUG=True`
@@ -131,6 +123,14 @@ To run this project locally, you will need to add .env file on base directory an
 `MAIL_USERNAME=your_email@example.com`
 
 `MAIL_PASSWORD=your_mail_password`
+
+### 6. Migrate/Create a database.
+
+```bash
+flask db init
+flask db migrate -m "initial_migration"
+flask db upgrade
+```
 
 ### 7. Last to run the application.
 
