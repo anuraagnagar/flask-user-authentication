@@ -34,23 +34,32 @@ def send_mail(subject, recipients, body):
 
 def send_reset_password(user=None):
 
-    subject = "Resest Your Password."
+    subject = "Reset Your Password."
     recipient = user.email
 
     reset_link = url_for('accounts.reset_password', token=user.security_token)
     content = f"""
-    Reset Your Password
+    Hello, {user.username}
 
-    Please click the following link to reset your password
+    We receive a request for Reset Your Password.
+
+    Please click the following link to reset your password.
     {reset_link}
     """
     send_mail(subject=subject, recipients=recipient, body=content)
 
 def send_reset_email(user=None):
 
-    subject = "Please Confirm Your Email."
+    subject = "Confirm Your Email Address."
     recipient = user.change_email
 
     confirmation_link = url_for('accounts.confirm_email', token=user.security_token)
-    content = f"Please click the following link to confirm your email:\n {confirmation_link}"
+    content = f"""
+    Hello, {user.username}
+    
+    We receive a request for Changing Email Address.
+
+    Please click the following link to confirm your email address.
+    {confirmation_link}
+    """
     send_mail(subject=subject, recipients=recipient, body=content)
