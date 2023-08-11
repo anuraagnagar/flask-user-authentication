@@ -17,6 +17,18 @@ class Unique(object):
             raise ValidationError(self.message)
 
 
+class StrongNames(object):
+
+    def __init__(self, message=None):
+        self.message = message
+        if not self.message:
+            self.message = "Field contains only alphabet."
+
+    def __call__(self, form, field):
+        if not re.match("^[a-zA-Z]+$", field.data):
+            raise ValidationError(self.message)
+
+
 class StrongUsername(object):
 
     def __init__(self, message=None):
