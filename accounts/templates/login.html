@@ -19,6 +19,7 @@
                             {{ form.csrf_token() }}
                             {{ render_field(form.username, placeholder="Enter username or email", autofocus="true") }}
                             {{ render_field(form.password, placeholder="Enter your password") }}
+                            <!-- {{ form.recaptcha() }} -->
                             {{ render_field(form.remember, checked="true") }}
                             <div class="mb-3">
                                 {{ render_field(form.submit, class="w-100") }}
