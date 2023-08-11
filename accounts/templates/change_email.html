@@ -21,13 +21,14 @@
                             {{ form.csrf_token() }}
                             {{ render_field(form.email, placeholder="Enter email address", autofocus="true") }}
                             {{ render_field(form.remember) }}
-                            {{ render_field(form.submit, class='w-100 mb-3') }}
+                            {{ render_field(form.submit, class='w-100 mb-2') }}
                         </form>
-                        <p class="text-center"><a href="{{ url_for('accounts.index') }}"
-                                class="text-decoration-none">Back to Home</a>
-                        </p>
                     </div>
                 </div>
+                <p class="text-center">
+                    <a href="{{ url_for('accounts.index') }}" class="text-decoration-none">
+                        Back to Home</a>
+                </p>
             </section>
         </div>
     </div>
