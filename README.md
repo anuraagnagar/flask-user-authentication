@@ -1,6 +1,6 @@
 # User Authentication System in Flask/Python
 
-A Simple Authentication System Project with basic user functionality in Python Flask with SQLAlchemy.
+### A Simple Authentication System Project with basic user functionality in Python Flask with SQLAlchemy.
 
 ## 👩‍💻 Live Demo
 
@@ -98,24 +98,33 @@ On MacOS/Linux
 source venv/bin/activate
 ```
 
-### 5. Install the requirement package.
+To run this project locally, you will need to change `.env.example` file to `.env` on base directory 
+and set environment variables.
+
+### 5. Install the requirement packages.
 
 ```bash
 pip install -r requirements.txt
 ```
 
-To run this project locally, you will need to change `.env.example` file to `.env` on base directory 
-and set environment variables.
-
 ### 6. Migrate/Create a database.
 
+Initialize the database migration directory.
 ```bash
 flask db init
+```
+
+Run migrate command.
+```bash
 flask db migrate -m "initial_migration"
+```
+
+Upgrade the database for latest migration.
+```bash
 flask db upgrade
 ```
 
-### 7. Last to run the application.
+### 7. Last to run the server.
 
 ```bash
 flask run
