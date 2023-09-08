@@ -1,6 +1,6 @@
 # User Authentication System in Flask/Python
 
-A Simple Authentication Project in Python Flask and SQLAlchemy with basic user functionality.
+A Simple Authentication System Project with basic user functionality in Python Flask with SQLAlchemy.
 
 ## 👩‍💻 Live Demo
 
@@ -104,25 +104,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-To run this project locally, you will need to add .env file on base directory and set following environment variables.
-
-`FLASK_DEBUG=True`
-
-`FLASK_APP=app.py`
-
-`FLASK_ENV=development`
-
-`SECRET_KEY=your_super_secret_key_here`
-
-`CSRF_SECRET_KEY=your_csrf_secret_key_here`
-
-`DATABASE_URI=your_database_url_here`
-
-`MAIL_SERVER=your_mail_server`
-
-`MAIL_USERNAME=your_email@example.com`
-
-`MAIL_PASSWORD=your_mail_password`
+To run this project locally, you will need to change `.env.example` file to `.env` on base directory 
+and set environment variables.
 
 ### 6. Migrate/Create a database.
 
