@@ -1,17 +1,22 @@
 from flask import url_for
 from flask_login.mixins import UserMixin
 from werkzeug.security import (
-        generate_password_hash,
-        check_password_hash
+        check_password_hash,
+        generate_password_hash
     )
+
+from accounts import UPLOAD_FOLDER
 from accounts.extensions import database as db
 from accounts.utils import (
-        unique_uid,
+        get_unique_filename,
+        remove_existing_file,
         unique_security_token,
+        unique_uid,
         send_mail
     )
-from datetime import datetime, timedelta
 
+from datetime import datetime, timedelta
+import os
 
 class User(db.Model, UserMixin):
     """
@@ -112,6 +117,15 @@ class Profile(db.Model):
 
     def __repr__(self):
         return '<Profile> {}'.format(self.user.username)
+
+    def set_avator(self, profile_image):
+        if self.avator:
+            path = os.path.join(UPLOAD_FOLDER, self.avator)
+            remove_existing_file(path=path)
+            
+        os.makedirs(os.path.join(UPLOAD_FOLDER), exist_ok=True)
+        self.avator = get_unique_filename(profile_image.filename)
+        profile_image.save(os.path.join(UPLOAD_FOLDER, self.avator))
 
     def save(self):
         db.session.add(self)

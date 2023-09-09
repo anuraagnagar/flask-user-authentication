@@ -6,7 +6,7 @@ from flask_login import (
         login_user,
         logout_user
     )
-from accounts import UPLOAD_FOLDER
+
 from accounts.extensions import database as db
 from accounts.models import User, Profile
 from accounts.forms import (
@@ -20,16 +20,22 @@ from accounts.forms import (
     )
 from accounts.utils import (
         unique_security_token,
-        remove_existing_file,
         get_unique_filename,
         send_reset_password,
         send_reset_email
     )
+
 from datetime import datetime, timedelta
 import re
 import os
 
+
+"""
+This accounts blueprint defines routes and templates related to user management
+within our application.
+"""
 accounts = Blueprint('accounts', __name__, template_folder='templates')
+
 
 @accounts.route('/register', methods=['GET', 'POST'], strict_slashes=False)
 def register():
@@ -289,14 +295,8 @@ def profile():
             user.first_name = first_name
             user.last_name = last_name
             profile.bio = about
-            if profile_image and not getattr(profile_image, "filename") == "":
-                if profile.avator != None or "":
-                    path = os.path.join(UPLOAD_FOLDER, profile.avator)
-                    remove_existing_file(path=path)
-                if not UPLOAD_FOLDER:
-                    os.makedirs(os.path.join(UPLOAD_FOLDER), exist_ok=True)
-                profile.avator = get_unique_filename(profile_image.filename)
-                profile_image.save(os.path.join(UPLOAD_FOLDER, profile.avator))
+            if profile_image and getattr(profile_image, "filename"):
+                profile.set_avator(profile_image)
             db.session.commit()
             flash("Your profile update successfully.", 'success')
             return redirect(url_for('accounts.index'))
