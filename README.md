@@ -129,3 +129,10 @@ flask db upgrade
 ```bash
 flask run
 ```
+
+To access this application open `http://localhost:5000` in your web browser.
+
+## Contributing
+
+Contributions are welcome! If you find a bug or want to add a new feature, please open an issue or submit a pull request.
+For more information checkout ![CONTRIBUTING.md](https://github.com/anuraagnagar/flask-user-authentication/blob/main/CONTRIBUTING.md)
