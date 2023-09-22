@@ -9,6 +9,7 @@ migrations/
 .venv
 venv/
 env/
+profile/
 
 *.db
 *.sqlite3
