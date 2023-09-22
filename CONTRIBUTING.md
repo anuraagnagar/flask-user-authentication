@@ -48,3 +48,7 @@ We value code quality and encourage the addition of tests with any code changes.
 ### Documentation
 
 Documentation is essential to help users understand the project and its usage. If you make changes that impact user functionality or introduce new features, please update the project's documentation accordingly.
+
+## License
+
+By contributing to the Flask User Authentication, you agree that your contributions will be licensed under the MIT License.
