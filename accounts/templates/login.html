@@ -19,10 +19,9 @@
                             {{ form.csrf_token() }}
                             {{ render_field(form.username, placeholder="Enter username or email", autofocus="true") }}
                             {{ render_field(form.password, placeholder="Enter your password") }}
+                            
                             {{ render_field(form.remember, checked="true") }}
-                            <div class="mb-3">
-                                {{ render_field(form.submit, class="w-100") }}
-                            </div>
+                            {{ render_field(form.submit, class="w-100 mb-3") }}
                             <p class="text-center">
                                 <a href="{{ url_for('accounts.forgot_password') }}" class="text-decoration-none">
                                     Forgot Password?</a>

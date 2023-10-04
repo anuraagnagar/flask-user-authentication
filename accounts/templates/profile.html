@@ -16,7 +16,7 @@
                         src="{{ url_for('static', filename='assets/profile/'+profile.avator) }}">
                     {% else %}
                     <img class="rounded-circle mt-5 mb-3" style="object-fit: cover;width: 180px;height: 180px;"
-                        src="{{ url_for('static', filename='assets/default_avator.png') }}">
+                        src="{{ url_for('static', filename='assets/images/default_avator.png') }}">
                     {% endif %}
                     <h4 class="font-weight-bold">{{ current_user.first_name }} {{ current_user.last_name }}</h4>
                     <p class="text-black-50">@{{ current_user.username }}</p>
@@ -62,11 +62,14 @@
                                 role="button">Reset</a>
                         </div>
                         <div class="form-outline mb-3">
-                            {{ render_field(form.about, placeholder="Enter about yourself", style="height: 6rem;") }}
+                            {{ render_field(form.about, id="bio", placeholder="Enter about yourself", style="height: 6rem;") }}
                         </div>
                         <div class="d-flex mt-4">
                             {{ render_field(form.submit, class="w-100") }}
                         </div>
+                        <script>
+                            document.getElementById("bio").value = '{{ profile.bio }}';
+                        </script>
                     </form>
                 </div>
             </div>
