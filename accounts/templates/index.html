@@ -4,7 +4,7 @@
 
 {% block body %}
 
-<div class="my-3">
+<div class="vh-100 my-3">
     <div class="container-fluid">
         {{ render_messages(dismissible=True, dismiss_animate=True) }}
         <div class="container">
@@ -15,7 +15,7 @@
                         <img class="rounded-circle mt-5 mb-3" style="object-fit: cover;width: 180px;height: 180px;"
                             src="{{ url_for('static', filename='assets/profile/'+profile.avator) }}">
                         {% else %}
-                        <img src="{{ url_for('static', filename='assets/default_avator.png') }}" alt="profile image"
+                        <img src="{{ url_for('static', filename='assets/images/default_avator.png') }}" alt="profile image"
                             class="rounded-circle mt-4 mb-3" style="object-fit: cover;width: 200px;height: 200px;" />
                         {% endif %}
                     </div>
