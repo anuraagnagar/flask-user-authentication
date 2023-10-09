@@ -15,6 +15,7 @@ def unique_security_token():
 def get_unique_filename(filename=None):
     if not filename:
         return None
+        
     filename = secure_filename(filename).split(".")
     return "{}.{}".format(str(uuid.uuid4()), filename[len(filename)-1])
 

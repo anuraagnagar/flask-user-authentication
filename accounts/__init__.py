@@ -23,7 +23,7 @@ def create_app():
     config_extention(app)
     # configure application blueprints.
     config_blueprint(app)
-    # configure error handlers
+    # configure error handlers.
     config_errorhandler(app)
 
     return app
