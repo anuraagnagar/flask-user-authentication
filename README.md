@@ -16,8 +16,6 @@
 - Reset new email via confirmation link
 - Update profile & add image
 - Change password after login
-- Internationalize & Language :
-  - English, Hindi, French, Russian, & Spanish
 
 ## Framework & Library
 
@@ -136,3 +134,7 @@ To access this application open `http://localhost:5000` in your web browser.
 
 Contributions are welcome! If you find a bug or want to add a new feature, please open an issue or submit a pull request.
 For more information checkout ![CONTRIBUTING.md](https://github.com/anuraagnagar/flask-user-authentication/blob/main/CONTRIBUTING.md)
+
+## Licence
+
+By contributing to this project, you agree that your contributions will be licensed under the ![MIT License](https://github.com/anuraagnagar/flask-user-authentication/blob/main/LICENSE).
