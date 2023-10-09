@@ -1,5 +1,4 @@
 alembic==1.11.1
-Babel==2.12.1
 blinker==1.6.2
 Bootstrap-Flask==2.2.0
 cffi==1.15.1
@@ -9,7 +8,6 @@ cryptography==41.0.4
 dnspython==2.3.0
 email-validator==2.0.0.post2
 Flask==2.3.2
-flask-babel==3.1.0
 Flask-Login==0.6.2
 Flask-Mail==0.9.1
 Flask-Migrate==4.0.4
