@@ -37,6 +37,26 @@ within our application.
 accounts = Blueprint('accounts', __name__, template_folder='templates')
 
 
+@accounts.route('/login_as_guest', methods=['GET', 'POST'], strict_slashes=False)
+def login_guest_user():
+
+    if request.method == 'POST':
+        username = request.form.get('username')
+
+        if username == 'test_user':
+            test_user = User.get_user_by_username(username=username)
+
+            if test_user:
+                login_user(test_user, remember=True, duration=timedelta(days=1))
+                flash("You are logged in as a Guest User.", 'success')
+                return redirect(url_for('accounts.index'))
+
+        flash("Something went wront.", 'error')
+        return redirect(url_for('accounts.login'))
+
+    return abort(404)
+
+
 @accounts.route('/register', methods=['GET', 'POST'], strict_slashes=False)
 def register():
     form = RegisterForm()
@@ -228,7 +248,9 @@ def change_email():
 
         user = User.query.get_or_404(current_user.id)
 
-        if email == user.email:
+        if current_user.username == 'test_user':
+            flash("Guest user limited to read-only access.", 'error')
+        elif email == user.email:
             flash("Email is already verified with your account.", 'warning')  
         elif email in [u.email for u in User.query.all() if email != user.email]:
             flash("Email address is already registered with us.", 'warning')  
@@ -296,7 +318,7 @@ def profile():
         about = form.data.get('about')
 
         if current_user.username == 'test_user':
-            flash("Test user limited to read-only access.", 'error')
+            flash("Guest user limited to read-only access.", 'error')
         elif username in [user.username for user in User.query.all() if username != current_user.username]:
             flash("Username already exists. Choose another.", 'error')
         else:
