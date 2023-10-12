@@ -5,6 +5,7 @@ from flask_wtf import CSRFProtect
 from flask_mail import Mail
 from flask_migrate import Migrate
 
+
 # A bootstrap5 class for styling client side. 
 bootstrap = Bootstrap5()
 
