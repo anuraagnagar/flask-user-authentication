@@ -1,0 +1,32 @@
+/* style for OR divider */
+.main-divider {
+    display: flex;
+    text-align: center;
+    width: 100%;
+    min-width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: #a8a8a8;
+    font-size: 14px;
+    font-weight: 500;
+    font-variant: tabular-nums;
+    line-height: 1.5715;
+    list-style: none;
+}
+
+.main-divider span {
+    color: #a8a8a8;
+    padding: 0 1em;
+}
+
+.main-divider::before,
+.main-divider::after {
+    content: "";
+    position: relative;
+    top: 50%;
+    width: 50%;
+    border-top: 1px solid #c9c9c9;
+    border-bottom: none;
+    transform: translateY(50%);
+}
