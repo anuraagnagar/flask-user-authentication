@@ -47,7 +47,7 @@ class LoginForm(FlaskForm):
 
     username = StringField('Username or Email Address', validators=[DataRequired(), Length(5, 150)])
     password = PasswordField('Password', validators=[DataRequired(), Length(8, 20)])
-    recaptcha = RecaptchaField()
+    # recaptcha = RecaptchaField()
     remember = BooleanField('Remember me', validators=[DataRequired()])
     submit = SubmitField('Continue')
 

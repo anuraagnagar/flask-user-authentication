@@ -142,12 +142,16 @@ def forgot_password():
         user = User.get_user_by_email(email=email)
 
         if user:
-            user.security_token = unique_security_token()
-            user.is_send = datetime.now()
-            db.session.commit()
-            send_reset_password(user)
-            flash("A reset password link sent to your email. Please check.", 'success')
-            return redirect(url_for('accounts.login'))
+            try:
+                user.security_token = unique_security_token()
+                user.is_send = datetime.now()
+                db.session.commit()
+                send_reset_password(user)
+                flash("A reset password link sent to your email. Please check.", 'success')
+                return redirect(url_for('accounts.login'))
+            except Exception as e:
+                flash("Something went wrong", 'error')
+                return redirect(url_for('accounts.forgot_password'))
 
         flash("Email address is not registered with us.", 'error')
         return redirect(url_for('accounts.forgot_password'))
@@ -196,7 +200,9 @@ def change_password():
 
         user = User.query.get_or_404(current_user.id)
         
-        if not user.check_password(old_password):
+        if current_user.username == 'test_user':
+            flash("Test user limited to read-only access.", 'error')
+        elif not user.check_password(old_password):
             flash("Your old password is incorrect.", 'error')
         elif not (new_password == confirm_password):
             flash("Your new password field's not match.", 'error')
@@ -265,6 +271,7 @@ def confirm_email(token=None):
 
     return abort(404)
 
+
 @accounts.route('/', strict_slashes=False)
 @accounts.route('/home', strict_slashes=False)
 @login_required
@@ -288,15 +295,19 @@ def profile():
         profile_image = form.data.get('profile_image')
         about = form.data.get('about')
 
-        if username in [user.username for user in User.query.all() if username != current_user.username]:
+        if current_user.username == 'test_user':
+            flash("Test user limited to read-only access.", 'error')
+        elif username in [user.username for user in User.query.all() if username != current_user.username]:
             flash("Username already exists. Choose another.", 'error')
         else:
             user.username = username
             user.first_name = first_name
             user.last_name = last_name
             profile.bio = about
+
             if profile_image and getattr(profile_image, "filename"):
                 profile.set_avator(profile_image)
+            
             db.session.commit()
             flash("Your profile update successfully.", 'success')
             return redirect(url_for('accounts.index'))

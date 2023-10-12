@@ -123,7 +123,9 @@ class Profile(db.Model):
             path = os.path.join(UPLOAD_FOLDER, self.avator)
             remove_existing_file(path=path)
             
-        os.makedirs(os.path.join(UPLOAD_FOLDER), exist_ok=True)
+        if not os.path.exists(UPLOAD_FOLDER):
+            os.makedirs(os.path.join(UPLOAD_FOLDER), exist_ok=True)
+            
         self.avator = get_unique_filename(profile_image.filename)
         profile_image.save(os.path.join(UPLOAD_FOLDER, self.avator))
 
