@@ -7,13 +7,13 @@
 
 <div class="container my-4">
     {{ render_messages(dismissible=True, dismiss_animate=True) }}
-    <div class="card shadow-sm">
+    <div class="card shadow-sm border-0">
         <div class="row">
             <div class="col-md-5 col-lg-5">
                 <div class="d-flex flex-column align-items-center text-center p-3">
-                    {% if profile and profile.avator %}
+                    {% if profile and current_user.profile.avator %}
                     <img class="rounded-circle mt-5 mb-3" style="object-fit: cover;width: 180px;height: 180px;"
-                        src="{{ url_for('static', filename='assets/profile/'+profile.avator) }}">
+                        src="{{ url_for('static', filename='assets/profile/'+current_user.profile.avator) }}">
                     {% else %}
                     <img class="rounded-circle mt-5 mb-3" style="object-fit: cover;width: 180px;height: 180px;"
                         src="{{ url_for('static', filename='assets/images/default_avator.png') }}">
@@ -62,13 +62,14 @@
                                 role="button">Reset</a>
                         </div>
                         <div class="form-outline mb-3">
-                            {{ render_field(form.about, id="bio", placeholder="Enter about yourself", style="height: 6rem;") }}
+                            {{ render_field(form.about, id="bio", placeholder="Enter about yourself", style="height:
+                            6rem;") }}
                         </div>
                         <div class="d-flex mt-4">
                             {{ render_field(form.submit, class="w-100") }}
                         </div>
                         <script>
-                            document.getElementById("bio").value = '{{ profile.bio }}';
+                            document.getElementById("bio").value = '{{ current_user.profile.bio }}';
                         </script>
                     </form>
                 </div>

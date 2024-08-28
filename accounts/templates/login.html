@@ -30,16 +30,14 @@
                             <span>or</span>
                         </div>
                         <form action="{{ url_for('accounts.login_guest_user') }}" method="post">
-                            <input id="authenticate_token" type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="hidden" name="username" value="test_user">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input class="btn btn-outline-primary w-100" type="submit" name="submit"
                                 value="Login as Guest User">
                         </form>
                     </div>
                 </div>
                 <p class="text-center">Don't Have an account?
-                    <a href="{{ url_for('accounts.register') }}" class="text-decoration-none">
-                        Sign Up</a>
+                    <a href="{{ url_for('accounts.register') }}" class="text-decoration-none">Sign Up</a>
                 </p>
             </section>
         </div>
