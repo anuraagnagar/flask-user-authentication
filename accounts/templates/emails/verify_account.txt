@@ -1,0 +1,5 @@
+Hi, {{ username }}
+Your Registration is completed. 
+
+Please click the following link to confirm your account.
+{{ verification_link }}

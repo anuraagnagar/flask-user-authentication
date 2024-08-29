@@ -1,0 +1,6 @@
+Hello, {{ username }}
+    
+We receive a request for Changing Email Address.
+
+Please click the following link to confirm your email address.
+{{ confirmation_link }}
