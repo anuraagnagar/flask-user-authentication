@@ -11,9 +11,9 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="d-flex justify-content-center">
-                        {% if profile and profile.avator %}
+                        {% if current_user.profile and current_user.profile.avator %}
                         <img class="rounded-circle mt-5 mb-3" style="object-fit: cover;width: 180px;height: 180px;"
-                            src="{{ url_for('static', filename='assets/profile/'+profile.avator) }}">
+                            src="{{ url_for('static', filename='assets/profile/'+current_user.profile.avator) }}">
                         {% else %}
                         <img src="{{ url_for('static', filename='assets/images/default_avator.png') }}"
                             alt="profile image" class="rounded-circle mt-4 mb-3"
@@ -27,7 +27,7 @@
                             <h2 class="mb-1">{{ current_user.first_name }} {{ current_user.last_name }}</h2>
                             <p>@{{ current_user.username }}</p>
                         </div>
-                        <h6 class="text-muted mb-4">{{ profile.bio }}</h6>
+                        <h6 class="text-muted mb-4">{{ current_user.profile.bio }}</h6>
                         <div class="row">
                             <label class="fw-bold">First Name</label>
                             <p>{{ current_user.first_name }}</p>
