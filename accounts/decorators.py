@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import flash, redirect, request
+from flask import flash, redirect, request, url_for
 from flask_login import current_user
 
 
@@ -24,18 +24,15 @@ def guest_user_exempt(func):
     return decorator
 
 
-def authentication_redirect(endpoint: str = "accounts.index"):
+def authentication_redirect(func):
     """
     Decorator to redirect authenticated users to the index page.
     """
 
-    def decorator(func):
-        @wraps(func)
-        def decorator_func(*args, **kwargs):
-            if current_user.is_authenticated:
-                return redirect(url_for(endpoint))
-            return func(*args, **kwargs)
+    @wraps(func)
+    def decorator_func(*args, **kwargs):
+        if current_user.is_authenticated:
+            return redirect(url_for("accounts.index"))
+        return func(*args, **kwargs)
 
-        return decorator_func
-
-    return decorator
+    return decorator_func

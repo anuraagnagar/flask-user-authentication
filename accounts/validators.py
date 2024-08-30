@@ -1,9 +1,12 @@
-from flask import flash
-from wtforms import ValidationError 
-from accounts.models import User
 import re
 
+from wtforms import ValidationError
+
+
 class Unique(object):
+    """
+    Validator that checks if a field value is unique in the database.
+    """
 
     def __init__(self, instance=None, field=None, message=None):
         self.instance = instance
@@ -13,11 +16,14 @@ class Unique(object):
     def __call__(self, form, field):
         if self.instance.query.filter(self.field == field.data).first():
             if not self.message:
-                self.message = '{} already exists.'.format(field.name)
+                self.message = "{} already exists.".format(field.name)
             raise ValidationError(self.message)
 
 
 class StrongNames(object):
+    """
+    Validator that checks if a field contains only alphabetic characters.
+    """
 
     def __init__(self, message=None):
         self.message = message
@@ -30,6 +36,11 @@ class StrongNames(object):
 
 
 class StrongUsername(object):
+    """
+    Validator that checks if a username contains only allowed characters.
+
+    Allowed characters: A-Z, a-z, 0-9, underscore (_), hyphen (-), and period (.).
+    """
 
     def __init__(self, message=None):
         self.message = message
@@ -43,6 +54,12 @@ class StrongUsername(object):
 
 
 class StrongPassword(object):
+    """
+    Validator that checks if a password is strong.
+
+    A strong password must contain at least 8 characters, one uppercase letter,
+    one lowercase letter, one digit, and one special character from (!@#$%^&*).
+    """
 
     def __init__(self, message=None):
         self.message = message
@@ -51,5 +68,8 @@ class StrongPassword(object):
 
     def __call__(self, form, field):
         password = field.data
-        if not re.match(r"(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", password):
+        if not re.match(
+            r"(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$",
+            password,
+        ):
             raise ValidationError(self.message)

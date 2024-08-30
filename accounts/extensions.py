@@ -6,7 +6,7 @@ from flask_mail import Mail
 from flask_migrate import Migrate
 
 
-# A bootstrap5 class for styling client side. 
+# A bootstrap5 class for styling client side.
 bootstrap = Bootstrap5()
 
 # csrf protection for form submission.
@@ -22,4 +22,4 @@ login_manager = LoginManager()
 mail = Mail()
 
 # flask_migrate - Migration for database
-migrate = Migrate(command='db') 
+migrate = Migrate()

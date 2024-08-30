@@ -1,63 +1,78 @@
-import os
+from http import HTTPStatus
+from types import MappingProxyType
+
+from sqlalchemy.exc import DatabaseError
+from werkzeug.exceptions import (
+    BadRequest,
+    Unauthorized,
+    Forbidden,
+    MethodNotAllowed,
+    NotFound,
+    InternalServerError,
+    ServiceUnavailable,
+)
+
 from flask import Flask as FlaskAuth
-from pathlib import Path
-from dotenv import load_dotenv
 
-BASE_DIR = Path(__file__).resolve().parent.parent
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "accounts", "static", "assets")
-
-UPLOAD_FOLDER = os.path.join(MEDIA_ROOT, "profile")
-
-load_dotenv(os.path.join(BASE_DIR, ".env"))
-
-def create_app():
+def create_app(config_type):
     """
     Create and configure the Flask application instance.
     """
     app = FlaskAuth(__name__, template_folder="templates")
 
     # application configuration.
-    config_application(app)
-    # configure application extension. 
+    config_application(app, config_type)
+
+    # configure application extension.
     config_extention(app)
+
     # configure application blueprints.
     config_blueprint(app)
+
     # configure error handlers.
     config_errorhandler(app)
 
     return app
 
-def config_application(app):
-    # Application configuration
-    app.config["DEBUG"] = False
-    app.config["TESTING"] = False
-    app.config["SECRET_KEY"] = os.getenv('SECRET_KEY', None)
-    app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = 'Pulse'
 
-    # WTF Form and recaptcha configuration
-    app.config["WTF_CSRF_SECRET_KEY"] = os.getenv('CSRF_SECRET_KEY', None)
-    app.config["WTF_CSRF_ENABLED"] = True
-    app.config["RECAPTCHA_PUBLIC_KEY"] = os.getenv('PUBLIC_KEY', None)
-    app.config["RECAPTCHA_PRIVATE_KEY"] = os.getenv('RECAPTCHA_KEY', None)
-    
-    # SQLAlchemy configuration
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URI', None)
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+def config_application(app, config_type):
+    """
+    Configure the Flask application based on the specified configuration type.
+    """
 
-    # Flask-Mail configuration
-    app.config["MAIL_SERVER"] = os.getenv('MAIL_SERVER', None)
-    app.config["MAIL_PORT"] = 587
-    app.config["MAIL_USE_TLS"] = True
-    app.config["MAIL_USERNAME"] = os.getenv('MAIL_USERNAME', None)
-    app.config["MAIL_PASSWORD"] = os.getenv('MAIL_PASSWORD', None)
+    import config as conf
+
+    if not config_type:
+        raise RuntimeError("Configuration type must be provided.")
+
+    # Immutable mapping of configuration types to their corresponding config objects.
+    config_map = MappingProxyType(
+        {
+            "development": conf.development,
+            "production": conf.production,
+            "testing": conf.testing,
+        }
+    )
+
+    # Get the configuration object based on the provided `config_type`.
+    config = config_map.get(config_type)
+
+    if not config:
+        raise RuntimeError("Invalid configuration type: %s" % config_type)
+
+    # Application configuration from object.
+    app.config.from_object(config)
+
 
 def config_blueprint(app):
     """
     Configure and register blueprints with the Flask application.
     """
     from .views import accounts
+
     app.register_blueprint(accounts)
+
 
 def config_extention(app):
     """
@@ -69,16 +84,18 @@ def config_extention(app):
     from .extensions import migrate
     from .extensions import csrf
     from .extensions import mail
-    
+
     login_manager.init_app(app)
     bootstrap.init_app(app)
     database.init_app(app)
     migrate.init_app(app, db=database)
     csrf.init_app(app)
     mail.init_app(app)
-    config_manager(login_manager)
 
-def config_manager(manager):
+    config_login_manager(login_manager)
+
+
+def config_login_manager(manager):
     """
     Configure with Flask-Login manager.
     """
@@ -89,38 +106,41 @@ def config_manager(manager):
     manager.login_view = "accounts.login"
 
     @manager.user_loader
-    def user_loader(id):
-        return User.query.get_or_404(id)
+    def user_loader(user_id):
+        return User.get_user_by_id(user_id)
+
 
 def config_errorhandler(app):
     """
     Configure error handlers for application.
     """
-    from flask import render_template
-    from flask import redirect
-    from flask import url_for
-    from flask import flash
+    from flask import flash, render_template, redirect, request, url_for
 
-    @app.errorhandler(400)
+    @app.errorhandler(BadRequest)
     def bad_request(e):
-        flash("Something went wrong.", 'error')
-        return redirect(url_for('accounts.index'))
-    
-    @app.errorhandler(401)
+        flash("Oops! There was a problem with your request. Please try again.", "error")
+        return redirect(url_for("accounts.index"))
+
+    @app.errorhandler(Unauthorized)
     def unauthorized(e):
-        flash("You are not authorized to perform this action.", 'error')
-        return redirect(url_for('accounts.index'))
-    
-    @app.errorhandler(404)
+        flash("You are not authorized to access this resource.", "error")
+        return redirect(url_for("accounts.index"))
+
+    @app.errorhandler(NotFound)
     def page_not_found(e):
-        return render_template('error.html'), 404
+        return render_template("error.html"), HTTPStatus.NOT_FOUND
 
-    @app.errorhandler(405)
+    @app.errorhandler(MethodNotAllowed)
     def method_not_allowed(e):
-        flash("Method not allowed.", 'error')
-        return redirect(url_for('accounts.index'))
+        flash("Method not allowed.", "error")
+        return redirect(url_for("accounts.index"))
 
-    @app.errorhandler(500)
-    def database_error(e):
-        flash("Internal server error.", 'error')
-        return redirect(url_for('accounts.index'))
+    @app.errorhandler(InternalServerError)
+    def internal_server_error(e):
+        flash("Something went wrong with the internal server.", "error")
+        return redirect(url_for("accounts.index"))
+
+    @app.errorhandler(ServiceUnavailable)
+    def service_unavailable(e):
+        flash(e.description, "error")
+        return redirect(request.path or url_for("accounts.login"))
