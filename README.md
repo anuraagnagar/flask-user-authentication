@@ -4,17 +4,17 @@
 
 ## 👩‍💻 Live Demo
 
-### 🔗https://anuraag01.pythonanywhere.com/home
+#### 🔗https://flaskauth.pythonanywhere.com
 
 ## Project features & functionality
 
 - Create account
 - Log In via (Username & Email address)
 - Logout
-- Account activation via email
+- Account activation via verification link
 - Reset password via reset link
 - Reset new email via confirmation link
-- Update profile & add image
+- Update profile details & add profile image
 - Change password after login
 
 ## Framework & Library
@@ -28,39 +28,39 @@
 7. [Bootstrap-Flask](https://bootstrap-flask.readthedocs.io/)
 8. [Jinja2](https://jinja.palletsprojects.com/)
 
-## Some Screenshots of our Project
+## Application Screenshots
 
 ### Register Page
 
-![Register](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/register_page.jpg)
+![Register](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/register_page.png)
 
 ### Login Page
 
-![Login](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/login_page.jpg)
+![Login](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/login_page.png)
 
 ### Forgot Password Page
 
-![Forgot Password](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/forgot_password_page.jpg)
+![Forgot Password](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/forgot_password_page.png)
 
 ### Reset Password Page
 
-![Reset Password](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/reset_password_page.jpg)
+![Reset Password](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/reset_password_page.png)
 
 ### Reset Email Page
 
-![Reset Email](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/reset_email_page.jpg)
+![Reset Email](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/reset_email_page.png)
 
 ### Home Page
 
-![Home](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/home_page.jpg)
+![Home](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/home_page.png)
 
 ### Edit Profile Page
 
-![Edit Profile](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/profile_page.jpg)
+![Edit Profile](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/profile_page.png)
 
 ### Change Password Page
 
-![Change Password](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/change_password_page.jpg)
+![Change Password](https://github.com/anuraagnagar/flask-user-authentication/blob/main/screenshots/change_password_page.png)
 
 ## Set up & Run locally.
 
@@ -96,8 +96,8 @@ On MacOS/Linux
 source venv/bin/activate
 ```
 
-To run this project locally, you will need to change `.env.example` file to `.env` on base directory 
-and set environment variables.
+To run this project locally, you will need to change `.env.example` file to `.env` on base directory
+and set the environment variables.
 
 ### 5. Install the requirement packages.
 
@@ -107,22 +107,30 @@ pip install -r requirements.txt
 
 ### 6. Migrate/Create a database.
 
+**Note**: Before initializing the database, run the `flask run` command in your terminal to ensure that
+the application is set up properly. This allows you to access the `flask db` command for database migrations.
+
 Initialize the database migration directory.
+
 ```bash
 flask db init
 ```
 
 Run migrate command.
+
 ```bash
 flask db migrate -m "initial_migration"
 ```
 
 Upgrade the database for latest migration.
+
 ```bash
 flask db upgrade
 ```
 
 ### 7. Last to run the server.
+
+Once the database is set up, you can run the Flask server to start your application.
 
 ```bash
 flask run
@@ -138,3 +146,7 @@ For more information checkout ![CONTRIBUTING.md](https://github.com/anuraagnagar
 ## Licence
 
 By contributing to this project, you agree that your contributions will be licensed under the ![MIT License](https://github.com/anuraagnagar/flask-user-authentication/blob/main/LICENSE).
+
+## Author
+
+[Anurag Nagar](mailto:nagaranurag1999@gmail.com)
