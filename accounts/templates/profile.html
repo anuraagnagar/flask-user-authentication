@@ -28,7 +28,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h2 class="text-right">Profile Detail</h2>
                         </div>
-                        {{ form.csrf_token() }}
+                        {{ form.hidden_tag() }}
                         <div class="form-outline">
                             {{ render_field(form.username, placeholder="Enter your username",
                             value=current_user.username) }}

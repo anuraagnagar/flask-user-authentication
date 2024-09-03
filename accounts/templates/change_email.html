@@ -18,7 +18,7 @@
                                 <p>To reset your email enter new email address and you will receive an
                                     confirmation link to confirm your email.</p>
                             </div>
-                            {{ form.csrf_token() }}
+                            {{ form.hidden_tag() }}
                             {{ render_field(form.email, placeholder="Enter email address", autofocus="true") }}
                             {{ render_field(form.remember) }}
                             {{ render_field(form.submit, class='w-100 mb-2') }}
