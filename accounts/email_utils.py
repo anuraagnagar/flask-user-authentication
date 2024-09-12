@@ -48,7 +48,7 @@ def send_mail(subject: t.AnyStr, recipients: t.List[str], body: t.Text):
 def send_confirmation_mail(user: User = None):
     subject: str = "Verify Your Account"
 
-    token: str = user.generate_token(salt=current_app.config["AACCOUNT_CONFIRM_SALT"])
+    token: str = user.generate_token(salt=current_app.config["ACCOUNT_CONFIRM_SALT"])
 
     verification_link: str = get_full_url(
         url_for("accounts.confirm_account", token=token)
