@@ -41,6 +41,11 @@ class BaseConfig:
     MAIL_PORT = 465
     MAIL_USE_TLS = False
 
+    # Default Salt string for security tokens
+    ACCOUNT_CONFIRM_SALT = os.getenv("ACCOUNT_CONFIRM_SALT", "account_confirm_salt")
+    RESET_PASSWORD_SALT = os.getenv("RESET_PASSWORD_SALT", "reset_password_salt")
+    CHANGE_EMAIL_SALT = os.getenv("CHANGE_EMAIL_SALT", "change_email_salt")
+
 
 class Development(BaseConfig):
     DEBUG = True
@@ -53,7 +58,12 @@ class Production(BaseConfig):
 
 class Testing(BaseConfig):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URI", None)
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(
+        BASE_DIR, "db.testing.sqlite3"
+    )
+
+    # Disable CSRF protection for testing.
+    WTF_CSRF_ENABLED = False
 
 
 development = Development()

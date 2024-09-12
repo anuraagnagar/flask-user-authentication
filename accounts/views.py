@@ -7,7 +7,7 @@ from datetime import timedelta
 from werkzeug.exceptions import InternalServerError
 
 from flask import Blueprint, Response
-from flask import abort, render_template, request, redirect, url_for, flash
+from flask import abort, current_app, render_template, request, redirect, url_for, flash
 from flask_login import current_user, login_required, login_user, logout_user
 
 from accounts.decorators import authentication_redirect, guest_user_exempt
@@ -124,6 +124,7 @@ def login() -> Response:
     if form.validate_on_submit():
         username = form.data.get("username", None)
         password = form.data.get("password", None)
+        remember = form.data.get("remember", True)
 
         # Attempt to authenticate the user from the database.
         user = User.authenticate(username=username, password=password)
@@ -141,8 +142,8 @@ def login() -> Response:
                 )
                 return redirect(url_for("accounts.login"))
 
-            # Log the user in and set the session to remember the user for (15 days)
-            login_user(user, remember=True, duration=timedelta(days=15))
+            # Log the user in and set the session to remember the user for (15 days).
+            login_user(user, remember=remember, duration=timedelta(days=15))
 
             flash("You are logged in successfully.", "success")
             return redirect(url_for("accounts.index"))
@@ -169,7 +170,9 @@ def confirm_account() -> Response:
     token: str = request.args.get("token", None)
 
     # Verify the provided token and return token instance.
-    auth_token = User.verify_token(token=token)
+    auth_token = User.verify_token(
+        token=token, salt=current_app.config["ACCOUNT_CONFIRM_SALT"]
+    )
 
     if auth_token:
         # Retrieve the user instance associated with the token by providing user ID.
@@ -201,7 +204,7 @@ def confirm_account() -> Response:
     return abort(HTTPStatus.NOT_FOUND)
 
 
-@accounts.route("/logout")
+@accounts.route("/logout", methods=["GET", "POST"])
 @login_required
 def logout() -> Response:
     """
@@ -270,7 +273,9 @@ def reset_password() -> Response:
     token = request.args.get("token", None)
 
     # Verify the provided token and return token instance.
-    auth_token = User.verify_token(token=token)
+    auth_token = User.verify_token(
+        token=token, salt=current_app.config["RESET_PASSWORD_SALT"]
+    )
 
     if auth_token:
         form = ResetPasswordForm()  # A form class to Reset User's Password.
@@ -442,7 +447,9 @@ def confirm_email() -> Response:
     token = request.args.get("token", None)
 
     # Verify the provided token and return token instance.
-    auth_token = User.verify_token(token=token)
+    auth_token = User.verify_token(
+        token=token, salt=current_app.config["CHANGE_EMAIL_SALT"]
+    )
 
     if auth_token:
         if request.method == "POST":

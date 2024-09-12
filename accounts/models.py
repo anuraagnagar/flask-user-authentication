@@ -165,18 +165,18 @@ class User(BaseModel, UserMixin):
         """
         return check_password_hash(self.password, password)
 
-    def generate_token(self) -> t.AnyStr:
+    def generate_token(self, salt: str) -> t.AnyStr:
         """
         Generates a new security token for the user.
 
         :return: The newly created security token.
         """
-        instance = UserSecurityToken.create_new(user_id=self.id)
+        instance = UserSecurityToken.create_new(salt=salt, user_id=self.id)
         return instance.token
 
     @staticmethod
     def verify_token(
-        token: t.AnyStr, raise_exception: bool = True
+        token: t.AnyStr, salt: str, raise_exception: bool = True
     ) -> t.Union[t.Optional["UserSecurityToken"], HTTPException, None]:
         """
         Verifies whether a security token is valid and not expired.
@@ -186,7 +186,7 @@ class User(BaseModel, UserMixin):
 
         :return: `True` if the token exists and is not expired, `False` otherwise.
         """
-        instance = UserSecurityToken.query.filter_by(token=token)
+        instance = UserSecurityToken.query.filter_by(token=token, salt=salt)
 
         if raise_exception:
             token = instance.first_or_404()
@@ -293,6 +293,8 @@ class UserSecurityToken(BaseModel):
         db.String(72), default=unique_security_token, nullable=False, unique=True
     )
 
+    salt = db.Column(db.String(20), nullable=False)
+
     expire = db.Column(db.Boolean, default=False, nullable=False, server_default="0")
 
     user_id = db.Column(
@@ -302,7 +304,7 @@ class UserSecurityToken(BaseModel):
     user = db.Relationship("User", foreign_keys=[user_id])
 
     @classmethod
-    def create_new(cls, user_id: t.AnyStr) -> t.AnyStr:
+    def create_new(cls, **kwargs) -> t.AnyStr:
         """
         Creates a new security token instance for a user
         and saves it to the database.
@@ -313,7 +315,7 @@ class UserSecurityToken(BaseModel):
         :raises InternalServerError: If there is an error saving the token to the database.
         """
         try:
-            instance = cls(user_id=user_id)
+            instance = cls(**kwargs)
             instance.save()
         except Exception as e:
             raise InternalServerError

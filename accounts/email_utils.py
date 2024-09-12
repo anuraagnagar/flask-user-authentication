@@ -4,7 +4,7 @@ import typing as t
 from smtplib import SMTPException
 from werkzeug.exceptions import ServiceUnavailable
 
-from flask import render_template, url_for
+from flask import current_app, render_template, url_for
 from flask_mail import Message
 
 from accounts.extensions import mail
@@ -48,7 +48,7 @@ def send_mail(subject: t.AnyStr, recipients: t.List[str], body: t.Text):
 def send_confirmation_mail(user: User = None):
     subject: str = "Verify Your Account"
 
-    token: str = user.generate_token()
+    token: str = user.generate_token(salt=current_app.config["AACCOUNT_CONFIRM_SALT"])
 
     verification_link: str = get_full_url(
         url_for("accounts.confirm_account", token=token)
@@ -66,7 +66,7 @@ def send_confirmation_mail(user: User = None):
 def send_reset_password(user: User = None):
     subject: str = "Reset Your Password"
 
-    token: str = user.generate_token()
+    token: str = user.generate_token(salt=current_app.config["RESET_PASSWORD_SALT"])
 
     reset_link: str = get_full_url(url_for("accounts.reset_password", token=token))
 
@@ -80,7 +80,7 @@ def send_reset_password(user: User = None):
 def send_reset_email(user: User = None):
     subject: str = "Confirm Your Email Address"
 
-    token: str = user.generate_token()
+    token: str = user.generate_token(salt=current_app.config["CHANGE_EMAIL_SALT"])
 
     confirmation_link: str = get_full_url(
         url_for("accounts.confirm_email", token=token)
