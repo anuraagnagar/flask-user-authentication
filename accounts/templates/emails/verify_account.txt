@@ -1,5 +1,10 @@
 Hi, {{ username }}
-Your Registration is completed. 
+Your registration is almost complete.
 
 Please click the following link to confirm your account.
 {{ verification_link }}
+
+This link will remain valid for the next 15 minutes.
+
+Best regards,
+The Flask Auth Team.

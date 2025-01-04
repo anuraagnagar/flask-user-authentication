@@ -1,6 +1,12 @@
 Hello, {{ username }}
     
-We receive a request for Changing Email Address.
+We’ve receive a request to changing email address.
 
 Please click the following link to confirm your email address.
 {{ confirmation_link }}
+
+This link will expire in 15 minutes.
+If you don't want to change email address, please ignore this email.
+
+Best regards,
+The Flask Auth Team.
