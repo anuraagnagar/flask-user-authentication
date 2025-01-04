@@ -1,6 +1,6 @@
 ## Contributing to Flask User Authentication
 
-Thank you for considering contributing to the Flask User Authentication project! We're welcome your contributions to improve the project and make it better our project. This document outlines the guidelines for contributing to the project. Please read it carefully before making any contributions.
+Thank you for considering contributing to the [Flask-Auth](https://github.com/anuraagnagar/flask-user-authentication) project! We're welcome your contributions to improve the project and make it better our project. This document outlines the guidelines for contributing to the project. Please read it carefully before making any contributions.
 
 ### Code of Conduct
 
@@ -9,10 +9,11 @@ Please note that this project follows the Contributor Covenant Code of Conduct. 
 ### How to Contribute
 
 We're welcome various forms of contributions:
-  - Including bug reports
-  - Feature suggestions
-  - Code improvements
-  - Documentation updates
+
+- Including bug reports
+- Feature suggestions
+- Code improvements
+- Documentation updates
 
 ### Reporting Bugs
 
@@ -25,11 +26,12 @@ If you have an idea to enhance the project, please create a new enhancement requ
 ### Submitting Changes
 
 Before submitting any changes, please ensure the following:
-  - Check the existing issues and pull requests to see if your contribution is already being addressed.
-  - Fork the repository and create a new branch for your changes.
-  - Make your changes following the coding guidelines.
-  - Write clear and concise commit messages that describe your changes.
-  - Test your changes thoroughly.
+
+- Check the existing issues and pull requests to see if your contribution is already being addressed.
+- Fork the repository and create a new branch for your changes.
+- Make your changes following the coding guidelines.
+- Write clear and concise commit messages that describe your changes.
+- Test your changes thoroughly.
 
 Once your changes are ready, submit a pull request. We'll review your contribution, provide feedback if necessary, and merge it into the project if everything looks good.
 
@@ -51,4 +53,4 @@ Documentation is essential to help users understand the project and its usage. I
 
 ## License
 
-By contributing to the Flask User Authentication, you agree that your contributions will be licensed under the MIT License.
+By contributing to the Flask User Authentication, you agree that your contributions will be licensed under the [MIT License](https://github.com/anuraagnagar/flask-user-authentication/blob/main/LICENSE).
