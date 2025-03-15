@@ -1,0 +1,19 @@
+{
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features",
+    "editor.formatOnSave": true,
+    "editor.cursorBlinking": "smooth"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "never"
+    },
+    "editor.autoClosingQuotes": "always",
+    "editor.autoClosingBrackets": "beforeWhitespace",
+    "editor.cursorBlinking": "smooth",
+    "editor.formatOnSave": true,
+    "editor.rulers": [96]
+  }
+}
