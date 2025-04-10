@@ -1,7 +1,8 @@
+{% set title = "Reset Email Address" %}
+
 {% extends "base.html" %}
 {% from 'bootstrap5/form.html' import render_field %}
 {% from 'bootstrap5/utils.html' import render_messages %}
-{% block title %}Change Email Address{% endblock %}
 
 {% block body %}
 
@@ -9,14 +10,14 @@
     <div class="container">
         <div class="row justify-content-center">
             <section class="col-sm-11 col-md-8 col-lg-6 col-xl-5">
-                <div class="card shadow-sm border-0 mb-4">
+                <div class="card shadow-sm mb-4">
                     <div class="p-4">
                         <form action="{{ url_for('accounts.change_email') }}" method="post">
                             <div class="mb-4">
-                                <h2 class="card-title text-center mb-3">Change Email Address</h2>
+                                <h2 class="card-title text-center">Change Email Address</h2>
                                 {{ render_messages() }}
-                                <p>To reset your email enter new email address and you will receive an
-                                    confirmation link to confirm your email.</p>
+                                <p class="text-muted">To reset your email enter new email address and you will receive
+                                    an confirmation link to confirm your email.</p>
                             </div>
                             {{ form.hidden_tag() }}
                             {{ render_field(form.email, placeholder="Enter email address", autofocus="true") }}

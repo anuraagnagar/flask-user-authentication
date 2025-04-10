@@ -1,0 +1,84 @@
+{% set title = "Account Settings" %}
+
+{% extends "base.html" %}
+{% from 'bootstrap5/form.html' import render_field %}
+{% from 'bootstrap5/utils.html' import render_messages %}
+
+{% block body %}
+
+<main class="vh-100 my-4">
+    <div class="container">
+        {{ render_messages(dismissible=True, dismiss_animate=True) }}
+        <div class="row justify-content-center">
+            <section class="col-sm-11 col-md-8 col-lg-6 col-xl-7">
+                <div>
+                    <h2 class="mb-4">Account Settings</h2>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+                        <div class="d-flex gap-2">
+                            {% if current_user.profile and current_user.profile.avator %}
+                            <img class="rounded-circle my-auto" style="object-fit: cover;width: 45px;height: 45px;"
+                                src="{{ url_for('static', filename='assets/profile/'+current_user.profile.avator) }}">
+                            {% else %}
+                            <img class="rounded-circle my-auto" style="object-fit: cover;width: 45px;height: 45px;"
+                                src="{{ url_for('static', filename='assets/images/default_avator.png') }}">
+                            {% endif %}
+                            <div class="lh-2 my-auto">
+                                <h5 class="m-0">{{ current_user.username }}</h5>
+                                <p class="text-muted m-0">{{ current_user.email }}</p>
+                            </div>
+                        </div>
+                        <div class="my-auto">
+                            <a href="{{ url_for('accounts.profile') }}" role="link">
+                                <button class="btn btn-outline-primary" type="button">Edit Profile</button>
+                            </a>
+                        </div>
+                    </div>
+                    <hr>
+                    <div>
+                        <h5>Delete Account</h5>
+                        <p class="text-muted">Deleting your account will permanently remove all your personal or public
+                            data, including your profile, social login and all other information related to your
+                            account.</p>
+                        <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal"
+                            data-bs-target="#delete-modal"><i class="bi bi-trash me-2"></i>Delete my account
+                        </button>
+                    </div>
+                    <div id="delete-modal" class="modal fade" aria-hidden="true" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <form action="{{ url_for('accounts.delete_user') }}" method="post">
+                                    <div class="modal-header align-items-start pb-0">
+                                        <div>
+                                            <h5 class="modal-title">Delete Account</h5>
+                                            <p class="text-muted">Are you sure you want to permanently delete your
+                                                account?
+                                            </p>
+                                        </div>
+                                        <button type="button" class="btn-close p-1 m-0" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{ form.hidden_tag() }}
+                                        {{ render_field(form.password, autofocus="true") }}
+                                    </div>
+                                    <div class="modal-footer pt-0 border-0">
+                                        <a class="text-muted me-auto"
+                                            href="{{ url_for('accounts.forgot_password') }}">Forgot Password?</a>
+                                        <div>
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                data-bs-dismiss="modal">Cancel</button>
+                                            {{ render_field(form.submit, class="btn btn-danger") }}
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

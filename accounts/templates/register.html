@@ -1,7 +1,8 @@
+{% set title = "Register" %}
+
 {% extends "base.html" %}
 {% from 'bootstrap5/form.html' import render_field %}
 {% from 'bootstrap5/utils.html' import render_messages %}
-{% block title %}Register{% endblock %}
 
 {% block body %}
 
@@ -9,14 +10,26 @@
   <div class="container">
     <div class="row justify-content-center">
       <section class="col-sm-11 col-md-8 col-lg-6 col-xl-5">
-        <div class="card shadow-sm border-0 mb-4">
+        <div class="card shadow-sm mb-4">
           <div class="p-4">
-            <form action="{{ url_for('accounts.register') }}" method="post">
-              <div class="mb-3">
-                <h2 class="card-title text-center">Create Account</h2>
-                <p class="text-center">Get started with your free account</p>
+            <div class="mb-3">
+              <h2 class="card-title text-center">Create Account</h2>
+              <p class="text-center">Get started with your free account</p>
+            </div>
+            {{ render_messages() }}
+            <form action="{{ url_for('accounts.google_login') }}" method="post">
+              <div class="form-outline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="action" value="register">
+                <button class="btn btn-outline-primary w-100" type="submit">
+                  <i class="bi bi-google me-2"></i>Continue with Google
+                </button>
               </div>
-              {{ render_messages() }}
+            </form>
+            <div class="main-divider main-divider-horizontal my-3" role="separator">
+              <span>or</span>
+            </div>
+            <form action="{{ url_for('accounts.register') }}" method="post">
               {{ form.hidden_tag() }}
               {{ render_field(form.username, placeholder="Enter your username", autofocus="true") }}
               <div class="row">
