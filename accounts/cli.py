@@ -1,3 +1,5 @@
+import click
+
 from flask import Flask
 from flask import current_app
 
@@ -27,12 +29,13 @@ def register_cli_command(app: Flask):
         existing_user = User.get_user_by_email(email=user_data["email"])
 
         if existing_user:
-            print(f"Test user already created!")
+            click.echo(f"Test user already created!")
             return
 
-        # Create and add the demo guest user to the database.
-        test_user = User(**user_data)
-        test_user.set_password(user_data["password"])
-        test_user.save()
-
-        print(f"Test user created successfully!.")
+        try:
+            # Create and add the demo guest user to the database.
+            User.create(**user_data)
+            
+            click.echo(f"Test user created successfully!.")
+        except Exception as e:
+            raise click.ClickException("Failed to create Test User: {e}")
