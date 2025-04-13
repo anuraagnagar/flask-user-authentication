@@ -1,16 +1,18 @@
-
+# for Byte-compiled / optimized / DLL files.
 __pycache__/
-migrations/
 *.py[cod]
 *$py.class
 .pyc
 
+# for environment and virtual environment python. 
 .env
 .venv
 venv/
 env/
 profile/
 
+# for database migrations and local db files.
+migrations/
 *.db
 *.sqlite3
 db.sqlite3
