@@ -3,9 +3,16 @@
 {% extends "base.html" %}
 {% from 'bootstrap5/form.html' import render_field %}
 {% from 'bootstrap5/utils.html' import render_messages %}
+{% block styles %}
+<style>
+    .g-recaptcha {
+        transform: scale(0.9);
+        transform-origin: 0 0;
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-
 <main class="my-5">
     <div class="container">
         <div class="row justify-content-center">
@@ -32,7 +39,9 @@
                             {{ form.hidden_tag() }}
                             {{ render_field(form.username, placeholder="Enter username or email", autofocus="true") }}
                             {{ render_field(form.password, placeholder="Enter your password") }}
-                            {{ render_field(form.recaptcha) }}
+                            <div style="width: 100%; display: flex; justify-content: center;">
+                                {{ render_field(form.recaptcha) }}
+                            </div>
                             {{ render_field(form.remember, checked="true") }}
                             {{ render_field(form.submit, class="w-100 mb-3") }}
                             <p class="text-center">
