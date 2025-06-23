@@ -1,0 +1,44 @@
+services:
+  flaskauth-app:
+    image: flaskauth
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: flaskauth-app
+    env_file: ../.env
+    volumes:
+      - ../.:/app
+    entrypoint: ["/bin/bash", "-c", "./docker/docker-entrypoint.sh"]
+    ports:
+      - "5000:5000"
+    depends_on:
+      - flaskauth-db
+    restart: unless-stopped
+
+  flaskauth-db:
+    image: postgres:15
+    container_name: flaskauth-db
+    env_file: ../.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  flaskauth-pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: flaskauth-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@local.com
+      PGADMIN_DEFAULT_PASSWORD: admin1234
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - flaskauth-db
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  pgadmin_data:
