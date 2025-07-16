@@ -9,7 +9,7 @@ __pycache__/
 .venv
 venv/
 env/
-profile/
+profile/*
 
 # for database migrations and local db files.
 migrations/
