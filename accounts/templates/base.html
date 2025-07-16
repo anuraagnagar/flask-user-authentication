@@ -45,31 +45,19 @@
             <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-palette-fill me-2"></i>Theme</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{{ url_for('change_theme', theme='pulse') }}">Pulse
-                  {% if session['_theme_preference'] == 'pulse' %}
-                  <i class="bi bi-check-circle-fill ms-2"></i>
-                  {% endif %}
-                </a></li>
-              <li><a class="dropdown-item" href="{{ url_for('change_theme', theme='sketchy') }}">Sketchy
-                  {% if session['_theme_preference'] == 'sketchy' %}
-                  <i class="bi bi-check-circle-fill ms-2"></i>
-                  {% endif %}
-                </a></li>
-              <li><a class="dropdown-item" href="{{ url_for('change_theme', theme='flatly') }}">Flatly
-                  {% if session['_theme_preference'] == 'flatly' %}
-                  <i class="bi bi-check-circle-fill ms-2"></i>
-                  {% endif %}
-                </a></li>
-              <li><a class="dropdown-item" href="{{ url_for('change_theme', theme='journal') }}">Journal
-                  {% if session['_theme_preference'] == 'journal' %}
-                  <i class="bi bi-check-circle-fill ms-2"></i>
-                  {% endif %}
-                </a></li>
-              <li><a class="dropdown-item" href="{{ url_for('change_theme', theme='lumen') }}">Lumen
-                  {% if session['_theme_preference'] == 'lumen' %}
-                  <i class="bi bi-check-circle-fill ms-2"></i>
-                  {% endif %}
-                </a></li>
+              {% for theme in config["BOOTSTRAP_BOOTSWATCH_THEMES"] %}
+              <li>
+                <a class="dropdown-item d-flex" href="{{ url_for('change_theme', theme=theme) }}">
+                  {{ theme.capitalize() }}
+                  {% if session.get('_theme_preference', none) is none and theme == 'pulse' %}
+                  <i class="bi bi-check-circle-fill ms-auto"></i>
+                  {% else %}
+                  {% if session.get('_theme_preference') == theme %}
+                  <i class="bi bi-check-circle-fill ms-auto"></i>
+                  {% endif %}{% endif %}
+                </a>
+              </li>
+              {% endfor %}
             </ul>
           </li>
         </ul>
@@ -98,7 +86,7 @@
         <button class="btn btn-secondary">Source Code
           <span class="my-auto">{{ render_icon('github') }}</span></button>
       </a>
-      <p class="text-muted m-0">© 2025 Copyright</p>
+      <p class="text-muted m-0">© 2025 FlaskAuth</p>
     </div>
   </footer>
 

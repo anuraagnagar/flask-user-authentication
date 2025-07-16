@@ -12,14 +12,8 @@
             <div class="row gap-3">
                 <section class="col-md-4">
                     <div class="d-flex justify-content-center">
-                        {% if current_user.profile and current_user.profile.avator %}
                         <img class="rounded-circle mt-5 mb-3" style="object-fit: cover;width: 180px;height: 180px;"
-                            src="{{ url_for('static', filename='assets/profile/'+current_user.profile.avator) }}">
-                        {% else %}
-                        <img src="{{ url_for('static', filename='assets/images/default_avator.png') }}"
-                            alt="profile image" class="rounded-circle mt-4 mb-3"
-                            style="object-fit: cover;width: 200px;height: 200px;" />
-                        {% endif %}
+                            src="{{ current_user.profile.get_avatar }}">
                     </div>
                 </section>
                 <section class="col-md-6">

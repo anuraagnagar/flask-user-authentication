@@ -16,13 +16,8 @@
                     <hr>
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
                         <div class="d-flex gap-2">
-                            {% if current_user.profile and current_user.profile.avator %}
                             <img class="rounded-circle my-auto" style="object-fit: cover;width: 45px;height: 45px;"
-                                src="{{ url_for('static', filename='assets/profile/'+current_user.profile.avator) }}">
-                            {% else %}
-                            <img class="rounded-circle my-auto" style="object-fit: cover;width: 45px;height: 45px;"
-                                src="{{ url_for('static', filename='assets/images/default_avator.png') }}">
-                            {% endif %}
+                                src="{{ current_user.profile.get_avatar }}">
                             <div class="lh-2 my-auto">
                                 <h5 class="m-0">{{ current_user.username }}</h5>
                                 <p class="text-muted m-0">{{ current_user.email }}</p>
@@ -32,6 +27,36 @@
                             <a href="{{ url_for('accounts.profile') }}" role="link">
                                 <button class="btn btn-outline-primary" type="button">Edit Profile</button>
                             </a>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="card">
+                        <div class="bg-light p-2">
+                            <h4>Social Account</h4>
+                        </div>
+                        <hr class="m-0">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between gap-2">
+                                <div class="d-flex flex-column">
+                                    <h5 class="mb-0"><i class="bi bi-google me-2"></i>Google</h5>
+                                    <p class="text-muted m-0">Connect your account with Google Login provider.</p>
+                                </div>
+                                <div class="my-auto">
+                                    {% if current_user.is_social_user() %}
+                                    <form method="post" role="form"
+                                        action="{{ url_for('accounts.remove_oauth_provider', provider='google') }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button class="btn btn-outline-primary" role="button"
+                                            type="submit">Disconnect</button>
+                                    </form>
+                                    {% else %}
+                                    <form action="{{ url_for('accounts.google_login') }}" method="post">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button class="btn btn-primary" role="button" type="submit">Connect</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <hr>
@@ -51,8 +76,8 @@
                                     <div class="modal-header align-items-start pb-0">
                                         <div>
                                             <h5 class="modal-title">Delete Account</h5>
-                                            <p class="text-muted">Are you sure you want to permanently delete your
-                                                account?
+                                            <p class="text-muted">
+                                                Are you sure you want to permanently delete your account?
                                             </p>
                                         </div>
                                         <button type="button" class="btn-close p-1 m-0" data-bs-dismiss="modal"
@@ -61,10 +86,13 @@
                                     <div class="modal-body">
                                         {{ form.hidden_tag() }}
                                         {{ render_field(form.password, autofocus="true") }}
+                                        <p class="text-muted m-0" style="font-size: 14px;"><b>Note: </b>Login with
+                                            Google must set a password before account deletion; Ignore if already set.
+                                        </p>
                                     </div>
                                     <div class="modal-footer pt-0 border-0">
                                         <a class="text-muted me-auto"
-                                            href="{{ url_for('accounts.forgot_password') }}">Forgot Password?</a>
+                                            href="{{ url_for('accounts.forgot_password') }}">Reset Password?</a>
                                         <div>
                                             <button type="button" class="btn btn-outline-secondary"
                                                 data-bs-dismiss="modal">Cancel</button>
