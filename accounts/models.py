@@ -1,9 +1,10 @@
 import os
 import typing as t
+import requests
 
 from datetime import datetime, timedelta
 
-from sqlalchemy import Index
+from sqlalchemy import Index, UniqueConstraint
 from sqlalchemy import event, or_
 from sqlalchemy.engine import Connection
 from sqlalchemy.orm import Mapper
@@ -15,15 +16,17 @@ from werkzeug.security import (
     generate_password_hash,
 )
 
-from flask import url_for
+from flask import current_app, url_for
+
 from flask_login.mixins import UserMixin
 
 from accounts.extensions import database as db
 from accounts.utils import (
+    get_unique_id,
     get_unique_filename,
     remove_existing_file,
     unique_security_token,
-    get_unique_id,
+    generate_unique_username,
 )
 
 
@@ -35,9 +38,9 @@ class BaseModel(db.Model):
     __abstract__ = True
 
     id = db.Column(
-        db.String(38),
-        primary_key=True,
+        db.String(36),
         default=get_unique_id,
+        primary_key=True,
         nullable=False,
         unique=True,
     )
@@ -67,6 +70,7 @@ class User(BaseModel, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
 
+    # common account settings
     active = db.Column(db.Boolean, default=False, nullable=False, server_default="0")
     change_email = db.Column(db.String(120), default="")
 
@@ -77,7 +81,7 @@ class User(BaseModel, UserMixin):
         """
         Authenticates a user based on their username or email and password.
 
-        :param username: The username or email of the user attempting to authenticate.
+        :param username: The (username or email) of the user attempting to authenticate.
         :param password: The password of the user attempting to authenticate.
 
         :return: The authenticated user object if credentials are correct, otherwise None.
@@ -111,8 +115,32 @@ class User(BaseModel, UserMixin):
             user.set_password(password)
             user.save()
         except Exception as e:
+            print("Error creating user: %s" % e)
             # Handle database error by raising an internal server error.
             raise InternalServerError
+
+        return user
+
+    @classmethod
+    def get_or_create(cls, **kwargs) -> "User":
+        """
+        Get an existing user or create a new one if it doesn't exist.
+
+        :return: The existing or newly created user instance.
+        """
+        email = kwargs.get("email")
+        username = kwargs.get("username")
+
+        # Check if the user already exists by email.
+        user = cls.get_user_by_email(email)
+
+        if not user:
+            username_exist = cls.get_user_by_username(username)
+
+            if username_exist:
+                kwargs["username"] = generate_unique_username(email)
+
+            user = cls.create(**kwargs)
 
         return user
 
@@ -200,11 +228,46 @@ class User(BaseModel, UserMixin):
 
     def send_confirmation(self):
         """
-        Sends user's account confirmation email.
+        Sends a confirmation email to the user for account activation.
         """
         from accounts.email_utils import send_confirmation_mail
 
         send_confirmation_mail(self)
+
+    def create_oauth_provider(
+        self, provider: str = "google", provider_id: str = None
+    ) -> "OAuthProvider":
+        """
+        Creates a new OAuth provider instance for the user.
+
+        provider: The name of the OAuth provider (e.g., "google").
+        provider_id: The unique 'sub' provided by the OAuth provider.
+
+        :return: The newly created OAuth provider instance.
+        """
+
+        instance = OAuthProvider(
+            provider=provider,
+            provider_id=provider_id,
+            user_id=self.id,
+        )
+        instance.save()
+
+        return instance
+
+    def remove_oauth_provider(self, provider: str = "google"):
+        """
+        Removes the OAuth provider instance associated with the user.
+
+        :param provider: The name of the OAuth provider to remove.
+        """
+        instance = OAuthProvider.query.filter_by(provider=provider, user_id=self.id)
+
+        if instance:
+            instance.delete()
+
+            # Commit the changes to the database.
+            db.session.commit()
 
     @property
     def profile(self):
@@ -225,6 +288,18 @@ class User(BaseModel, UserMixin):
         """
         return self.active
 
+    def is_social_user(self, provider: str = "google") -> bool:
+        """
+        Checks if a user account is connected to any oauth provider.
+
+        :return: `True` if connected with oauth provider, otherwise `False`.
+        """
+        instance = OAuthProvider.query.filter_by(
+            provider=provider, user_id=self.id
+        ).first()
+
+        return instance is not None
+
     def __repr__(self):
         return "<User '{}'>".format(self.username)
 
@@ -237,37 +312,66 @@ class Profile(BaseModel):
     __tablename__ = "user_profile"
 
     bio = db.Column(db.String(200), default="")
-    avator = db.Column(db.String(250), default="")
+    avatar = db.Column(db.String(250), default="")
 
     user_id = db.Column(
-        db.String(38), db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+        db.String(36), db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False
     )
 
     user = db.Relationship("User", foreign_keys=[user_id])
 
-    def set_avator(self, profile_image):
+    @property
+    def get_avatar(self) -> t.Optional[t.Text]:
+        """
+        Returns the URL of the user's avatar image if it exists,
+        otherwise returns the `default-avatar` image URL.
+        """
+        # Check if the avatar file exists in the `local` upload folder.
+        file_exist = os.path.isfile(current_app.root_path + self.avatar)
+
+        if not self.avatar or not file_exist:
+            return url_for("static", filename="assets/images/default_avatar.png")
+
+        return self.avatar
+
+    def set_avatar(self, profile_image, file_path: t.Optional[t.Text] = "profile"):
         """
         Set a new avatar for the user by removing the existing avatar (if any), saving the new one,
         and updating the user's avatar field in the database.
 
         :param profile_image: The uploaded image file to be set as the new avatar.
+        :param file_path: The path where the avatar image will be saved.
 
         :raises InternalServerError: If there is an error during the file-saving process.
         """
         from config import UPLOAD_FOLDER
 
-        if self.avator:
-            path = os.path.join(UPLOAD_FOLDER, self.avator)
-            remove_existing_file(path=path)
+        # Construct the save path for the avatar image.
+        save_path = os.path.join(UPLOAD_FOLDER, file_path)
 
-        if not os.path.exists(UPLOAD_FOLDER):
-            os.makedirs(os.path.join(UPLOAD_FOLDER), exist_ok=True)
+        if self.avatar:
+            try:
+                # Remove the existing avatar file if it exists.
+                path = current_app.root_path + self.avatar
+                remove_existing_file(path)
+            except OSError as e:
+                # Handle the case where the path is not valid.
+                print("Error getting avatar path: %s" % e)
 
-        self.avator = get_unique_filename(profile_image.filename)
+        # Ensure the upload folder exists.
+        os.makedirs(os.path.join(save_path), exist_ok=True)
+
+        # Generate a unique filename for the new avatar.
+        filename = get_unique_filename(profile_image.filename)
+
+        # Set the avatar URL to the database avatar field.
+        self.avatar = url_for(
+            "static", filename="assets/uploads/%s/%s" % (file_path, filename)
+        )
 
         try:
-            # Save the new avatar file to the file storage.
-            profile_image.save(os.path.join(UPLOAD_FOLDER, self.avator))
+            # Save the new avatar file to the local file storage.
+            profile_image.save(os.path.join(save_path, filename))
         except Exception as e:
             # Handle exceptions that might occur during file saving.
             print("Error saving avatar: %s" % e)
@@ -279,14 +383,15 @@ class Profile(BaseModel):
 
 class UserSecurityToken(BaseModel):
     """
-    A token class for storing security token for url.
+    A token class for storing security tokens for url.
     """
 
-    __tablename__ = "user_token"
+    __tablename__ = "user_security_token"
 
     __table_args__ = (
         Index("ix_user_token_token", "token"),
         Index("ix_user_token_expire", "expire"),
+        UniqueConstraint("token", "salt", name="uq_token_salt"),
     )
 
     token = db.Column(
@@ -298,13 +403,13 @@ class UserSecurityToken(BaseModel):
     expire = db.Column(db.Boolean, default=False, nullable=False, server_default="0")
 
     user_id = db.Column(
-        db.String(38), db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+        db.String(36), db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False
     )
 
     user = db.Relationship("User", foreign_keys=[user_id])
 
     @classmethod
-    def create_new(cls, **kwargs) -> t.AnyStr:
+    def create_new(cls, **kwargs) -> "UserSecurityToken":
         """
         Creates a new security token instance for a user
         and saves it to the database.
@@ -318,6 +423,8 @@ class UserSecurityToken(BaseModel):
             instance = cls(**kwargs)
             instance.save()
         except Exception as e:
+            # Handle database error by raising an internal server error.
+            print("Error creating security token: %s" % e)
             raise InternalServerError
 
         return instance
@@ -339,7 +446,7 @@ class UserSecurityToken(BaseModel):
         return True
 
     @classmethod
-    def is_exists(cls, token: t.AnyStr = None):
+    def is_exists(cls, token: t.AnyStr = None) -> t.Optional["UserSecurityToken"]:
         """
         Check if a token already exists in the database.
 
@@ -352,6 +459,31 @@ class UserSecurityToken(BaseModel):
 
     def __repr__(self):
         return "<Token '{}' by {}>".format(self.token, self.user)
+
+
+class OAuthProvider(BaseModel):
+    """
+    A Class represents a user's OAuth login provider
+    and their associated provider ID.
+    """
+
+    __tablename__ = "user_oauth_provider"
+    __table_args__ = (
+        UniqueConstraint(
+            "provider", "provider_id", "user_id", name="uq_oauth_providers"
+        ),
+    )
+
+    # Provider name and provider ID.
+    provider = db.Column(db.String(50), nullable=False, index=True)
+    provider_id = db.Column(db.String(200), unique=True, nullable=False, index=True)
+
+    user_id = db.Column(
+        db.String(36), db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+    )
+
+    def __repr__(self):
+        return f"OAuthProvider {self.provider} for User {self.user_id}"
 
 
 @event.listens_for(User, "after_insert")

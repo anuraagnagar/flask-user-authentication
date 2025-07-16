@@ -11,12 +11,16 @@ from wtforms.validators import DataRequired, Length, Email
 
 from flask_wtf.form import FlaskForm
 from flask_wtf.file import FileAllowed, FileSize
+from flask_wtf.recaptcha import RecaptchaField
 
 from accounts.models import User
 from accounts.validators import Unique, StrongNames, StrongUsername, StrongPassword
 
 
 class RegisterForm(FlaskForm):
+    """
+    Flask Form class for user registration during signup.
+    """
 
     username = StringField(
         "Username",
@@ -47,6 +51,7 @@ class RegisterForm(FlaskForm):
     password = PasswordField(
         "Password", validators=[DataRequired(), Length(8, 20), StrongPassword()]
     )
+    recaptcha = RecaptchaField()
     remember = BooleanField(
         "I agree & accept all terms of services. ", validators=[DataRequired()]
     )
@@ -54,17 +59,23 @@ class RegisterForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
+    """
+    Flask Form class for user authentication during login.
+    """
 
     username = StringField(
         "Username or Email Address", validators=[DataRequired(), Length(5, 150)]
     )
     password = PasswordField("Password", validators=[DataRequired(), Length(8, 20)])
-    # recaptcha = RecaptchaField()
+    recaptcha = RecaptchaField()
     remember = BooleanField("Remember me", validators=[DataRequired()])
     submit = SubmitField("Continue")
 
 
 class ForgotPasswordForm(FlaskForm):
+    """
+    Flask Form class for users to request a password reset link.
+    """
 
     email = EmailField(
         "Email Address", validators=[DataRequired(), Length(8, 150), Email()]
@@ -76,18 +87,25 @@ class ForgotPasswordForm(FlaskForm):
 
 
 class ResetPasswordForm(FlaskForm):
+    """
+    Flask Form class for resetting a user's password.
+    """
 
     password = PasswordField(
-        "Password", validators=[DataRequired(), Length(8, 20), StrongPassword()]
+        "New Password", validators=[DataRequired(), Length(8, 20), StrongPassword()]
     )
     confirm_password = PasswordField(
-        "Confirm Password", validators=[DataRequired(), Length(8, 20), StrongPassword()]
+        "Confirm New Password",
+        validators=[DataRequired(), Length(8, 20), StrongPassword()],
     )
     remember = BooleanField("Remember me", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
 
 class ChangePasswordForm(FlaskForm):
+    """
+    Flask Form class for authenticated users to change their current password.
+    """
 
     old_password = PasswordField(
         "Old Password", validators=[DataRequired(), Length(8, 20)]
@@ -103,6 +121,9 @@ class ChangePasswordForm(FlaskForm):
 
 
 class ChangeEmailForm(FlaskForm):
+    """
+    Flask Form class for authenticated users to change their current email address.
+    """
 
     email = EmailField(
         "Email Address", validators=[DataRequired(), Length(8, 150), Email()]
@@ -114,6 +135,9 @@ class ChangeEmailForm(FlaskForm):
 
 
 class EditUserProfileForm(FlaskForm):
+    """
+    Flask Form for users to edit and update their profile details.
+    """
 
     username = StringField(
         "Username", validators=[DataRequired(), Length(1, 30), StrongUsername()]
@@ -127,7 +151,10 @@ class EditUserProfileForm(FlaskForm):
     profile_image = FileField(
         "Profile Image",
         validators=[
-            FileAllowed(["jpg", "jpeg", "png", "svg"], "Please upload images only."),
+            FileAllowed(
+                ["jpg", "jpeg", "png", "svg"],
+                "Upload only image files (.jpg, .jpeg, .png, .svg).",
+            ),
             FileSize(
                 max_size=1000000,
                 message="Profile image size should not greater than 1MB.",
@@ -136,3 +163,15 @@ class EditUserProfileForm(FlaskForm):
     )
     about = TextAreaField("About")
     submit = SubmitField("Save Profile")
+
+
+class DeleteAccountForm(FlaskForm):
+    """
+    Flask Form class for users account deletion.
+    """
+
+    password = PasswordField(
+        "Type your password", validators=[DataRequired(), Length(8, 20)]
+    )
+
+    submit = SubmitField("Delete")
