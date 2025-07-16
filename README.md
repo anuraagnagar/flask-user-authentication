@@ -17,26 +17,28 @@
 
 - Email verification for account activation
 - Reset password via secure link
-- Update email with confirmation link
+- Update email address with confirmation link
+- Google reCAPTCHA support for login and register forms
 
 ### ✅ Profile Customization
 
 - Edit profile details and upload a profile image
-- Change password anytime after log in
+- Change password anytime after logging in
 - Set new theme preferences
 
 ## 🧰 Framework & Library
 
-1. [Flask](https://flask.palletsprojects.com)
-2. [Flask-Login](https://flask-login.readthedocs.io)
-3. [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com)
-4. [Flask-WTF](https://flask-wtf.readthedocs.io)
-5. [Flask-Mail](https://pythonhosted.org/Flask-Mail)
-6. [Flask-Migrate](https://flask-migrate.readthedocs.io)
-7. [Flask-Limiter](https://flask-limiter.readthedocs.io)
-8. [Bootstrap-Flask](https://bootstrap-flask.readthedocs.io)
-9. [Authlib](https://docs.authlib.org)
-10. [Jinja2](https://jinja.palletsprojects.com)
+- [Flask](https://flask.palletsprojects.com)
+- [Flask-Login](https://flask-login.readthedocs.io)
+- [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com)
+- [Flask-WTF](https://flask-wtf.readthedocs.io)
+- [Flask-Mail](https://pythonhosted.org/Flask-Mail)
+- [Flask-Migrate](https://flask-migrate.readthedocs.io)
+- [Flask-Limiter](https://flask-limiter.readthedocs.io)
+- [Bootstrap-Flask](https://bootstrap-flask.readthedocs.io)
+- [Authlib](https://docs.authlib.org)
+- [Jinja2](https://jinja.palletsprojects.com)
+- [Pytest](https://docs.pytest.org)
 
 ## ⚙️ Prerequisites
 
@@ -111,6 +113,7 @@ git clone https://github.com/anuraagnagar/flask-user-authentication.git
 ```bash
 cd flask-user-authentication
 ```
+
 ---
 
 > **Note**: To run this project, you will need to change `.env.example` file to `.env` on base directory and set the environment variables.
@@ -159,7 +162,7 @@ pip install -r requirements.txt
 
 #### 5. Migrate/Create a database.
 
-**Note**: In some cases, the `flask db` command might not appear until the application is started with `flask run` command. Make sure to run this command before proceeding with any database migrations.
+> **Note**: In some cases, the `flask db` command might not appear until the application is started with `flask run` command. Make sure to run this command before proceeding with any database migrations.
 
 Initialize the database migration directory.
 
