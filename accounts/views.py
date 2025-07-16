@@ -1,10 +1,11 @@
-import os
 import re
-import typing as t
 
-from http import HTTPStatus
 from datetime import timedelta
+from http import HTTPStatus
+from requests.exceptions import ConnectionError
 from werkzeug.exceptions import InternalServerError
+from authlib.integrations.flask_client import OAuthError
+from authlib.integrations.base_client.errors import TokenExpiredError
 
 from flask import Blueprint, Response
 from flask import abort, current_app, render_template, request, redirect, url_for, flash
@@ -15,8 +16,8 @@ from accounts.email_utils import (
     send_reset_password,
     send_reset_email,
 )
-from accounts.extensions import database as db
-from accounts.models import User
+from accounts.extensions import database as db, limiter, oauth
+from accounts.models import User, OAuthProvider
 from accounts.forms import (
     RegisterForm,
     LoginForm,
@@ -25,6 +26,12 @@ from accounts.forms import (
     ChangePasswordForm,
     ChangeEmailForm,
     EditUserProfileForm,
+    DeleteAccountForm,
+)
+from accounts.utils import (
+    get_unique_id,
+    get_username_from_email,
+    download_and_save_image_from_url,
 )
 
 
@@ -37,6 +44,7 @@ accounts = Blueprint("accounts", __name__, template_folder="templates")
 
 @accounts.route("/login_as_guest", methods=["GET", "POST"])
 @authentication_redirect
+@limiter.limit("3/min", methods=["POST"])
 def login_guest_user() -> Response:
     """
     Log in as a guest user with limited access.
@@ -46,7 +54,7 @@ def login_guest_user() -> Response:
 
     if request.method == "POST":
         # Fetch the predefined guest user instance by username.
-        test_user = User.get_user_by_username(username="test_user")
+        test_user = User.get_user_by_username(username="testuser")
 
         if test_user:
             # Log in the guest user with a session duration of (1 day) only.
@@ -55,7 +63,7 @@ def login_guest_user() -> Response:
             flash("You are logged in as a Guest User.", "success")
             return redirect(url_for("accounts.index"))
 
-        flash("Something went wront.", "error")
+        flash("Test user not found.", "error")
         return redirect(url_for("accounts.login"))
 
     # Return a 404 error if accessed via GET
@@ -64,6 +72,7 @@ def login_guest_user() -> Response:
 
 @accounts.route("/register", methods=["GET", "POST"])
 @authentication_redirect
+@limiter.limit("3/min", methods=["POST"])
 def register() -> Response:
     """
     Handling user registration.
@@ -108,6 +117,7 @@ def register() -> Response:
 
 @accounts.route("/login", methods=["GET", "POST"])
 @authentication_redirect
+@limiter.limit("5/minute", methods=["POST"])
 def login() -> Response:
     """
     Handling user login functionality.
@@ -171,7 +181,7 @@ def confirm_account() -> Response:
 
     # Verify the provided token and return token instance.
     auth_token = User.verify_token(
-        token=token, salt=current_app.config["ACCOUNT_CONFIRM_SALT"]
+        token=token, salt=current_app.config["SALT_ACCOUNT_CONFIRM"]
     )
 
     if auth_token:
@@ -222,6 +232,7 @@ def logout() -> Response:
 
 @accounts.route("/forgot/password", methods=["GET", "POST"])
 @guest_user_exempt
+@limiter.limit("3/minute", methods=["POST"])
 def forgot_password() -> Response:
     """
     Handling forgot password requests by validating the provided email
@@ -256,6 +267,7 @@ def forgot_password() -> Response:
 
 
 @accounts.route("/password/reset", methods=["GET", "POST"])
+@limiter.limit("5/min", methods=["POST"])
 def reset_password() -> Response:
     """
     Handling password reset requests.
@@ -270,12 +282,11 @@ def reset_password() -> Response:
     :return: Renders the reset password form on GET,
     redirects to login on success, or reloads the form on failure.
     """
+    salt = current_app.config["SALT_RESET_PASSWORD"]
     token = request.args.get("token", None)
 
     # Verify the provided token and return token instance.
-    auth_token = User.verify_token(
-        token=token, salt=current_app.config["RESET_PASSWORD_SALT"]
-    )
+    auth_token = User.verify_token(token=token, salt=salt)
 
     if auth_token:
         form = ResetPasswordForm()  # A form class to Reset User's Password.
@@ -284,33 +295,43 @@ def reset_password() -> Response:
             password = form.data.get("password")
             confirm_password = form.data.get("confirm_password")
 
-            # Regex pattern to validate password strength.
-            re_pattern = r"(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"
-
             if not (password == confirm_password):
-                flash("Your new password field's not match.", "error")
-            elif not re.match(re_pattern, password):
-                flash(
-                    "Please choose strong password. It contains at least one alphabet, number, and one special character.",
-                    "warning",
-                )
+                flash("Your new password field's did not match.", "error")
             else:
                 try:
                     # Retrieve the user by the ID from the token and update their password.
-                    user = User.get_user_by_id(auth_token.user_id, raise_exception=True)
-                    user.set_password(password)
+                    user: User = User.get_user_by_id(
+                        auth_token.user_id, raise_exception=True
+                    )
 
-                    # Mark the token as expired after the password is reset.
-                    auth_token.expire = True
+                    if user.check_password(password):
+                        flash(
+                            "Your new password cannot be the same as the previous one.",
+                            "error",
+                        )
+                    else:
+                        user.set_password(password)
 
-                    # Commit changes to the database.
-                    db.session.commit()
+                        # Mark the token as expired after the password is reset.
+                        auth_token.expire = True
+
+                        # Commit changes to the database.
+                        db.session.commit()
+
+                        if current_user.is_authenticated:
+                            flash(
+                                "Your password is changed successfully.",
+                                "success",
+                            )
+                            return redirect(url_for("accounts.index"))
+
+                        flash(
+                            "Your password reset successfully. Please login.", "success"
+                        )
+                        return redirect(url_for("accounts.login"))
                 except Exception as e:
                     # Handle database error by raising an internal server error.
                     raise InternalServerError
-
-                flash("Your password is changed successfully. Please login.", "success")
-                return redirect(url_for("accounts.login"))
 
             return redirect(url_for("accounts.reset_password", token=token))
 
@@ -323,6 +344,7 @@ def reset_password() -> Response:
 @accounts.route("/change/password", methods=["GET", "POST"])
 @login_required
 @guest_user_exempt
+@limiter.limit("5/min", methods=["POST"])
 def change_password() -> Response:
     """
     Handling user password change requests.
@@ -384,6 +406,7 @@ def change_password() -> Response:
 @accounts.route("/change/email", methods=["GET", "POST"])
 @login_required
 @guest_user_exempt
+@limiter.limit("5/min", methods=["POST"])
 def change_email() -> Response:
     """
     Handling email change requests for the logged-in user.
@@ -448,7 +471,7 @@ def confirm_email() -> Response:
 
     # Verify the provided token and return token instance.
     auth_token = User.verify_token(
-        token=token, salt=current_app.config["CHANGE_EMAIL_SALT"]
+        token=token, salt=current_app.config["SALT_CHANGE_EMAIL"]
     )
 
     if auth_token:
@@ -479,14 +502,15 @@ def confirm_email() -> Response:
     return abort(HTTPStatus.NOT_FOUND)
 
 
-@accounts.route("/")
-@accounts.route("/home")
+@accounts.get("/")
+@accounts.get("/home")
 @login_required
 def index() -> Response:
     """
     Render the homepage for authenticated users.
 
-    :return: Renders the `index.html` template.
+    Returns:
+        Response: Renders the `index.html` template.
     """
     return render_template("index.html")
 
@@ -494,6 +518,7 @@ def index() -> Response:
 @accounts.route("/profile", methods=["GET", "POST"])
 @login_required
 @guest_user_exempt
+@limiter.limit("8/min", methods=["POST"])
 def profile() -> Response:
     """
     Handling the user's profile page,
@@ -509,7 +534,7 @@ def profile() -> Response:
     form = EditUserProfileForm()  # A form class to Edit User's Profile.
 
     # Retrieve the fresh user instance based on their ID.
-    user = User.get_user_by_id(current_user.id, raise_exception=True)
+    user = User.get_user_by_id(current_user.get_id(), raise_exception=True)
 
     if form.validate_on_submit():
         username = form.data.get("username")
@@ -535,12 +560,13 @@ def profile() -> Response:
 
                 # Handle profile image upload if provided.
                 if profile_image and getattr(profile_image, "filename"):
-                    user.profile.set_avator(profile_image)
+                    user.profile.set_avatar(profile_image)
 
                 # Commit changes to the database.
                 db.session.commit()
             except Exception as e:
                 # Handle database error by raising an internal server error.
+                print("Error while updating user profile:", e)
                 raise InternalServerError
 
             flash("Your profile update successfully.", "success")
@@ -549,3 +575,192 @@ def profile() -> Response:
         return redirect(url_for("accounts.profile"))
 
     return render_template("profile.html", form=form)
+
+
+@accounts.get("/account/settings")
+@login_required
+def settings() -> Response:
+    """
+    Render the settings page with delete account form.
+
+    Returns:
+        Response: Renders the `settings.html` template.
+    """
+    form = DeleteAccountForm()  # A form class to delete user's account.
+    return render_template("settings.html", form=form)
+
+
+@accounts.post("/account/delete")
+@login_required
+@guest_user_exempt
+@limiter.limit("3/minute", methods=["POST"])
+def delete_user() -> Response:
+    """
+    Handle the deletion of the current logged-in user's account.
+
+    Returns:
+        Response: A redirect to the login page on successful deletion, or the settings page on failure.
+    """
+    password = request.form.get("password", "")
+
+    # Get the currently logged-in user.
+    user: User = current_user
+
+    if user and user.check_password(password):
+        # Delete the currently logged-in user's account.
+        user.delete()
+
+        # Log the user out and remove their session.
+        logout_user()
+
+        flash("Your account has been deleted successfully.", "success")
+        return redirect(url_for("accounts.login"))
+
+    flash("Incorrect password. We're unable to delete your account.", "error")
+    return redirect(url_for("accounts.settings"))
+
+
+@accounts.post("/account/google-login")
+@guest_user_exempt
+@limiter.limit("3/minute", methods=["POST"])
+def google_login() -> Response:
+    """
+    Initiates the Google OAuth login process.
+    """
+    redirect_uri = url_for("accounts.google_login_callback", _external=True)
+
+    try:
+        return oauth.google.authorize_redirect(redirect_uri)
+    except (ConnectionError, OAuthError) as e:
+        flash(
+            "Unable to login with Google. Please check your connection and try again.",
+            "error",
+        )
+        return redirect(url_for("accounts.login"))
+
+
+@accounts.get("/account/google-login/callback")
+@guest_user_exempt
+def google_login_callback() -> Response:
+    """
+    Handles the callback from Google OAuth provider after user authentication.
+
+    Returns:
+        Response: Redirects to the login page with a success or error message.
+    """
+    try:
+        token = oauth.google.authorize_access_token()
+    except (OAuthError, TokenExpiredError) as e:
+        flash("Google login failed. Please try again.", "error")
+        return redirect(url_for("accounts.login"))
+
+    if token:
+        # Fetch the user's information from Google.
+        user_info = token.get("userinfo")
+
+        email = user_info.get("email")
+        email_verified = user_info.get("email_verified", False)
+
+        if email and email_verified:
+            # Check if the oauth user already exists into the database.
+            oauth_user = OAuthProvider.query.filter_by(
+                provider="google", provider_id=user_info.get("sub")
+            ).first()
+
+            if current_user.is_authenticated:
+                # If the user is authenticated, check if the Google account is already linked.
+                if oauth_user and oauth_user.user_id != current_user.id:
+                    flash(
+                        "This Google account is already linked with another user account.",
+                        "error",
+                    )
+                    return redirect(url_for("accounts.settings"))
+
+                # If the user already exists, retrieve the user instance.
+                user = User.get_user_by_id(current_user.get_id(), raise_exception=True)
+
+                # Create a new OAuth provider for the user.
+                user.create_oauth_provider(provider_id=user_info.get("sub", ""))
+
+                flash("Your Google account has been linked successfully.", "success")
+
+            else:
+                if not oauth_user:
+                    # If the user does not exist, create a new user
+                    user = User.get_or_create(
+                        username=get_username_from_email(email),
+                        first_name=user_info.get("given_name", ""),
+                        last_name=user_info.get("family_name", ""),
+                        email=email,
+                        password=get_unique_id(),  # Password is not needed for social login.
+                    )
+
+                    # Ensure the user is active.
+                    user.active = True
+
+                    # Create a new OAuth provider for the user.
+                    user.create_oauth_provider(provider_id=user_info.get("sub", ""))
+                else:
+                    # If the user already exists, retrieve the user instance.
+                    user = User.get_user_by_id(oauth_user.user_id)
+
+            user_profile = user.profile
+
+            # Updating users profile data.
+            if user_profile and not user_profile.avatar:
+                picture_url = user_info.get("picture", "")
+
+                # Download and save the user's profile picture.
+                avatar = download_and_save_image_from_url(
+                    url=picture_url, filename=f"{get_unique_id()}.jpg"
+                )
+
+                user_profile.avatar = url_for(
+                    "static", filename="assets/uploads/profile/%s" % avatar
+                )
+
+            # Commit changes to the database.
+            db.session.commit()
+
+            if not current_user.is_authenticated:
+                # Log the user in and set the session to remember the user for (15 days).
+                login_user(user, remember=True, duration=timedelta(days=15))
+
+                flash("You are logged in successfully.", "success")
+                return redirect(url_for("accounts.index"))
+
+            return redirect(url_for("accounts.settings"))
+
+    flash("Google login failed. Please try again.", "error")
+    return redirect(url_for("accounts.login"))
+
+
+@accounts.post("/account/oauth/remove")
+@login_required
+@limiter.limit("3/minute", methods=["POST"])
+def remove_oauth_provider() -> Response:
+    """
+    Remove the OAuth provider (e.g; Google) from the user's account.
+
+    Returns:
+        Response: A redirect to the settings page with a success message.
+    """
+    provider = request.args.get("provider", "google")
+
+    if not provider in current_app.config["OAUTH_PROVIDERS"]:
+        flash("Something wrong with your request.", "error")
+        return redirect(url_for("accounts.settings"), code=HTTPStatus.BAD_REQUEST)
+
+    user = User.get_user_by_id(current_user.get_id(), raise_exception=True)
+
+    if user and user.is_social_user():
+        # Remove the `provider` account from the user's account.
+        user.remove_oauth_provider(provider)
+
+        flash(
+            f"Your {provider} login provider has been removed successfully.", "success"
+        )
+        return redirect(url_for("accounts.settings"))
+
+    flash(f"Failed to remove {provider} provider.", "error")
+    return redirect(url_for("accounts.settings"))
