@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import flash, redirect, request, url_for
+from flask import current_app, flash, redirect, request, url_for
 from flask_login import current_user
 
 
@@ -15,10 +15,10 @@ def guest_user_exempt(func):
         if (
             current_user.is_authenticated
             and not request.method == "GET"
-            and current_user.username == "test_user"
+            and current_user.username == current_app.config["TEST_USER_USERNAME"]
         ):
             flash("Guest user limited to read-only access.", "error")
-            return redirect(request.path)
+            return redirect(url_for("accounts.index"))
         return func(*args, **kwargs)
 
     return decorator

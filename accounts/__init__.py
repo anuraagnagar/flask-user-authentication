@@ -1,25 +1,26 @@
 from http import HTTPStatus
 from types import MappingProxyType
 
-from sqlalchemy.exc import DatabaseError
 from werkzeug.exceptions import (
+    HTTPException,
     BadRequest,
     Unauthorized,
-    Forbidden,
     MethodNotAllowed,
     NotFound,
     InternalServerError,
     ServiceUnavailable,
+    TooManyRequests,
 )
 
 from flask import Flask as FlaskAuth
+from flask import redirect, request, session, url_for
 
 
 def create_app(config_type):
     """
     Create and configure the Flask application instance.
     """
-    app = FlaskAuth(__name__, template_folder="templates")
+    app = FlaskAuth(__name__)
 
     # application configuration.
     config_application(app, config_type)
@@ -30,15 +31,31 @@ def create_app(config_type):
     # configure application blueprints.
     config_blueprint(app)
 
+    # configure command-line interface.
+    config_cli_command(app)
+
+    # configure google oauth.
+    config_google_oauth(app)
+
     # configure error handlers.
     config_errorhandler(app)
+
+    # add view for changing theme
+    @app.get("/change-theme")
+    def change_theme():
+        theme = request.args.get("theme", app.config["BOOTSTRAP_DEFAULT_THEME"])
+
+        if theme in app.config["BOOTSTRAP_BOOTSWATCH_THEMES"]:
+            session["_theme_preference"] = theme
+            app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = theme
+            return redirect(url_for("accounts.index"))
 
     return app
 
 
 def config_application(app, config_type):
     """
-    Configure the Flask application based on the specified configuration type.
+    Configure the application based on the specified `configuration` type.
     """
 
     import config as conf
@@ -59,7 +76,7 @@ def config_application(app, config_type):
     config = config_map.get(config_type)
 
     if not config:
-        raise RuntimeError("Invalid configuration type: %s" % config_type)
+        raise RuntimeError("Invalid configuration type: '%s'" % config_type)
 
     # Application configuration from object.
     app.config.from_object(config)
@@ -67,7 +84,7 @@ def config_application(app, config_type):
 
 def config_blueprint(app):
     """
-    Configure and register blueprints with the Flask application.
+    Configure/register blueprints for the application.
     """
     from .views import accounts
 
@@ -79,25 +96,29 @@ def config_extention(app):
     Configure application extensions.
     """
     from .extensions import login_manager
+    from .extensions import limiter
     from .extensions import bootstrap
     from .extensions import database
     from .extensions import migrate
     from .extensions import csrf
     from .extensions import mail
+    from .extensions import oauth
 
     login_manager.init_app(app)
+    limiter.init_app(app)
     bootstrap.init_app(app)
     database.init_app(app)
     migrate.init_app(app, db=database)
     csrf.init_app(app)
     mail.init_app(app)
+    oauth.init_app(app)
 
     config_login_manager(login_manager)
 
 
 def config_login_manager(manager):
     """
-    Configure with Flask-Login manager.
+    Configure the Flask-Login for managing user's sessions.
     """
     from .models import User
 
@@ -110,6 +131,41 @@ def config_login_manager(manager):
         return User.get_user_by_id(user_id)
 
 
+def config_cli_command(app):
+    """
+    Configure application custom commands.
+    """
+
+    from .cli import register_cli_command
+
+    register_cli_command(app)
+
+
+def config_google_oauth(app):
+    from authlib.integrations.flask_client import OAuthError
+
+    from .extensions import oauth
+
+    _client_id = app.config.get("GOOGLE_CLIENT_ID")
+    _client_secret = app.config.get("GOOGLE_CLIENT_SECRET")
+
+    _server_meta_url = app.config.get("GOOGLE_DISCOVERY_URL")
+    _scope = app.config.get("GOOGLE_SCOPE")
+    _redirect_uri = app.config.get("GOOGLE_REDIRECT_URI")
+
+    try:
+        oauth.register(
+            name="google",
+            client_id=_client_id,
+            client_secret=_client_secret,
+            server_metadata_url=_server_meta_url,
+            client_kwargs={"scope": _scope},
+            redirect_uri=_redirect_uri,
+        )
+    except Exception as err:
+        raise OAuthError(f"Failed to connect Google OAuth client: {err}")
+
+
 def config_errorhandler(app):
     """
     Configure error handlers for application.
@@ -117,30 +173,33 @@ def config_errorhandler(app):
     from flask import flash, render_template, redirect, request, url_for
 
     @app.errorhandler(BadRequest)
-    def bad_request(e):
+    def bad_request(e: HTTPException):
         flash("Oops! There was a problem with your request. Please try again.", "error")
         return redirect(url_for("accounts.index"))
 
     @app.errorhandler(Unauthorized)
-    def unauthorized(e):
+    def unauthorized(e: HTTPException):
         flash("You are not authorized to access this resource.", "error")
         return redirect(url_for("accounts.index"))
 
     @app.errorhandler(NotFound)
-    def page_not_found(e):
-        return render_template("error.html"), HTTPStatus.NOT_FOUND
+    def page_not_found(e: HTTPException):
+        return render_template("errors/404.html"), HTTPStatus.NOT_FOUND
 
     @app.errorhandler(MethodNotAllowed)
-    def method_not_allowed(e):
+    def method_not_allowed(e: HTTPException):
         flash("Method not allowed.", "error")
         return redirect(url_for("accounts.index"))
 
+    @app.errorhandler(TooManyRequests)
+    def too_many_request(e: HTTPException):
+        return render_template("errors/429.html"), HTTPStatus.TOO_MANY_REQUESTS
+
     @app.errorhandler(InternalServerError)
-    def internal_server_error(e):
-        flash("Something went wrong with the internal server.", "error")
-        return redirect(url_for("accounts.index"))
+    def internal_server_error(e: HTTPException):
+        return (render_template("errors/500.html"), HTTPStatus.INTERNAL_SERVER_ERROR)
 
     @app.errorhandler(ServiceUnavailable)
-    def service_unavailable(e):
+    def service_unavailable(e: HTTPException):
         flash(e.description, "error")
         return redirect(request.path or url_for("accounts.login"))

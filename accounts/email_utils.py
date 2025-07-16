@@ -1,4 +1,5 @@
 import os
+import click
 import typing as t
 
 from smtplib import SMTPException
@@ -20,10 +21,9 @@ def send_mail(subject: t.AnyStr, recipients: t.List[str], body: t.Text):
     :param recipients: A list of recipient email addresses.
     :param body: The body content of the email.
 
-    :raises ValueError: If the `MAIL_USERNAME` environment variable is not set.
     :raises ServiceUnavailable: If the SMTP service is unavailable.
     """
-    sender: str = os.environ.get("MAIL_USERNAME", None)
+    sender: str = os.environ.get("MAIL_DEFAULT_SENDER", None)
 
     if not sender:
         raise ValueError("`MAIL_USERNAME` environment variable is not set")
@@ -31,12 +31,12 @@ def send_mail(subject: t.AnyStr, recipients: t.List[str], body: t.Text):
     message = Message(subject=subject, sender=sender, recipients=recipients)
     message.body = body
 
-    print(message.body)
+    click.echo(message.body)
 
     try:
         mail.connect()
         mail.send(message)
-    except (SMTPException, Exception) as e:
+    except SMTPException as e:
         raise ServiceUnavailable(
             description=(
                 "The SMTP mail service is currently not available. "
@@ -46,9 +46,14 @@ def send_mail(subject: t.AnyStr, recipients: t.List[str], body: t.Text):
 
 
 def send_confirmation_mail(user: User = None):
+    """
+    Sends an account verification email to the specified user.
+
+    :param user: The specified user for sending email.
+    """
     subject: str = "Verify Your Account"
 
-    token: str = user.generate_token(salt=current_app.config["ACCOUNT_CONFIRM_SALT"])
+    token: str = user.generate_token(salt=current_app.config["SALT_ACCOUNT_CONFIRM"])
 
     verification_link: str = get_full_url(
         url_for("accounts.confirm_account", token=token)
@@ -64,9 +69,14 @@ def send_confirmation_mail(user: User = None):
 
 
 def send_reset_password(user: User = None):
+    """
+    Sends a reset-password email to the specified user.
+
+    :param user: The specified user for sending email.
+    """
     subject: str = "Reset Your Password"
 
-    token: str = user.generate_token(salt=current_app.config["RESET_PASSWORD_SALT"])
+    token: str = user.generate_token(salt=current_app.config["SALT_RESET_PASSWORD"])
 
     reset_link: str = get_full_url(url_for("accounts.reset_password", token=token))
 
@@ -78,9 +88,14 @@ def send_reset_password(user: User = None):
 
 
 def send_reset_email(user: User = None):
+    """
+    Sends a reset new email-address email to the specified user.
+
+    :param user: The specified user for sending email.
+    """
     subject: str = "Confirm Your Email Address"
 
-    token: str = user.generate_token(salt=current_app.config["CHANGE_EMAIL_SALT"])
+    token: str = user.generate_token(salt=current_app.config["SALT_CHANGE_EMAIL"])
 
     confirmation_link: str = get_full_url(
         url_for("accounts.confirm_email", token=token)

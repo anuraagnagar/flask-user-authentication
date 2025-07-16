@@ -2,7 +2,6 @@ import os
 import click
 
 from flask import Flask
-from flask import current_app
 
 from accounts.models import User
 
@@ -15,14 +14,14 @@ def register_cli_command(app: Flask):
     @app.cli.command("createtestuser")
     def create_test_user():
         """
-        Create an initial test user using credentials from app config.
+        Create an initial test user for demonstration purposes.
         """
         user_data = {
-            "username": current_app.config["TEST_USER_USERNAME"],
-            "email": current_app.config["TEST_USER_EMAIL"],
+            "username": app.config["TEST_USER_USERNAME"],
+            "email": app.config["TEST_USER_EMAIL"],
             "first_name": "Test",
             "last_name": "User",
-            "password": current_app.config["TEST_USER_PASSWORD"],
+            "password": app.config["TEST_USER_PASSWORD"],
             "active": True,
         }
 
@@ -30,7 +29,7 @@ def register_cli_command(app: Flask):
         existing_user = User.get_user_by_email(email=user_data["email"])
 
         if existing_user:
-            click.secho(f"Test user already created!", fg="green")
+            click.secho(f"Test user already created!", fg="cyan")
             return
 
         try:
@@ -44,9 +43,9 @@ def register_cli_command(app: Flask):
     @app.cli.command("clear-migrations")
     def clear_migrations():
         """
-        Clear all migration files in the migrations/versions directory.
+        Clear all migration files from the migrations directory.
         """
-        base_dir = os.path.join(current_app.root_path, "..")
+        base_dir = os.path.join(app.root_path, "..")
         migrations_dir = os.path.join(base_dir, "migrations", "versions")
 
         if not os.path.exists(migrations_dir):
