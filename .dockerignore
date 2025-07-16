@@ -3,6 +3,7 @@
 .cache/
 screenshots/
 migrations/
+assets/uploads/*
 
 __pycache__/
 *.pyc
