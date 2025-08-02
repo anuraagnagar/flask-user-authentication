@@ -1,4 +1,4 @@
-{% set title = "Home" %}
+{% set title = _("Home") %}
 
 {% extends "base.html" %}
 {% from 'bootstrap5/utils.html' import render_messages %}
@@ -24,21 +24,21 @@
                         </div>
                         <h6 class="text-muted mb-4">{{ current_user.profile.bio }}</h6>
                         <div class="row">
-                            <label class="fw-bold">First Name</label>
+                            <label class="fw-bold">{{ _("First Name") }}</label>
                             <p>{{ current_user.first_name }}</p>
                         </div>
                         <div class="row">
-                            <label class="fw-bold">Last Name</label>
+                            <label class="fw-bold">{{ _("Last Name") }}</label>
                             <p>{{ current_user.last_name }}</p>
                         </div>
                         <div class="row">
-                            <label class="fw-bold">Email Address</label>
+                            <label class="fw-bold">{{ _("Email Address") }}</label>
                             <p>{{ current_user.email }}</p>
                         </div>
                     </div>
                     <div>
                         <a href="{{ url_for('accounts.profile') }}" type="submit" class="btn btn-primary"
-                            value="Edit Profile">Edit Profile</a>
+                            value="Edit Profile">{{ _("Edit Profile") }}</a>
                     </div>
                 </section>
             </div>

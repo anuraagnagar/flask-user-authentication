@@ -1,4 +1,4 @@
-{% set title = "Register" %}
+{% set title = _("Register") %}
 
 {% extends "base.html" %}
 {% from 'bootstrap5/form.html' import render_field %}
@@ -21,8 +21,8 @@
         <div class="card shadow-sm mb-4">
           <div class="p-4">
             <div class="mb-3">
-              <h2 class="card-title text-center">Create Account</h2>
-              <p class="text-center">Get started with your free account</p>
+              <h2 class="card-title text-center">{{ _('Create Account') }}</h2>
+              <p class="text-center">{{ _('Get started with your free account') }}</p>
             </div>
             {{ render_messages() }}
             <form action="{{ url_for('accounts.google_login') }}" method="post">
@@ -30,7 +30,7 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="action" value="register">
                 <button class="btn btn-outline-primary w-100" type="submit">
-                  <i class="bi bi-google me-2"></i>Continue with Google
+                  <i class="bi bi-google me-2"></i>{{ _('Continue with Google') }}
                 </button>
               </div>
             </form>
@@ -39,17 +39,17 @@
             </div>
             <form action="{{ url_for('accounts.register') }}" method="post">
               {{ form.hidden_tag() }}
-              {{ render_field(form.username, placeholder="Enter your username", autofocus="true") }}
+              {{ render_field(form.username, placeholder=_('Enter your username'), autofocus="true") }}
               <div class="row">
                 <div class="col">
-                  {{ render_field(form.first_name, placeholder="First name") }}
+                  {{ render_field(form.first_name, placeholder=_('First name')) }}
                 </div>
                 <div class="col">
-                  {{ render_field(form.last_name, placeholder="Last name") }}
+                  {{ render_field(form.last_name, placeholder=_('Last name')) }}
                 </div>
               </div>
-              {{ render_field(form.email, placeholder="Enter your email") }}
-              {{ render_field(form.password, placeholder="Choose your password") }}
+              {{ render_field(form.email, placeholder=_('Enter your email')) }}
+              {{ render_field(form.password, placeholder=_('Choose your password')) }}
               <div style="width: 100%; display: flex; justify-content: center;">
                 {{ render_field(form.recaptcha) }}
               </div>
@@ -59,7 +59,8 @@
           </div>
         </div>
         <p class="text-center">
-          Have an account? <a href="{{ url_for('accounts.login') }}" class="text-decoration-none">Log In</a>
+          {{ _('Have an account?') }} <a href="{{ url_for('accounts.login') }}" class="text-decoration-none">
+            {{ _('Log In') }}</a>
         </p>
       </section>
     </div>

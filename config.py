@@ -17,6 +17,10 @@ class BaseConfig:
     DEBUG = False
     TESTING = False
 
+    LANGUAGES = ["en", "es", "fr", "de"]
+    BABEL_DEFAULT_LOCALE = "en"
+    BABEL_LOCALE = "en"
+    BABEL_TRANSLATION_DIRECTORIES = os.path.join(BASE_DIR, "translations")
     SITE_URL = os.getenv("SITE_DOMAIN")
 
     # Site secret key.

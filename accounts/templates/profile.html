@@ -1,4 +1,4 @@
-{% set title = "My Profile" %}
+{% set title = _("My Profile") %}
 
 {% extends "base.html" %}
 {% from 'bootstrap5/form.html' import render_field %}
@@ -22,21 +22,21 @@
                 <div class="p-3 py-4">
                     <form action="{{ url_for('accounts.profile') }}" method="post" enctype="multipart/form-data">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h2 class="text-right">Profile Detail</h2>
+                            <h2 class="text-right">{{ _("Profile Detail") }}</h2>
                         </div>
                         {{ form.hidden_tag() }}
                         <div class="form-outline">
-                            {{ render_field(form.username, placeholder="Enter your username",
+                            {{ render_field(form.username, placeholder=_('Enter your username'),
                             value=current_user.username) }}
                         </div>
                         <div class="form-outline">
                             <div class="row">
                                 <div class="col">
-                                    {{ render_field(form.first_name, placeholder="First name",
+                                    {{ render_field(form.first_name, placeholder=_('First name'),
                                     value=current_user.first_name) }}
                                 </div>
                                 <div class="col">
-                                    {{ render_field(form.last_name, placeholder="Last name",
+                                    {{ render_field(form.last_name, placeholder=_('Last name'),
                                     value=current_user.last_name) }}
                                 </div>
                             </div>
@@ -46,18 +46,20 @@
                         </div>
                         <div class="form-outline mb-3">
                             <div class="col mb-3">
-                                <label class="form-label">Email Address</label>
+                                <label class="form-label">{{ _("Email Address") }}</label>
                                 <input type="text" class="form-control" value="{{ current_user.email }}" disabled=""
                                     readonly>
-                                <p class="text-muted m-0" style="font-size: 14px;">Email address cannot be edited. You
-                                    can only reset it by sending a confirmation link to your newly entered email. If you
-                                    want to make a change, please click the button below.</p>
+                                <p class="text-muted m-0" style="font-size: 14px;">
+                                    {{ _("Email address cannot be edited.
+                                    You can only reset it by sending a confirmation link to your newly entered email.
+                                    If you want to make a change, please click the button below.") }}
+                                </p>
                             </div>
                             <a href="{{ url_for('accounts.change_email') }}" class="btn btn-primary" type="button"
                                 role="button">Reset</a>
                         </div>
                         <div class="form-outline mb-3">
-                            {{ render_field(form.about, id="bio", placeholder="Enter about yourself",
+                            {{ render_field(form.about, id="bio", placeholder=_("Enter about yourself"),
                             style="height: 6rem;") }}
                         </div>
                         <div class="d-flex mt-4">

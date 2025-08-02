@@ -1,4 +1,4 @@
-{% set title = "Reset Email Address" %}
+{% set title = _("Reset Email Address") %}
 
 {% extends "base.html" %}
 {% from 'bootstrap5/form.html' import render_field %}
@@ -14,13 +14,13 @@
                     <div class="p-4">
                         <form action="{{ url_for('accounts.change_email') }}" method="post">
                             <div class="mb-4">
-                                <h2 class="card-title text-center">Change Email Address</h2>
+                                <h2 class="card-title text-center">{{ _('Change Your Email Address') }}</h2>
                                 {{ render_messages() }}
-                                <p class="text-muted">To reset your email enter new email address and you will receive
-                                    an confirmation link to confirm your email.</p>
+                                <p class="text-muted">{{ _('To change your email enter new email address and you will
+                                    receive an confirmation link to confirm your email.') }}</p>
                             </div>
                             {{ form.hidden_tag() }}
-                            {{ render_field(form.email, placeholder="Enter email address", autofocus="true") }}
+                            {{ render_field(form.email, placeholder=_("Enter email address"), autofocus="true") }}
                             {{ render_field(form.remember) }}
                             {{ render_field(form.submit, class='w-100 mb-2') }}
                         </form>
@@ -28,7 +28,7 @@
                 </div>
                 <p class="text-center">
                     <a href="{{ url_for('accounts.index') }}" class="text-decoration-none">
-                        Back to Home</a>
+                        {{ _('Back to Home') }}</a>
                 </p>
             </section>
         </div>

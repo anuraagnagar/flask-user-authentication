@@ -2,6 +2,7 @@ from functools import wraps
 
 from flask import current_app, flash, redirect, request, url_for
 from flask_login import current_user
+from flask_babel import lazy_gettext as _
 
 
 def guest_user_exempt(func):
@@ -17,7 +18,7 @@ def guest_user_exempt(func):
             and not request.method == "GET"
             and current_user.username == current_app.config["TEST_USER_USERNAME"]
         ):
-            flash("Guest user limited to read-only access.", "error")
+            flash(_("Guest user limited to read-only access."), "error")
             return redirect(url_for("accounts.index"))
         return func(*args, **kwargs)
 

@@ -1,4 +1,4 @@
-{% set title = "Account Settings" %}
+{% set title = _("Account Settings") %}
 
 {% extends "base.html" %}
 {% from 'bootstrap5/form.html' import render_field %}
@@ -12,7 +12,7 @@
         <div class="row justify-content-center">
             <section class="col-sm-11 col-md-8 col-lg-6 col-xl-7">
                 <div>
-                    <h2 class="mb-4">Account Settings</h2>
+                    <h2 class="mb-4">{{ _('Account Settings') }}</h2>
                     <hr>
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
                         <div class="d-flex gap-2">
@@ -25,34 +25,36 @@
                         </div>
                         <div class="my-auto">
                             <a href="{{ url_for('accounts.profile') }}" role="link">
-                                <button class="btn btn-outline-primary" type="button">Edit Profile</button>
+                                <button class="btn btn-outline-primary" type="button">{{ _('Edit Profile') }}</button>
                             </a>
                         </div>
                     </div>
                     <hr>
                     <div class="card">
                         <div class="bg-light p-2">
-                            <h4>Social Account</h4>
+                            <h4>{{ _('Login Provider Account') }}</h4>
                         </div>
                         <hr class="m-0">
                         <div class="card-body">
                             <div class="d-flex justify-content-between gap-2">
                                 <div class="d-flex flex-column">
-                                    <h5 class="mb-0"><i class="bi bi-google me-2"></i>Google</h5>
-                                    <p class="text-muted m-0">Connect your account with Google Login provider.</p>
+                                    <h5 class="mb-0"><i class="bi bi-google me-2"></i>{{ _('Google') }}</h5>
+                                    <p class="text-muted m-0">{{ _('Connect your account with Google Login provider.')
+                                        }}</p>
                                 </div>
                                 <div class="my-auto">
                                     {% if current_user.is_social_user() %}
                                     <form method="post" role="form"
                                         action="{{ url_for('accounts.remove_oauth_provider', provider='google') }}">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                        <button class="btn btn-outline-primary" role="button"
-                                            type="submit">Disconnect</button>
+                                        <button class="btn btn-outline-primary" role="button" type="submit">{{
+                                            _('Disconnect') }}</button>
                                     </form>
                                     {% else %}
                                     <form action="{{ url_for('accounts.google_login') }}" method="post">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                        <button class="btn btn-primary" role="button" type="submit">Connect</button>
+                                        <button class="btn btn-primary" role="button" type="submit">{{ _('Connect')
+                                            }}</button>
                                     </form>
                                     {% endif %}
                                 </div>
@@ -61,12 +63,12 @@
                     </div>
                     <hr>
                     <div>
-                        <h5>Delete Account</h5>
-                        <p class="text-muted">Deleting your account will permanently remove all your personal or public
-                            data, including your profile, social login and all other information related to your
-                            account.</p>
+                        <h5>{{ _('Delete Account') }}</h5>
+                        <p class="text-muted">{{ _('Deleting your account will permanently remove all your personal or
+                            public data, including your profile, social login and all other information related to your
+                            account.') }}</p>
                         <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal"
-                            data-bs-target="#delete-modal"><i class="bi bi-trash me-2"></i>Delete my account
+                            data-bs-target="#delete-modal"><i class="bi bi-trash me-2"></i>{{ _('Delete my account') }}
                         </button>
                     </div>
                     <div id="delete-modal" class="modal fade" aria-hidden="true" tabindex="-1">
@@ -75,9 +77,9 @@
                                 <form action="{{ url_for('accounts.delete_user') }}" method="post">
                                     <div class="modal-header align-items-start pb-0">
                                         <div>
-                                            <h5 class="modal-title">Delete Account</h5>
+                                            <h5 class="modal-title">{{ _('Delete Account') }}</h5>
                                             <p class="text-muted">
-                                                Are you sure you want to permanently delete your account?
+                                                {{ _('Are you sure you want to permanently delete your account?') }}
                                             </p>
                                         </div>
                                         <button type="button" class="btn-close p-1 m-0" data-bs-dismiss="modal"
@@ -86,16 +88,19 @@
                                     <div class="modal-body">
                                         {{ form.hidden_tag() }}
                                         {{ render_field(form.password, autofocus="true") }}
-                                        <p class="text-muted m-0" style="font-size: 14px;"><b>Note: </b>Login with
-                                            Google must set a password before account deletion; Ignore if already set.
+                                        <p class="text-muted m-0" style="font-size: 14px;"><b>{{ _('Note:') }}' </b>
+                                            {{ _('Login with Google must set a password before account deletion;
+                                            Ignore if already set.')
+                                            }}
                                         </p>
                                     </div>
                                     <div class="modal-footer pt-0 border-0">
                                         <a class="text-muted me-auto"
-                                            href="{{ url_for('accounts.forgot_password') }}">Reset Password?</a>
+                                            href="{{ url_for('accounts.forgot_password') }}">{{ _('Reset Password?')
+                                            }}</a>
                                         <div>
                                             <button type="button" class="btn btn-outline-secondary"
-                                                data-bs-dismiss="modal">Cancel</button>
+                                                data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                                             {{ render_field(form.submit, class="btn btn-danger") }}
                                         </div>
                                     </div>

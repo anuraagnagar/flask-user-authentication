@@ -34,16 +34,16 @@
 
       <div class="collapse navbar-collapse" id="mainNavbar">
         <ul class="navbar-nav">
-          {{ render_nav_item('accounts.index', 'Home') }}
+          {{ render_nav_item('accounts.index', _('Home') ) }}
           {% if current_user.is_authenticated %}
-          {{ render_nav_item('accounts.profile', 'Profile') }}
-          {{ render_nav_item('accounts.change_email', 'Reset Email') }}
-          {{ render_nav_item('accounts.change_password', 'Change Password') }}
-          {{ render_nav_item('accounts.settings', 'Settings') }}
+          {{ render_nav_item('accounts.profile', _('Profile')) }}
+          {{ render_nav_item('accounts.change_email', _('Reset Email') ) }}
+          {{ render_nav_item('accounts.change_password', _('Change Password') ) }}
+          {{ render_nav_item('accounts.settings', _('Settings') ) }}
           {% endif %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-palette-fill me-2"></i>Theme</a>
+              <i class="bi bi-palette-fill me-2"></i>{{ _('Theme') }}</a>
             <ul class="dropdown-menu">
               {% for theme in config["BOOTSTRAP_BOOTSWATCH_THEMES"] %}
               <li>
@@ -60,16 +60,34 @@
               {% endfor %}
             </ul>
           </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-translate me-2"></i>{{ _('Language') }}</a>
+            <ul class="dropdown-menu">
+              {% for lang in config["LANGUAGES"] %}
+              <li>
+                <a class="dropdown-item d-flex" href="{{ url_for('change_lang', lang=lang) }}">
+                  {{ lang }}
+                  {% if session.get('_lang_preference') == lang %}
+                  <i class="bi bi-check-circle-fill ms-auto"></i>
+                  {% endif %}
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </li>
+
         </ul>
         <ul class="navbar-nav ms-auto my-2">
           {% if not current_user.is_authenticated %}
-          {{ render_nav_item('accounts.login', 'Login') }}
+          {{ render_nav_item('accounts.login', _('Login')) }}
           <li class="nav-item my-2 my-md-0 ms-md-2">
-            <a class="btn btn-outline-light" href="{{ url_for('accounts.register') }}">Signup</a>
+            <a class="btn btn-outline-light" href="{{ url_for('accounts.register') }}">{{ _("Signup") }}</a>
           </li>
           {% else %}
           <li class="nav-item">
-            <a class="btn btn-outline-light" href="{{ url_for('accounts.logout') }}">Logout</a>
+            <a class="btn btn-outline-light" href="{{ url_for('accounts.logout') }}">{{ _("Logout") }}</a>
           </li>
           {% endif %}
         </ul>
@@ -83,7 +101,7 @@
   <footer class="text-center text-lg-start text-dark">
     <div class="d-flex justify-content-between p-4" style="background-color: rgba(170, 170, 170, 0.2)">
       <a class="text-body" href="https://github.com/anuraagnagar/flask-user-authentication" target="_blank">
-        <button class="btn btn-secondary">Source Code
+        <button class="btn btn-secondary">{{ _("Source Code") }}
           <span class="my-auto">{{ render_icon('github') }}</span></button>
       </a>
       <p class="text-muted m-0">© 2025 FlaskAuth</p>
