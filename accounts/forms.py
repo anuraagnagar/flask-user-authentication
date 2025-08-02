@@ -16,6 +16,8 @@ from flask_wtf.recaptcha import RecaptchaField
 from accounts.models import User
 from accounts.validators import Unique, StrongNames, StrongUsername, StrongPassword
 
+from flask_babel import lazy_gettext as _
+
 
 class RegisterForm(FlaskForm):
     """
@@ -23,39 +25,41 @@ class RegisterForm(FlaskForm):
     """
 
     username = StringField(
-        "Username",
+        _("Username"),
         validators=[
             DataRequired(),
             Length(1, 30),
             StrongUsername(),
             Unique(
-                User, User.username, message="Username already exists choose another."
+                User,
+                User.username,
+                message=_("Username already exists choose another."),
             ),
         ],
     )
     first_name = StringField(
-        "First Name", validators=[DataRequired(), Length(3, 20), StrongNames()]
+        _("First Name"), validators=[DataRequired(), Length(3, 20), StrongNames()]
     )
     last_name = StringField(
-        "Last Name", validators=[DataRequired(), Length(3, 20), StrongNames()]
+        _("Last Name"), validators=[DataRequired(), Length(3, 20), StrongNames()]
     )
     email = EmailField(
-        "Email Address",
+        _("Email Address"),
         validators=[
             DataRequired(),
             Email(),
             Length(8, 150),
-            Unique(User, User.email, message="User already registered with us."),
+            Unique(User, User.email, message=_("User already registered with us.")),
         ],
     )
     password = PasswordField(
-        "Password", validators=[DataRequired(), Length(8, 20), StrongPassword()]
+        _("Password"), validators=[DataRequired(), Length(8, 20), StrongPassword()]
     )
     recaptcha = RecaptchaField()
     remember = BooleanField(
-        "I agree & accept all terms of services. ", validators=[DataRequired()]
+        _("I agree & accept all terms of services."), validators=[DataRequired()]
     )
-    submit = SubmitField("Continue")
+    submit = SubmitField(_("Continue"))
 
 
 class LoginForm(FlaskForm):
@@ -64,12 +68,12 @@ class LoginForm(FlaskForm):
     """
 
     username = StringField(
-        "Username or Email Address", validators=[DataRequired(), Length(5, 150)]
+        _("Username or Email Address"), validators=[DataRequired(), Length(5, 150)]
     )
-    password = PasswordField("Password", validators=[DataRequired(), Length(8, 20)])
+    password = PasswordField(_("Password"), validators=[DataRequired(), Length(8, 20)])
     recaptcha = RecaptchaField()
-    remember = BooleanField("Remember me", validators=[DataRequired()])
-    submit = SubmitField("Continue")
+    remember = BooleanField(_("Remember me"), validators=[DataRequired()])
+    submit = SubmitField(_("Continue"))
 
 
 class ForgotPasswordForm(FlaskForm):
@@ -78,12 +82,12 @@ class ForgotPasswordForm(FlaskForm):
     """
 
     email = EmailField(
-        "Email Address", validators=[DataRequired(), Length(8, 150), Email()]
+        _("Email Address"), validators=[DataRequired(), Length(8, 150), Email()]
     )
     remember = BooleanField(
-        "I agree & accept all terms of services.", validators=[DataRequired()]
+        _("I agree & accept all terms of services."), validators=[DataRequired()]
     )
-    submit = SubmitField("Send Reset Link")
+    submit = SubmitField(_("Send Reset Link"))
 
 
 class ResetPasswordForm(FlaskForm):
@@ -92,14 +96,14 @@ class ResetPasswordForm(FlaskForm):
     """
 
     password = PasswordField(
-        "New Password", validators=[DataRequired(), Length(8, 20), StrongPassword()]
+        _("New Password"), validators=[DataRequired(), Length(8, 20), StrongPassword()]
     )
     confirm_password = PasswordField(
-        "Confirm New Password",
+        _("Confirm New Password"),
         validators=[DataRequired(), Length(8, 20), StrongPassword()],
     )
-    remember = BooleanField("Remember me", validators=[DataRequired()])
-    submit = SubmitField("Submit")
+    remember = BooleanField(_("Remember me"), validators=[DataRequired()])
+    submit = SubmitField(_("Submit"))
 
 
 class ChangePasswordForm(FlaskForm):
@@ -108,16 +112,16 @@ class ChangePasswordForm(FlaskForm):
     """
 
     old_password = PasswordField(
-        "Old Password", validators=[DataRequired(), Length(8, 20)]
+        _("Old Password"), validators=[DataRequired(), Length(8, 20)]
     )
     new_password = PasswordField(
-        "New Password", validators=[DataRequired(), Length(8, 20)]
+        _("New Password"), validators=[DataRequired(), Length(8, 20)]
     )
     confirm_password = PasswordField(
-        "Confirm New Password", validators=[DataRequired(), Length(8, 20)]
+        _("Confirm New Password"), validators=[DataRequired(), Length(8, 20)]
     )
-    remember = BooleanField("Remember me", validators=[DataRequired()])
-    submit = SubmitField("Submit")
+    remember = BooleanField(_("Remember me"), validators=[DataRequired()])
+    submit = SubmitField(_("Submit"))
 
 
 class ChangeEmailForm(FlaskForm):
@@ -126,12 +130,12 @@ class ChangeEmailForm(FlaskForm):
     """
 
     email = EmailField(
-        "Email Address", validators=[DataRequired(), Length(8, 150), Email()]
+        _("Email Address"), validators=[DataRequired(), Length(8, 150), Email()]
     )
     remember = BooleanField(
-        "I agree & accept all terms of services.", validators=[DataRequired()]
+        _("I agree & accept all terms of services."), validators=[DataRequired()]
     )
-    submit = SubmitField("Send Confirmation Mail")
+    submit = SubmitField(_("Send Confirmation Mail"))
 
 
 class EditUserProfileForm(FlaskForm):
@@ -140,29 +144,29 @@ class EditUserProfileForm(FlaskForm):
     """
 
     username = StringField(
-        "Username", validators=[DataRequired(), Length(1, 30), StrongUsername()]
+        _("Username"), validators=[DataRequired(), Length(1, 30), StrongUsername()]
     )
     first_name = StringField(
-        "First Name", validators=[DataRequired(), Length(3, 25), StrongNames()]
+        _("First Name"), validators=[DataRequired(), Length(3, 25), StrongNames()]
     )
     last_name = StringField(
-        "Last Name", validators=[DataRequired(), Length(3, 25), StrongNames()]
+        _("Last Name"), validators=[DataRequired(), Length(3, 25), StrongNames()]
     )
     profile_image = FileField(
-        "Profile Image",
+        _("Profile Image"),
         validators=[
             FileAllowed(
                 ["jpg", "jpeg", "png", "svg"],
-                "Upload only image files (.jpg, .jpeg, .png, .svg).",
+                _("Upload only image files (.jpg, .jpeg, .png, .svg)."),
             ),
             FileSize(
                 max_size=1000000,
-                message="Profile image size should not greater than 1MB.",
+                message=_("Profile image size should not greater than 1MB."),
             ),
         ],
     )
-    about = TextAreaField("About")
-    submit = SubmitField("Save Profile")
+    about = TextAreaField(_("About Me"))
+    submit = SubmitField(_("Save Profile"))
 
 
 class DeleteAccountForm(FlaskForm):
@@ -171,7 +175,7 @@ class DeleteAccountForm(FlaskForm):
     """
 
     password = PasswordField(
-        "Type your password", validators=[DataRequired(), Length(8, 20)]
+        _("Type your password"), validators=[DataRequired(), Length(8, 20)]
     )
 
-    submit = SubmitField("Delete")
+    submit = SubmitField(_("Delete"))

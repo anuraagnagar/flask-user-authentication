@@ -13,7 +13,8 @@ from werkzeug.exceptions import (
 )
 
 from flask import Flask as FlaskAuth
-from flask import redirect, request, session, url_for
+from flask import redirect, request, session, url_for, current_app
+from flask_babel import lazy_gettext as _
 
 
 def create_app(config_type):
@@ -49,6 +50,19 @@ def create_app(config_type):
             session["_theme_preference"] = theme
             app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = theme
             return redirect(url_for("accounts.index"))
+
+    @app.get("/change-lang")
+    def change_lang():
+        lang = request.args.get("lang", app.config["BABEL_DEFAULT_LOCALE"])
+
+        if lang in app.config["LANGUAGES"]:
+            # not sure why both?
+            session["_lang_preference"] = lang
+            app.config["BABEL_LOCALE"] = lang
+        else:
+            session["_lang_preference"] = app.config["BABEL_DEFAULT_LOCALE"]
+            app.config["BABEL_LOCALE"] = app.config["BABEL_DEFAULT_LOCALE"]
+        return redirect(url_for("accounts.index"))
 
     return app
 
@@ -91,6 +105,10 @@ def config_blueprint(app):
     app.register_blueprint(accounts)
 
 
+def get_locale():
+    return current_app.config["BABEL_LOCALE"]
+
+
 def config_extention(app):
     """
     Configure application extensions.
@@ -103,6 +121,7 @@ def config_extention(app):
     from .extensions import csrf
     from .extensions import mail
     from .extensions import oauth
+    from .extensions import babel
 
     login_manager.init_app(app)
     limiter.init_app(app)
@@ -112,6 +131,7 @@ def config_extention(app):
     csrf.init_app(app)
     mail.init_app(app)
     oauth.init_app(app)
+    babel.init_app(app, locale_selector=get_locale)
 
     config_login_manager(login_manager)
 
@@ -122,7 +142,7 @@ def config_login_manager(manager):
     """
     from .models import User
 
-    manager.login_message = "You are not logged in to your account."
+    manager.login_message = _("You are not logged in to your account.")
     manager.login_message_category = "warning"
     manager.login_view = "accounts.login"
 
@@ -174,12 +194,14 @@ def config_errorhandler(app):
 
     @app.errorhandler(BadRequest)
     def bad_request(e: HTTPException):
-        flash("Oops! There was a problem with your request. Please try again.", "error")
+        flash(
+            _("Oops! There was a problem with your request. Please try again."), "error"
+        )
         return redirect(url_for("accounts.index"))
 
     @app.errorhandler(Unauthorized)
     def unauthorized(e: HTTPException):
-        flash("You are not authorized to access this resource.", "error")
+        flash(_("You are not authorized to access this resource."), "error")
         return redirect(url_for("accounts.index"))
 
     @app.errorhandler(NotFound)
@@ -188,7 +210,7 @@ def config_errorhandler(app):
 
     @app.errorhandler(MethodNotAllowed)
     def method_not_allowed(e: HTTPException):
-        flash("Method not allowed.", "error")
+        flash(_("Method not allowed."), "error")
         return redirect(url_for("accounts.index"))
 
     @app.errorhandler(TooManyRequests)

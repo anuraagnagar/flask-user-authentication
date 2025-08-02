@@ -1,0 +1,581 @@
+# German translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-08-01 19:45+0200\n"
+"PO-Revision-Date: 2025-08-01 11:46+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: accounts/__init__.py:145
+msgid "You are not logged in to your account."
+msgstr "Sie haben sich erfolgreich angemeldet."
+
+#: accounts/__init__.py:198
+msgid "Oops! There was a problem with your request. Please try again."
+msgstr "Ups! Es gab ein Problem mit Ihrer Anfrage. Bitte versuchen Sie es erneut."
+
+#: accounts/__init__.py:204
+msgid "You are not authorized to access this resource."
+msgstr "Sie sind nicht berechtigt, auf diese Ressource zuzugreifen."
+
+#: accounts/__init__.py:213
+msgid "Method not allowed."
+msgstr "Methode nicht erlaubt."
+
+#: accounts/decorators.py:21
+msgid "Guest user limited to read-only access."
+msgstr "Gastbenutzer hat nur Lesezugriff."
+
+#: accounts/forms.py:28 accounts/forms.py:147
+msgid "Username"
+msgstr "Benutzername"
+
+#: accounts/forms.py:36
+msgid "Username already exists choose another."
+msgstr "Benutzername existiert bereits, wählen Sie einen anderen."
+
+#: accounts/forms.py:41 accounts/forms.py:150 accounts/templates/index.html:27
+msgid "First Name"
+msgstr "Vorname"
+
+#: accounts/forms.py:44 accounts/forms.py:153 accounts/templates/index.html:31
+msgid "Last Name"
+msgstr "Nachname"
+
+#: accounts/forms.py:47 accounts/forms.py:85 accounts/forms.py:133
+#: accounts/templates/index.html:35 accounts/templates/profile.html:49
+msgid "Email Address"
+msgstr "E-Mail-Adresse"
+
+#: accounts/forms.py:52
+msgid "User already registered with us."
+msgstr "Benutzer ist bereits bei uns registriert."
+
+#: accounts/forms.py:56 accounts/forms.py:73
+msgid "Password"
+msgstr "Passwort"
+
+#: accounts/forms.py:60 accounts/forms.py:88 accounts/forms.py:136
+msgid "I agree & accept all terms of services."
+msgstr "Ich stimme allen Nutzungsbedingungen zu."
+
+#: accounts/forms.py:62 accounts/forms.py:76
+msgid "Continue"
+msgstr "Weiter"
+
+#: accounts/forms.py:71
+msgid "Username or Email Address"
+msgstr "Benutzername oder E-Mail-Adresse"
+
+#: accounts/forms.py:75 accounts/forms.py:105 accounts/forms.py:123
+msgid "Remember me"
+msgstr "Angemeldet bleiben"
+
+#: accounts/forms.py:90
+msgid "Send Reset Link"
+msgstr "Link zum Zurücksetzen senden"
+
+#: accounts/forms.py:99 accounts/forms.py:118
+msgid "New Password"
+msgstr "Neues Passwort"
+
+#: accounts/forms.py:102 accounts/forms.py:121
+msgid "Confirm New Password"
+msgstr "Neues Passwort bestätigen"
+
+#: accounts/forms.py:106 accounts/forms.py:124
+msgid "Submit"
+msgstr "Absenden"
+
+#: accounts/forms.py:115
+msgid "Old Password"
+msgstr "Altes Passwort"
+
+#: accounts/forms.py:138
+msgid "Send Confirmation Mail"
+msgstr "Bestätigungsmail senden"
+
+#: accounts/forms.py:156
+msgid "Profile Image"
+msgstr "Profilbild"
+
+#: accounts/forms.py:160
+msgid "Upload only image files (.jpg, .jpeg, .png, .svg)."
+msgstr "Nur Bilddateien hochladen (.jpg, .jpeg, .png, .svg)."
+
+#: accounts/forms.py:164
+msgid "Profile image size should not greater than 1MB."
+msgstr "Die Profilbildgröße darf 1MB nicht überschreiten."
+
+#: accounts/forms.py:168
+msgid "About Me"
+msgstr "Über"
+
+#: accounts/forms.py:169
+msgid "Save Profile"
+msgstr "Profil speichern"
+
+#: accounts/forms.py:178
+msgid "Type your password"
+msgstr "Geben Sie Ihr Passwort ein"
+
+#: accounts/forms.py:181
+msgid "Delete"
+msgstr "Löschen"
+
+#: accounts/views.py:64
+msgid "You are logged in as a Guest User."
+msgstr "Sie sind als Gastbenutzer angemeldet."
+
+#: accounts/views.py:67
+msgid "Test user not found."
+msgstr "Testbenutzer nicht gefunden."
+
+#: accounts/views.py:144
+msgid "Invalid username or password. Please try again."
+msgstr "Ungültiger Benutzername oder Passwort. Bitte versuchen Sie es erneut."
+
+#: accounts/views.py:159 accounts/views.py:732
+msgid "You are logged in successfully."
+msgstr "Sie haben sich erfolgreich angemeldet."
+
+#: accounts/views.py:230
+msgid "You're logout successfully."
+msgstr "Sie haben sich erfolgreich ausgeloggt."
+
+#: accounts/views.py:262
+msgid "A reset password link sent to your email. Please check."
+msgstr ""
+"Ein Link zum Zurücksetzen des Passworts wurde an Ihre E-Mail gesendet. "
+"Bitte prüfen Sie Ihr Postfach."
+
+#: accounts/views.py:266
+msgid "Email address is not registered with us."
+msgstr "Die E-Mail-Adresse ist bei uns nicht registriert."
+
+#: accounts/views.py:302
+msgid "Your new password field's did not match."
+msgstr "Die neuen Passwortfelder stimmen nicht überein."
+
+#: accounts/views.py:382
+msgid "Your old password is incorrect."
+msgstr "Ihr altes Passwort ist falsch."
+
+#: accounts/views.py:384
+msgid "Your new password field's not match."
+msgstr "Die neuen Passwortfelder stimmen nicht überein."
+
+#: accounts/views.py:401
+msgid "Your password changed successfully."
+msgstr "Ihr Passwort wurde erfolgreich geändert."
+
+#: accounts/views.py:433
+msgid "Email is already verified with your account."
+msgstr "Die E-Mail ist bereits mit Ihrem Konto verifiziert."
+
+#: accounts/views.py:435
+msgid "Email address is already registered with us."
+msgstr "Die E-Mail-Adresse ist bereits bei uns registriert."
+
+#: accounts/views.py:499
+msgid "Your email address updated successfully."
+msgstr "Ihre E-Mail-Adresse wurde erfolgreich aktualisiert."
+
+#: accounts/views.py:555
+msgid "Username already exists. Choose another."
+msgstr "Der Benutzername existiert bereits. Bitte wählen Sie einen anderen."
+
+#: accounts/views.py:575
+msgid "Your profile update successfully."
+msgstr "Ihr Profil wurde erfolgreich aktualisiert."
+
+#: accounts/views.py:619
+msgid "Your account has been deleted successfully."
+msgstr "Ihr Konto wurde erfolgreich gelöscht."
+
+#: accounts/views.py:622
+msgid "Incorrect password. We're unable to delete your account."
+msgstr "Falsches Passwort. Wir können Ihr Konto nicht löschen."
+
+#: accounts/views.py:657 accounts/views.py:737
+msgid "Google login failed. Please try again."
+msgstr "Google-Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut."
+
+#: accounts/views.py:688
+msgid "Your Google account has been linked successfully."
+msgstr "Ihr Google-Konto wurde erfolgreich verknüpft."
+
+#: accounts/views.py:754
+msgid "Something wrong with your request."
+msgstr "Bei Ihrer Anfrage ist ein Fehler aufgetreten."
+
+#: accounts/templates/base.html:37 accounts/templates/index.html:1
+msgid "Home"
+msgstr "Startseite"
+
+#: accounts/templates/base.html:39
+msgid "Profile"
+msgstr "Profil"
+
+#: accounts/templates/base.html:40
+msgid "Reset Email"
+msgstr "E-Mail zurücksetzen"
+
+#: accounts/templates/base.html:41 accounts/templates/change_password.html:1
+msgid "Change Password"
+msgstr "Passwort ändern"
+
+#: accounts/templates/base.html:42
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: accounts/templates/base.html:46
+msgid "Theme"
+msgstr "Design"
+
+#: accounts/templates/base.html:66
+msgid "Language"
+msgstr "Sprache"
+
+#: accounts/templates/base.html:84 accounts/templates/login.html:1
+msgid "Login"
+msgstr "Anmelden"
+
+#: accounts/templates/base.html:86
+msgid "Signup"
+msgstr "Registrieren"
+
+#: accounts/templates/base.html:90
+msgid "Logout"
+msgstr "Abmelden"
+
+#: accounts/templates/base.html:104
+msgid "Source Code"
+msgstr "Quellcode"
+
+#: accounts/templates/change_email.html:1
+msgid "Reset Email Address"
+msgstr "E-Mail-Adresse"
+
+#: accounts/templates/change_email.html:17
+msgid "Change Your Email Address"
+msgstr "Benutzername oder E-Mail-Adresse"
+
+#: accounts/templates/change_email.html:19
+msgid ""
+"To change your email enter new email address and you will\n"
+"                                    receive an confirmation link to "
+"confirm your email."
+msgstr ""
+"Um Ihre E-Mail zu ändern, geben Sie die neue E-Mail-Adresse ein, und Sie "
+"erhalten\n"
+"                                    einen Bestätigungslink, um Ihre "
+"E-Mail zu bestätigen."
+
+#: accounts/templates/change_email.html:23
+msgid "Enter email address"
+msgstr "Geben Sie Ihre E-Mail-Adresse ein"
+
+#: accounts/templates/change_email.html:31
+#: accounts/templates/forgot_password.html:36
+#: accounts/templates/reset_password.html:34
+msgid "Back to Home"
+msgstr "Zurück zur Startseite"
+
+#: accounts/templates/change_password.html:17
+msgid "Change Your Password"
+msgstr "Geben Sie Ihr Passwort ein"
+
+#: accounts/templates/change_password.html:21 accounts/templates/login.html:42
+msgid "Enter your password"
+msgstr "Geben Sie Ihr Passwort ein"
+
+#: accounts/templates/change_password.html:22
+msgid "Choose new password"
+msgstr "Neues Passwort"
+
+#: accounts/templates/change_password.html:23
+msgid "Re-type your new password"
+msgstr "Geben Sie Ihr Passwort ein"
+
+#: accounts/templates/change_password.html:28 accounts/templates/login.html:49
+msgid "Forgot Password?"
+msgstr "Geben Sie Ihr Passwort ein"
+
+#: accounts/templates/confirm_account.html:1
+msgid "Confirm Account"
+msgstr "Konto bestätigen"
+
+#: accounts/templates/confirm_account.html:17
+msgid "To confirm your account please click the button below."
+msgstr "Um Ihr Konto zu bestätigen, klicken Sie bitte auf die Schaltfläche unten."
+
+#: accounts/templates/confirm_account.html:27
+#: accounts/templates/confirm_email.html:35
+msgid "back to login"
+msgstr "Zurück zum Login"
+
+#: accounts/templates/confirm_email.html:1
+msgid "Confirm Email"
+msgstr "E-Mail bestätigen"
+
+#: accounts/templates/confirm_email.html:19
+msgid "To confirm your email address please click the button below."
+msgstr ""
+"Um Ihre E-Mail-Adresse zu bestätigen, klicken Sie bitte auf die "
+"Schaltfläche unten."
+
+#: accounts/templates/confirm_email.html:30
+msgid "back to home"
+msgstr "Zurück zur Startseite"
+
+#: accounts/templates/forgot_password.html:1
+#: accounts/templates/forgot_password.html:16
+msgid "Forgot Password"
+msgstr "Passwort vergessen"
+
+#: accounts/templates/forgot_password.html:18
+msgid ""
+"Reset password enter your email address and you will receive an email "
+"with\n"
+"                                    further instructions on how to reset "
+"your password."
+msgstr ""
+"Um Ihr Passwort zurückzusetzen, geben Sie Ihre E-Mail-Adresse ein, und "
+"Sie erhalten eine E-Mail\n"
+"                                    mit weiteren Anweisungen, wie Sie Ihr"
+" Passwort zurücksetzen können."
+
+#: accounts/templates/forgot_password.html:22
+msgid "Enter your email address"
+msgstr "Geben Sie Ihre E-Mail-Adresse ein"
+
+#: accounts/templates/forgot_password.html:31 accounts/templates/login.html:62
+msgid "Don't Have an account?"
+msgstr "Sie haben noch kein Konto?"
+
+#: accounts/templates/forgot_password.html:32 accounts/templates/login.html:63
+msgid "Sign Up"
+msgstr "Registrieren"
+
+#: accounts/templates/index.html:41 accounts/templates/settings.html:28
+msgid "Edit Profile"
+msgstr "Profil speichern"
+
+#: accounts/templates/login.html:23
+msgid "Login Account"
+msgstr "Konto anmelden"
+
+#: accounts/templates/login.html:31
+msgid "Login with Google"
+msgstr "Mit Google anmelden"
+
+#: accounts/templates/login.html:40
+msgid "Enter username or email"
+msgstr "Benutzername oder E-Mail-Adresse"
+
+#: accounts/templates/login.html:58
+msgid "Login as Guest User"
+msgstr "Sie sind als Gastbenutzer angemeldet."
+
+#: accounts/templates/profile.html:1
+msgid "My Profile"
+msgstr "Profil"
+
+#: accounts/templates/profile.html:25
+msgid "Profile Detail"
+msgstr "Profildetails"
+
+#: accounts/templates/profile.html:29 accounts/templates/register.html:42
+msgid "Enter your username"
+msgstr "Geben Sie Ihren Benutzernamen ein"
+
+#: accounts/templates/profile.html:35 accounts/templates/register.html:45
+msgid "First name"
+msgstr "Vorname"
+
+#: accounts/templates/profile.html:39 accounts/templates/register.html:48
+msgid "Last name"
+msgstr "Nachname"
+
+#: accounts/templates/profile.html:53
+msgid ""
+"Email address cannot be edited.\n"
+"                                    You can only reset it by sending a "
+"confirmation link to your newly entered email.\n"
+"                                    If you want to make a change, please "
+"click the button below."
+msgstr ""
+"Die E-Mail-Adresse kann nicht bearbeitet werden.\n"
+"                                    Sie können sie nur zurücksetzen, "
+"indem Sie einen Bestätigungslink an Ihre neu eingegebene E-Mail senden.\n"
+"                                    Wenn Sie eine Änderung vornehmen "
+"möchten, klicken Sie bitte auf die Schaltfläche unten."
+
+#: accounts/templates/profile.html:62
+msgid "Enter about yourself"
+msgstr "Schreiben Sie etwas über sich"
+
+#: accounts/templates/register.html:1
+msgid "Register"
+msgstr "Registrieren"
+
+#: accounts/templates/register.html:24
+msgid "Create Account"
+msgstr "Konto erstellen"
+
+#: accounts/templates/register.html:25
+msgid "Get started with your free account"
+msgstr "Starten Sie mit Ihrem kostenlosen Konto"
+
+#: accounts/templates/register.html:33
+msgid "Continue with Google"
+msgstr "Mit Google fortfahren"
+
+#: accounts/templates/register.html:51
+msgid "Enter your email"
+msgstr "Geben Sie Ihre E-Mail-Adresse ein"
+
+#: accounts/templates/register.html:52
+#: accounts/templates/reset_password.html:21
+msgid "Choose your password"
+msgstr "Wählen Sie Ihr Passwort"
+
+#: accounts/templates/register.html:62
+msgid "Have an account?"
+msgstr "Haben Sie bereits ein Konto?"
+
+#: accounts/templates/register.html:63
+msgid "Log In"
+msgstr "Anmelden"
+
+#: accounts/templates/reset_password.html:1
+#: accounts/templates/reset_password.html:17
+msgid "Reset Password"
+msgstr "Neues Passwort"
+
+#: accounts/templates/reset_password.html:22
+msgid "Re-type your password"
+msgstr "Geben Sie Ihr Passwort ein"
+
+#: accounts/templates/reset_password.html:31
+msgid "Back to Login"
+msgstr "Zurück zum Login"
+
+#: accounts/templates/settings.html:1 accounts/templates/settings.html:15
+msgid "Account Settings"
+msgstr "Kontoeinstellungen"
+
+#: accounts/templates/settings.html:35
+msgid "Login Provider Account"
+msgstr "Login-Anbieterkonto"
+
+#: accounts/templates/settings.html:41
+msgid "Google"
+msgstr "Google"
+
+#: accounts/templates/settings.html:42
+msgid "Connect your account with Google Login provider."
+msgstr "Verbinden Sie Ihr Konto mit dem Google-Login-Anbieter."
+
+#: accounts/templates/settings.html:51
+msgid "Disconnect"
+msgstr "Trennen"
+
+#: accounts/templates/settings.html:56
+msgid "Connect"
+msgstr "Verbinden"
+
+#: accounts/templates/settings.html:66 accounts/templates/settings.html:80
+msgid "Delete Account"
+msgstr "Konto löschen"
+
+#: accounts/templates/settings.html:67
+msgid ""
+"Deleting your account will permanently remove all your personal or\n"
+"                            public data, including your profile, social "
+"login and all other information related to your\n"
+"                            account."
+msgstr ""
+"Das Löschen Ihres Kontos entfernt dauerhaft alle Ihre persönlichen oder\n"
+"                            öffentlichen Daten, einschließlich Ihres "
+"Profils, Social-Login\n"
+"                            und aller anderen Informationen, die mit "
+"Ihrem Konto verbunden sind."
+
+#: accounts/templates/settings.html:71
+msgid "Delete my account"
+msgstr "Mein Konto löschen"
+
+#: accounts/templates/settings.html:82
+msgid "Are you sure you want to permanently delete your account?"
+msgstr "Sind Sie sicher, dass Sie Ihr Konto dauerhaft löschen möchten?"
+
+#: accounts/templates/settings.html:91
+msgid "Note:"
+msgstr "Hinweis:"
+
+#: accounts/templates/settings.html:92
+msgid ""
+"Login with Google must set a password before account deletion;\n"
+"                                            Ignore if already set."
+msgstr ""
+"Bei der Anmeldung mit Google muss vor dem Löschen des Kontos ein Passwort"
+" festgelegt werden;\n"
+"                                            Ignorieren, wenn bereits "
+"festgelegt."
+
+#: accounts/templates/settings.html:99
+msgid "Reset Password?"
+msgstr "Passwort zurücksetzen?"
+
+#: accounts/templates/settings.html:103
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: accounts/templates/errors/404.html:1
+msgid "404 Not Found"
+msgstr "404 Nicht gefunden"
+
+#: accounts/templates/errors/404.html:10
+msgid "Page Not Found"
+msgstr "Testbenutzer nicht gefunden."
+
+#: accounts/templates/errors/429.html:1
+msgid "429 Too Many Request"
+msgstr "429 Zu viele Anfragen"
+
+#: accounts/templates/errors/429.html:11
+msgid "Too Many Request"
+msgstr "Zu viele Anfragen"
+
+#: accounts/templates/errors/429.html:12
+msgid "You have exceeded the request limit. Please try again later."
+msgstr ""
+"Sie haben das Anfrage-Limit überschritten. Bitte versuchen Sie es später "
+"erneut."
+
+#: accounts/templates/errors/500.html:1
+msgid "500 Internal Server Error"
+msgstr "500 Interner Serverfehler"
+
+#: accounts/templates/errors/500.html:12
+msgid "Internal Server Error"
+msgstr "Interner Serverfehler"
+
+#: accounts/templates/errors/500.html:13
+msgid "Something went wrong with the internal server."
+msgstr "Bei Ihrer Anfrage ist ein Fehler aufgetreten."
+

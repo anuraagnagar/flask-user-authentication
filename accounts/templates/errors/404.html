@@ -1,4 +1,4 @@
-{% set title = "404 Not Found" %}
+{% set title = _("404 Not Found") %}
 
 {% extends "base.html" %}
 {% block body %}
@@ -7,7 +7,7 @@
     <div class="container">
         <div class="h-100vh">
             <div class="row align-items-center" style="height: 80vh;">
-                <h1 class="text-center"><span class="text-primary">404 </span>Page Not Found</h1>
+                <h1 class="text-center"><span class="text-primary">404 </span>{{ _("Page Not Found") }}</h1>
             </div>
         </div>
     </div>
