@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 from flask_mail import Mail
 from flask_migrate import Migrate
+from flask_babel import Babel
 
 # A bootstrap5 class for styling client side.
 bootstrap = Bootstrap5()
@@ -28,6 +29,9 @@ migrate = Migrate()
 
 # Oauth Client for Social Open Authenrication.
 oauth = OAuth()
+
+# Multi language support using Flask-Babel
+babel = Babel()
 
 
 def __key_func() -> str:

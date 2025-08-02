@@ -49,3 +49,4 @@ urllib3==2.4.0
 Werkzeug==2.3.6
 wrapt==1.17.0
 WTForms==3.0.1
+flask-babel==4.0.0
