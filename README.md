@@ -200,6 +200,29 @@ flask run
 
 To access this application open `http://localhost:5000` in your web browser.
 
+
+## Translation
+
+The code structure used for selecting a theme is also used to select the language.
+
+To build the `messages.pot` file and initialize the `translations/` directories **for the first time** for any new language, run these commands **once**:
+
+```
+pybabel extract -F babel.cfg -o messages.pot .
+pybabel init -i messages.pot -d translations/ -l es
+```
+Whenever you add new translatable text or update existing ones, update your translation files by running:
+```
+pybabel extract -F babel.cfg -o messages.pot .
+pybabel update -i messages.pot -d translations/
+```
+
+After translating the items in `.po` files located in `translations/XX/LC_MESSAGES/messages.po`, compile the translations into `.mo` files with:
+
+```
+pybabel compile -d translations/
+```
+
 ## 🤝 Contributing
 
 Contributions are welcome! If you find a bug or want to add a new feature, please open an issue or submit a pull request.
@@ -212,3 +235,4 @@ By contributing to this project, you agree that your contributions will be licen
 ## 👤 Author
 
 [Anurag Nagar](mailto:nagaranurag1999@gmail.com)
+

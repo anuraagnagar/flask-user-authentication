@@ -34,6 +34,7 @@ from accounts.utils import (
     download_and_save_image_from_url,
 )
 
+from flask_babel import lazy_gettext as _
 
 """
 This accounts blueprint defines routes and templates related to user management
@@ -60,10 +61,10 @@ def login_guest_user() -> Response:
             # Log in the guest user with a session duration of (1 day) only.
             login_user(test_user, remember=True, duration=timedelta(days=1))
 
-            flash("You are logged in as a Guest User.", "success")
+            flash(_("You are logged in as a Guest User."), "success")
             return redirect(url_for("accounts.index"))
 
-        flash("Test user not found.", "error")
+        flash(_("Test user not found."), "error")
         return redirect(url_for("accounts.login"))
 
     # Return a 404 error if accessed via GET
@@ -140,7 +141,7 @@ def login() -> Response:
         user = User.authenticate(username=username, password=password)
 
         if not user:
-            flash("Invalid username or password. Please try again.", "error")
+            flash(_("Invalid username or password. Please try again."), "error")
         else:
             if not user.is_active:
                 # User account is not active, send confirmation email.
@@ -155,7 +156,7 @@ def login() -> Response:
             # Log the user in and set the session to remember the user for (15 days).
             login_user(user, remember=remember, duration=timedelta(days=15))
 
-            flash("You are logged in successfully.", "success")
+            flash(_("You are logged in successfully."), "success")
             return redirect(url_for("accounts.index"))
 
         return redirect(url_for("accounts.login"))
@@ -226,7 +227,7 @@ def logout() -> Response:
     # Log out the user and clear the session.
     logout_user()
 
-    flash("You're logout successfully.", "success")
+    flash(_("You're logout successfully."), "success")
     return redirect(url_for("accounts.login"))
 
 
@@ -257,10 +258,12 @@ def forgot_password() -> Response:
             # Send a reset password link to the user's email.
             send_reset_password(user)
 
-            flash("A reset password link sent to your email. Please check.", "success")
+            flash(
+                _("A reset password link sent to your email. Please check."), "success"
+            )
             return redirect(url_for("accounts.login"))
 
-        flash("Email address is not registered with us.", "error")
+        flash(_("Email address is not registered with us."), "error")
         return redirect(url_for("accounts.forgot_password"))
 
     return render_template("forgot_password.html", form=form)
@@ -296,7 +299,7 @@ def reset_password() -> Response:
             confirm_password = form.data.get("confirm_password")
 
             if not (password == confirm_password):
-                flash("Your new password field's did not match.", "error")
+                flash(_("Your new password field's did not match."), "error")
             else:
                 try:
                     # Retrieve the user by the ID from the token and update their password.
@@ -376,9 +379,9 @@ def change_password() -> Response:
         )
 
         if not user.check_password(old_password):
-            flash("Your old password is incorrect.", "error")
+            flash(_("Your old password is incorrect."), "error")
         elif not (new_password == confirm_password):
-            flash("Your new password field's not match.", "error")
+            flash(_("Your new password field's not match."), "error")
         elif not re.match(re_pattern, new_password):
             flash(
                 "Please choose strong password. It contains at least one alphabet, number, and one special character.",
@@ -395,7 +398,7 @@ def change_password() -> Response:
                 # Handle database error by raising an internal server error.
                 raise InternalServerError
 
-            flash("Your password changed successfully.", "success")
+            flash(_("Your password changed successfully."), "success")
             return redirect(url_for("accounts.index"))
 
         return redirect(url_for("accounts.change_password"))
@@ -427,9 +430,9 @@ def change_email() -> Response:
         user = User.get_user_by_id(current_user.id, raise_exception=True)
 
         if email == user.email:
-            flash("Email is already verified with your account.", "warning")
+            flash(_("Email is already verified with your account."), "warning")
         elif User.query.filter(User.email == email, User.id != user.id).first():
-            flash("Email address is already registered with us.", "warning")
+            flash(_("Email address is already registered with us."), "warning")
         else:
             try:
                 # Update the new email as the pending email change.
@@ -493,7 +496,7 @@ def confirm_email() -> Response:
                 # Handle database error by raising an internal server error.
                 raise InternalServerError
 
-            flash("Your email address updated successfully.", "success")
+            flash(_("Your email address updated successfully."), "success")
             return redirect(url_for("accounts.index"))
 
         return render_template("confirm_email.html", token=token)
@@ -549,7 +552,7 @@ def profile() -> Response:
         ).first()
 
         if username_exist:
-            flash("Username already exists. Choose another.", "error")
+            flash(_("Username already exists. Choose another."), "error")
         else:
             try:
                 # Update the user's profile details.
@@ -569,7 +572,7 @@ def profile() -> Response:
                 print("Error while updating user profile:", e)
                 raise InternalServerError
 
-            flash("Your profile update successfully.", "success")
+            flash(_("Your profile update successfully."), "success")
             return redirect(url_for("accounts.index"))
 
         return redirect(url_for("accounts.profile"))
@@ -613,10 +616,10 @@ def delete_user() -> Response:
         # Log the user out and remove their session.
         logout_user()
 
-        flash("Your account has been deleted successfully.", "success")
+        flash(_("Your account has been deleted successfully."), "success")
         return redirect(url_for("accounts.login"))
 
-    flash("Incorrect password. We're unable to delete your account.", "error")
+    flash(_("Incorrect password. We're unable to delete your account."), "error")
     return redirect(url_for("accounts.settings"))
 
 
@@ -651,7 +654,7 @@ def google_login_callback() -> Response:
     try:
         token = oauth.google.authorize_access_token()
     except (OAuthError, TokenExpiredError) as e:
-        flash("Google login failed. Please try again.", "error")
+        flash(_("Google login failed. Please try again."), "error")
         return redirect(url_for("accounts.login"))
 
     if token:
@@ -682,7 +685,7 @@ def google_login_callback() -> Response:
                 # Create a new OAuth provider for the user.
                 user.create_oauth_provider(provider_id=user_info.get("sub", ""))
 
-                flash("Your Google account has been linked successfully.", "success")
+                flash(_("Your Google account has been linked successfully."), "success")
 
             else:
                 if not oauth_user:
@@ -726,12 +729,12 @@ def google_login_callback() -> Response:
                 # Log the user in and set the session to remember the user for (15 days).
                 login_user(user, remember=True, duration=timedelta(days=15))
 
-                flash("You are logged in successfully.", "success")
+                flash(_("You are logged in successfully."), "success")
                 return redirect(url_for("accounts.index"))
 
             return redirect(url_for("accounts.settings"))
 
-    flash("Google login failed. Please try again.", "error")
+    flash(_("Google login failed. Please try again."), "error")
     return redirect(url_for("accounts.login"))
 
 
@@ -748,7 +751,7 @@ def remove_oauth_provider() -> Response:
     provider = request.args.get("provider", "google")
 
     if not provider in current_app.config["OAUTH_PROVIDERS"]:
-        flash("Something wrong with your request.", "error")
+        flash(_("Something wrong with your request."), "error")
         return redirect(url_for("accounts.settings"), code=HTTPStatus.BAD_REQUEST)
 
     user = User.get_user_by_id(current_user.get_id(), raise_exception=True)

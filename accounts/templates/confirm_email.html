@@ -1,4 +1,4 @@
-{% set title = "Confirm Email" %}
+{% set title = _("Confirm Email") %}
 
 {% extends "base.html" %}
 {% from 'bootstrap5/utils.html' import render_messages %}
@@ -15,7 +15,8 @@
                         <div class="card-body">
                             <form action="{{ url_for('accounts.confirm_email', token=token) }}" method="post">
                                 <div class="my-5">
-                                    <h5 class="text-center">To confirm your email address please click the button below.
+                                    <h5 class="text-center">
+                                        {{ _('To confirm your email address please click the button below.') }}
                                     </h5>
                                     <div class="d-flex justify-content-center my-4">
                                         <input id="csrf_token" type="hidden" name="csrf_token"
@@ -26,12 +27,12 @@
                                     {% if current_user.is_authenticated %}
                                     <p class="text-center">
                                         <a class="text-decoration-none" href="{{ url_for('accounts.index') }}">
-                                            back to home</a>
+                                            {{ _('back to home') }}</a>
                                     </p>
                                     {% else %}
                                     <p class="text-center">
                                         <a class="text-decoration-none" href="{{ url_for('accounts.login') }}">
-                                            back to login</a>
+                                            {{ _('back to login') }}</a>
                                     </p>
                                     {% endif %}
                                 </div>
