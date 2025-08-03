@@ -9,7 +9,8 @@ __pycache__/
 .venv
 venv/
 env/
-profile/*
+accounts/static/assets/uploads/*
+!accounts/static/assets/uploads/.gitkeep
 
 # for database migrations and local db files.
 migrations/
