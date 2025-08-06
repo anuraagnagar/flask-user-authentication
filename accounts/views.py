@@ -43,7 +43,7 @@ within our application.
 accounts = Blueprint("accounts", __name__, template_folder="templates")
 
 
-@accounts.route("/login_as_guest", methods=["GET", "POST"])
+@accounts.route("/account/login_as_guest", methods=["GET", "POST"])
 @authentication_redirect
 @limiter.limit("3/min", methods=["POST"])
 def login_guest_user() -> Response:
@@ -71,7 +71,7 @@ def login_guest_user() -> Response:
     return abort(HTTPStatus.NOT_FOUND)
 
 
-@accounts.route("/register", methods=["GET", "POST"])
+@accounts.route("/account/register", methods=["GET", "POST"])
 @authentication_redirect
 @limiter.limit("3/min", methods=["POST"])
 def register() -> Response:
@@ -116,7 +116,7 @@ def register() -> Response:
     return render_template("register.html", form=form)
 
 
-@accounts.route("/login", methods=["GET", "POST"])
+@accounts.route("/account/login", methods=["GET", "POST"])
 @authentication_redirect
 @limiter.limit("5/minute", methods=["POST"])
 def login() -> Response:
@@ -215,7 +215,7 @@ def confirm_account() -> Response:
     return abort(HTTPStatus.NOT_FOUND)
 
 
-@accounts.route("/logout", methods=["GET", "POST"])
+@accounts.route("/account/logout", methods=["GET", "POST"])
 @login_required
 def logout() -> Response:
     """
@@ -231,7 +231,7 @@ def logout() -> Response:
     return redirect(url_for("accounts.login"))
 
 
-@accounts.route("/forgot/password", methods=["GET", "POST"])
+@accounts.route("/account/forgot/password", methods=["GET", "POST"])
 @guest_user_exempt
 @limiter.limit("3/minute", methods=["POST"])
 def forgot_password() -> Response:
@@ -269,7 +269,7 @@ def forgot_password() -> Response:
     return render_template("forgot_password.html", form=form)
 
 
-@accounts.route("/password/reset", methods=["GET", "POST"])
+@accounts.route("/account/password/reset", methods=["GET", "POST"])
 @limiter.limit("5/min", methods=["POST"])
 def reset_password() -> Response:
     """
@@ -344,7 +344,7 @@ def reset_password() -> Response:
     return abort(HTTPStatus.NOT_FOUND)
 
 
-@accounts.route("/change/password", methods=["GET", "POST"])
+@accounts.route("/account/change/password", methods=["GET", "POST"])
 @login_required
 @guest_user_exempt
 @limiter.limit("5/min", methods=["POST"])
@@ -406,7 +406,7 @@ def change_password() -> Response:
     return render_template("change_password.html", form=form)
 
 
-@accounts.route("/change/email", methods=["GET", "POST"])
+@accounts.route("/account/change/email", methods=["GET", "POST"])
 @login_required
 @guest_user_exempt
 @limiter.limit("5/min", methods=["POST"])
@@ -518,7 +518,7 @@ def index() -> Response:
     return render_template("index.html")
 
 
-@accounts.route("/profile", methods=["GET", "POST"])
+@accounts.route("/account/profile", methods=["GET", "POST"])
 @login_required
 @guest_user_exempt
 @limiter.limit("8/min", methods=["POST"])
