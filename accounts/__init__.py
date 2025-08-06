@@ -42,7 +42,7 @@ def create_app(config_type):
     config_errorhandler(app)
 
     # add view for changing theme
-    @app.get("/change-theme")
+    @app.get("/account/change-theme")
     def change_theme():
         theme = request.args.get("theme", app.config["BOOTSTRAP_DEFAULT_THEME"])
 
@@ -51,7 +51,7 @@ def create_app(config_type):
             app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = theme
             return redirect(url_for("accounts.index"))
 
-    @app.get("/change-lang")
+    @app.get("/account/change-lang")
     def change_lang():
         lang = request.args.get("lang", app.config["BABEL_DEFAULT_LOCALE"])
 
