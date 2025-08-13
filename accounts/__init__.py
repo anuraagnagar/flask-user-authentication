@@ -53,15 +53,12 @@ def create_app(config_type):
 
     @app.get("/change-lang")
     def change_lang():
-        lang = request.args.get("lang", app.config["BABEL_DEFAULT_LOCALE"])
-
+        lang = request.args.get("l", app.config["BABEL_DEFAULT_LOCALE"])
         if lang in app.config["LANGUAGES"]:
             # not sure why both?
             session["_lang_preference"] = lang
-            app.config["BABEL_LOCALE"] = lang
         else:
             session["_lang_preference"] = app.config["BABEL_DEFAULT_LOCALE"]
-            app.config["BABEL_LOCALE"] = app.config["BABEL_DEFAULT_LOCALE"]
         return redirect(url_for("accounts.index"))
 
     return app
@@ -131,6 +128,15 @@ def config_extention(app):
     csrf.init_app(app)
     mail.init_app(app)
     oauth.init_app(app)
+
+    def get_locale():
+        if session.get("_lang_preference", None):
+            return session["_lang_preference"]
+        else:
+            session["_lang_preference"] = request.accept_languages.best_match(
+                app.config["LANGUAGES"]
+            )
+
     babel.init_app(app, locale_selector=get_locale)
 
     config_login_manager(login_manager)
