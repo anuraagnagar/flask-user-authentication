@@ -67,9 +67,11 @@
             <ul class="dropdown-menu">
               {% for lang in config["LANGUAGES"] %}
               <li>
-                <a class="dropdown-item d-flex" href="{{ url_for('change_lang', lang=lang) }}">
+                <a class="dropdown-item d-flex" href="{{ url_for('change_lang', l=lang) }}">
                   {{ lang }}
-                  {% if session.get('_lang_preference') == lang %}
+                  {% if session.get('_lang_preference', none) is none and theme == 'en' %}
+                  <i class="bi bi-check-circle-fill ms-auto"></i>
+                  {% elif session.get('_lang_preference') == lang %}
                   <i class="bi bi-check-circle-fill ms-auto"></i>
                   {% endif %}
                 </a>
