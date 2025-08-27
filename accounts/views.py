@@ -45,7 +45,7 @@ accounts = Blueprint("accounts", __name__, template_folder="templates")
 
 @accounts.route("/login_as_guest", methods=["GET", "POST"])
 @authentication_redirect
-@limiter.limit("3/min", methods=["POST"])
+@limiter.limit("3/minute", methods=["POST"])
 def login_guest_user() -> Response:
     """
     Log in as a guest user with limited access.
@@ -73,7 +73,7 @@ def login_guest_user() -> Response:
 
 @accounts.route("/register", methods=["GET", "POST"])
 @authentication_redirect
-@limiter.limit("3/min", methods=["POST"])
+@limiter.limit("3/minute", methods=["POST"])
 def register() -> Response:
     """
     Handling user registration.
@@ -270,7 +270,7 @@ def forgot_password() -> Response:
 
 
 @accounts.route("/password/reset", methods=["GET", "POST"])
-@limiter.limit("5/min", methods=["POST"])
+@limiter.limit("5/minute", methods=["POST"])
 def reset_password() -> Response:
     """
     Handling password reset requests.
@@ -347,7 +347,7 @@ def reset_password() -> Response:
 @accounts.route("/change/password", methods=["GET", "POST"])
 @login_required
 @guest_user_exempt
-@limiter.limit("5/min", methods=["POST"])
+@limiter.limit("5/minute", methods=["POST"])
 def change_password() -> Response:
     """
     Handling user password change requests.
@@ -409,7 +409,7 @@ def change_password() -> Response:
 @accounts.route("/change/email", methods=["GET", "POST"])
 @login_required
 @guest_user_exempt
-@limiter.limit("5/min", methods=["POST"])
+@limiter.limit("5/minute", methods=["POST"])
 def change_email() -> Response:
     """
     Handling email change requests for the logged-in user.
@@ -521,7 +521,7 @@ def index() -> Response:
 @accounts.route("/profile", methods=["GET", "POST"])
 @login_required
 @guest_user_exempt
-@limiter.limit("8/min", methods=["POST"])
+@limiter.limit("8/minute", methods=["POST"])
 def profile() -> Response:
     """
     Handling the user's profile page,
