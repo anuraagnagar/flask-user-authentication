@@ -17,28 +17,28 @@
                     </div>
                 </section>
                 <section class="col-md-6">
-                    <div class="row my-3">
+                    <div class="my-3">
                         <div class="mb-3">
                             <h2 class="mb-1">{{ current_user.first_name }} {{ current_user.last_name }}</h2>
                             <p>@{{ current_user.username }}</p>
                         </div>
                         <h6 class="text-muted mb-4">{{ current_user.profile.bio }}</h6>
-                        <div class="row">
+                        <div class="mb-2">
                             <label class="fw-bold">{{ _("First Name") }}</label>
                             <p>{{ current_user.first_name }}</p>
                         </div>
-                        <div class="row">
+                        <div class="mb-2">
                             <label class="fw-bold">{{ _("Last Name") }}</label>
                             <p>{{ current_user.last_name }}</p>
                         </div>
-                        <div class="row">
+                        <div class="mb-2">
                             <label class="fw-bold">{{ _("Email Address") }}</label>
                             <p>{{ current_user.email }}</p>
                         </div>
-                    </div>
-                    <div>
-                        <a href="{{ url_for('accounts.profile') }}" type="submit" class="btn btn-primary"
-                            value="Edit Profile">{{ _("Edit Profile") }}</a>
+                        <div class="mb-3">
+                            <a href="{{ url_for('accounts.profile') }}" type="submit" class="btn btn-primary"
+                                value="Edit Profile">{{ _("Edit Profile") }}</a>
+                        </div>
                     </div>
                 </section>
             </div>

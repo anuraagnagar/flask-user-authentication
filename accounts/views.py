@@ -9,6 +9,7 @@ from authlib.integrations.base_client.errors import TokenExpiredError
 
 from flask import Blueprint, Response
 from flask import abort, current_app, render_template, request, redirect, url_for, flash
+from flask_babel import lazy_gettext as _
 from flask_login import current_user, login_required, login_user, logout_user
 
 from accounts.decorators import authentication_redirect, guest_user_exempt
@@ -34,7 +35,6 @@ from accounts.utils import (
     download_and_save_image_from_url,
 )
 
-from flask_babel import lazy_gettext as _
 
 """
 This accounts blueprint defines routes and templates related to user management
@@ -108,7 +108,7 @@ def register() -> Response:
         user.send_confirmation()
 
         flash(
-            "A confirmation link sent to your email. Please verify your account.",
+            _("A confirmation link sent to your email. Please verify your account."),
             "success",
         )
         return redirect(url_for("accounts.login"))
@@ -148,7 +148,9 @@ def login() -> Response:
                 user.send_confirmation()
 
                 flash(
-                    "Your account is not activate. We sent a confirmation link to your email",
+                    _(
+                        "Your account is not activate. We sent a confirmation link to your email"
+                    ),
                     "error",
                 )
                 return redirect(url_for("accounts.login"))
@@ -205,7 +207,8 @@ def confirm_account() -> Response:
             login_user(user, remember=True, duration=timedelta(days=15))
 
             flash(
-                f"Welcome {user.username}, You're registered successfully.", "success"
+                _(f"Welcome {user.username}, You're registered successfully."),
+                "success",
             )
             return redirect(url_for("accounts.index"))
 
@@ -309,7 +312,9 @@ def reset_password() -> Response:
 
                     if user.check_password(password):
                         flash(
-                            "Your new password cannot be the same as the previous one.",
+                            _(
+                                "Your new password cannot be the same as the previous one."
+                            ),
                             "error",
                         )
                     else:
@@ -323,13 +328,14 @@ def reset_password() -> Response:
 
                         if current_user.is_authenticated:
                             flash(
-                                "Your password is changed successfully.",
+                                _("Your password is changed successfully."),
                                 "success",
                             )
                             return redirect(url_for("accounts.index"))
 
                         flash(
-                            "Your password reset successfully. Please login.", "success"
+                            _("Your password reset successfully. Please login."),
+                            "success",
                         )
                         return redirect(url_for("accounts.login"))
                 except Exception as e:
@@ -384,7 +390,10 @@ def change_password() -> Response:
             flash(_("Your new password field's not match."), "error")
         elif not re.match(re_pattern, new_password):
             flash(
-                "Please choose strong password. It contains at least one alphabet, number, and one special character.",
+                _(
+                    "Please choose a strong password. It contains at least one "
+                    "alphabet, number, and one special character."
+                ),
                 "warning",
             )
         else:
@@ -448,7 +457,7 @@ def change_email() -> Response:
             send_reset_email(user)
 
             flash(
-                "A reset email link sent to your new email address. Please verify.",
+                _("A reset email link sent to your new email address. Please verify."),
                 "success",
             )
             return redirect(url_for("accounts.index"))
@@ -636,7 +645,9 @@ def google_login() -> Response:
         return oauth.google.authorize_redirect(redirect_uri)
     except (ConnectionError, OAuthError) as e:
         flash(
-            "Unable to login with Google. Please check your connection and try again.",
+            _(
+                "Unable to login with Google. Please check your connection and try again."
+            ),
             "error",
         )
         return redirect(url_for("accounts.login"))
@@ -674,7 +685,9 @@ def google_login_callback() -> Response:
                 # If the user is authenticated, check if the Google account is already linked.
                 if oauth_user and oauth_user.user_id != current_user.id:
                     flash(
-                        "This Google account is already linked with another user account.",
+                        _(
+                            "This Google account is already linked with another user account."
+                        ),
                         "error",
                     )
                     return redirect(url_for("accounts.settings"))

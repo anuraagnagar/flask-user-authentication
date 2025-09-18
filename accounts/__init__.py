@@ -12,8 +12,8 @@ from werkzeug.exceptions import (
     TooManyRequests,
 )
 
-from flask import Flask as FlaskAuth
-from flask import redirect, request, session, url_for, current_app
+from flask import Flask, make_response
+from flask import redirect, request, session, url_for
 from flask_babel import lazy_gettext as _
 
 
@@ -21,7 +21,7 @@ def create_app(config_type):
     """
     Create and configure the Flask application instance.
     """
-    app = FlaskAuth(__name__)
+    app = Flask(__name__)
 
     # application configuration.
     config_application(app, config_type)
@@ -41,18 +41,40 @@ def create_app(config_type):
     # configure error handlers.
     config_errorhandler(app)
 
-    # add view for changing theme
+    @app.before_request
+    def inject_theme():
+        """
+        Inject the user's theme preference into the application context.
+        """
+        theme_default = app.config["BOOTSTRAP_DEFAULT_THEME"]
+        theme = request.cookies.get("theme", theme_default)
+
+        if theme in app.config["BOOTSTRAP_BOOTSWATCH_THEMES"]:
+            session["_theme_preference"] = theme
+            app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = theme
+
     @app.get("/change-theme")
     def change_theme():
+        """
+        Change the theme of the application.
+        """
         theme = request.args.get("theme", app.config["BOOTSTRAP_DEFAULT_THEME"])
 
         if theme in app.config["BOOTSTRAP_BOOTSWATCH_THEMES"]:
             session["_theme_preference"] = theme
             app.config["BOOTSTRAP_BOOTSWATCH_THEME"] = theme
-            return redirect(url_for("accounts.index"))
+
+        response = make_response(
+            redirect(request.referrer or url_for("accounts.index"))
+        )
+        response.set_cookie("theme", theme, max_age=60 * 60 * 24 * 15)  # 15 days
+        return response
 
     @app.get("/change-lang")
     def change_lang():
+        """
+        Change the language of the application.
+        """
         lang = request.args.get("lang", app.config["BABEL_DEFAULT_LOCALE"])
 
         if lang in app.config["LANGUAGES"]:
@@ -62,12 +84,19 @@ def create_app(config_type):
         else:
             session["_lang_preference"] = app.config["BABEL_DEFAULT_LOCALE"]
             app.config["BABEL_LOCALE"] = app.config["BABEL_DEFAULT_LOCALE"]
-        return redirect(url_for("accounts.index"))
+            lang = app.config["BABEL_DEFAULT_LOCALE"]
+
+        # set language in response cookie
+        next_url = request.referrer or url_for("accounts.index")
+        response = make_response(redirect(next_url))
+        response.set_cookie("lang", lang, max_age=60 * 60 * 24 * 15)  # 15 days
+
+        return response
 
     return app
 
 
-def config_application(app, config_type):
+def config_application(app: Flask, config_type):
     """
     Configure the application based on the specified `configuration` type.
     """
@@ -96,7 +125,7 @@ def config_application(app, config_type):
     app.config.from_object(config)
 
 
-def config_blueprint(app):
+def config_blueprint(app: Flask):
     """
     Configure/register blueprints for the application.
     """
@@ -105,11 +134,7 @@ def config_blueprint(app):
     app.register_blueprint(accounts)
 
 
-def get_locale():
-    return current_app.config["BABEL_LOCALE"]
-
-
-def config_extention(app):
+def config_extention(app: Flask):
     """
     Configure application extensions.
     """
@@ -122,6 +147,18 @@ def config_extention(app):
     from .extensions import mail
     from .extensions import oauth
     from .extensions import babel
+
+    def get_locale():
+        # Check if language cookie exists
+        lang_default = app.config["BABEL_DEFAULT_LOCALE"]
+        lang = request.cookies.get("lang", lang_default)
+
+        if lang in app.config["LANGUAGES"]:
+            session["_lang_preference"] = lang
+            return lang
+        
+        session["_lang_preference"] = lang_default
+        return request.accept_languages.best_match(app.config["LANGUAGES"])
 
     login_manager.init_app(app)
     limiter.init_app(app)
@@ -161,11 +198,12 @@ def config_cli_command(app):
     register_cli_command(app)
 
 
-def config_google_oauth(app):
+def config_google_oauth(app: Flask):
     from authlib.integrations.flask_client import OAuthError
 
     from .extensions import oauth
 
+    # OAuth configuration for Google
     _client_id = app.config.get("GOOGLE_CLIENT_ID")
     _client_secret = app.config.get("GOOGLE_CLIENT_SECRET")
 
@@ -186,7 +224,7 @@ def config_google_oauth(app):
         raise OAuthError(f"Failed to connect Google OAuth client: {err}")
 
 
-def config_errorhandler(app):
+def config_errorhandler(app: Flask):
     """
     Configure error handlers for application.
     """

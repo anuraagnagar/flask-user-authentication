@@ -8,6 +8,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A simple user authentication system built with Flask and SQLAlchemy." />
   <link rel="shortcut icon" href="{{ url_for('static', filename='assets/favicon.ico') }}" type="image/x-icon">
   <title>{{ title }} - Flask Authentication System</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -41,6 +42,8 @@
           {{ render_nav_item('accounts.change_password', _('Change Password') ) }}
           {{ render_nav_item('accounts.settings', _('Settings') ) }}
           {% endif %}
+
+          <!-- theme selector dropdown -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-palette-fill me-2"></i>{{ _('Theme') }}</a>
@@ -61,14 +64,16 @@
             </ul>
           </li>
 
+          <!-- language selector dropdown -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-translate me-2"></i>{{ _('Language') }}</a>
             <ul class="dropdown-menu">
+              {% set flags = { "en": "🇺🇸", "es": "🇪🇸", "fr": "🇫🇷", "de": "🇩🇪" } %}
               {% for lang in config["LANGUAGES"] %}
-              <li>
+              <li class="">
                 <a class="dropdown-item d-flex" href="{{ url_for('change_lang', lang=lang) }}">
-                  {{ lang }}
+                  {{ flags.get(lang, "🌐") }} {{ lang }}
                   {% if session.get('_lang_preference') == lang %}
                   <i class="bi bi-check-circle-fill ms-auto"></i>
                   {% endif %}

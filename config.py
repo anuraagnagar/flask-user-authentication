@@ -9,6 +9,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "accounts", "static", "assets")
 
 UPLOAD_FOLDER = os.path.join(MEDIA_ROOT, "uploads")
 
+# Load environment variables from .env file
 load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
 
 
@@ -17,11 +18,13 @@ class BaseConfig:
     DEBUG = False
     TESTING = False
 
+    SITE_URL = os.getenv("SITE_DOMAIN")
+
+    # Internationalization configuration.
     LANGUAGES = ["en", "es", "fr", "de"]
     BABEL_DEFAULT_LOCALE = "en"
     BABEL_LOCALE = "en"
     BABEL_TRANSLATION_DIRECTORIES = os.path.join(BASE_DIR, "translations")
-    SITE_URL = os.getenv("SITE_DOMAIN")
 
     # Site secret key.
     SECRET_KEY = os.getenv("SECRET_KEY", "my-sekret-key")
@@ -73,7 +76,8 @@ class BaseConfig:
 
     # `Flask-Limiter` configuration.
     RATELIMIT_ENABLED = os.getenv("RATELIMIT_ENABLED", "True").lower() in ("true", "1")
-    RATELIMIT_STORAGE_URI = os.getenv("RATELIMIT_STORAGE_URI", "memory://")
+    # RATELIMIT_STORAGE_URI = os.getenv("RATELIMIT_STORAGE_URI", "memory://")
+    RATELIMIT_STORAGE_URI = "memory://"
 
     # Default `Salt` string for url security tokens.
     SALT_ACCOUNT_CONFIRM = os.getenv("ACCOUNT_CONFIRM_SALT", "account_confirm_salt")
