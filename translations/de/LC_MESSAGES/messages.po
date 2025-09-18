@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-01 19:45+0200\n"
+"POT-Creation-Date: 2025-09-18 16:30+0530\n"
 "PO-Revision-Date: 2025-08-01 11:46+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -16,21 +16,21 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.17.0\n"
 
-#: accounts/__init__.py:145
+#: accounts/__init__.py:182
 msgid "You are not logged in to your account."
 msgstr "Sie haben sich erfolgreich angemeldet."
 
-#: accounts/__init__.py:198
+#: accounts/__init__.py:236
 msgid "Oops! There was a problem with your request. Please try again."
 msgstr "Ups! Es gab ein Problem mit Ihrer Anfrage. Bitte versuchen Sie es erneut."
 
-#: accounts/__init__.py:204
+#: accounts/__init__.py:242
 msgid "You are not authorized to access this resource."
 msgstr "Sie sind nicht berechtigt, auf diese Ressource zuzugreifen."
 
-#: accounts/__init__.py:213
+#: accounts/__init__.py:251
 msgid "Method not allowed."
 msgstr "Methode nicht erlaubt."
 
@@ -143,125 +143,164 @@ msgstr "Sie sind als Gastbenutzer angemeldet."
 msgid "Test user not found."
 msgstr "Testbenutzer nicht gefunden."
 
+#: accounts/views.py:111
+#, fuzzy
+msgid "A confirmation link sent to your email. Please verify your account."
+msgstr "Ein Bestätigungslink wurde an Ihre E-Mail gesendet. Bitte überprüfen Sie Ihr Postfach."
+
 #: accounts/views.py:144
 msgid "Invalid username or password. Please try again."
 msgstr "Ungültiger Benutzername oder Passwort. Bitte versuchen Sie es erneut."
 
-#: accounts/views.py:159 accounts/views.py:732
+#: accounts/views.py:152
+msgid "Your account is not activate. We sent a confirmation link to your email"
+msgstr "Ihr Konto ist nicht aktiviert. Wir haben einen Bestätigungslink an Ihre E-Mail gesendet."
+
+#: accounts/views.py:161 accounts/views.py:745
 msgid "You are logged in successfully."
 msgstr "Sie haben sich erfolgreich angemeldet."
 
-#: accounts/views.py:230
+#: accounts/views.py:233
 msgid "You're logout successfully."
 msgstr "Sie haben sich erfolgreich ausgeloggt."
 
-#: accounts/views.py:262
+#: accounts/views.py:265
 msgid "A reset password link sent to your email. Please check."
-msgstr ""
-"Ein Link zum Zurücksetzen des Passworts wurde an Ihre E-Mail gesendet. "
-"Bitte prüfen Sie Ihr Postfach."
+msgstr "Ein Link zum Zurücksetzen des Passworts wurde an Ihre E-Mail gesendet. Bitte überprüfen Sie Ihr Postfach."
 
-#: accounts/views.py:266
+#: accounts/views.py:269
 msgid "Email address is not registered with us."
 msgstr "Die E-Mail-Adresse ist bei uns nicht registriert."
 
-#: accounts/views.py:302
+#: accounts/views.py:305
 msgid "Your new password field's did not match."
 msgstr "Die neuen Passwortfelder stimmen nicht überein."
 
-#: accounts/views.py:382
+#: accounts/views.py:316
+msgid "Your new password cannot be the same as the previous one."
+msgstr "Ihr neues Passwort darf nicht mit dem vorherigen identisch sein."
+
+#: accounts/views.py:331
+#, fuzzy
+msgid "Your password is changed successfully."
+msgstr "Ihr Passwort wurde erfolgreich geändert."
+
+#: accounts/views.py:337
+#, fuzzy
+msgid "Your password reset successfully. Please login."
+msgstr "Ihr Passwort wurde erfolgreich geändert."
+
+#: accounts/views.py:388
 msgid "Your old password is incorrect."
 msgstr "Ihr altes Passwort ist falsch."
 
-#: accounts/views.py:384
+#: accounts/views.py:390
 msgid "Your new password field's not match."
 msgstr "Die neuen Passwortfelder stimmen nicht überein."
 
-#: accounts/views.py:401
+#: accounts/views.py:394
+msgid "Please choose a strong password. It contains at least one alphabet, number, and one special character."
+msgstr "Bitte wählen Sie ein sicheres Passwort. Es muss mindestens einen Buchstaben, eine Zahl und ein Sonderzeichen enthalten."
+
+#: accounts/views.py:410
 msgid "Your password changed successfully."
 msgstr "Ihr Passwort wurde erfolgreich geändert."
 
-#: accounts/views.py:433
+#: accounts/views.py:442
 msgid "Email is already verified with your account."
 msgstr "Die E-Mail ist bereits mit Ihrem Konto verifiziert."
 
-#: accounts/views.py:435
+#: accounts/views.py:444
 msgid "Email address is already registered with us."
 msgstr "Die E-Mail-Adresse ist bereits bei uns registriert."
 
-#: accounts/views.py:499
+#: accounts/views.py:460
+#, fuzzy
+msgid "A reset email link sent to your new email address. Please verify."
+msgstr "Ein Link zum Zurücksetzen des Passworts wurde an Ihre neue E-Mail-Adresse gesendet. Bitte überprüfen Sie Ihr Postfach."
+
+#: accounts/views.py:508
 msgid "Your email address updated successfully."
 msgstr "Ihre E-Mail-Adresse wurde erfolgreich aktualisiert."
 
-#: accounts/views.py:555
+#: accounts/views.py:564
 msgid "Username already exists. Choose another."
 msgstr "Der Benutzername existiert bereits. Bitte wählen Sie einen anderen."
 
-#: accounts/views.py:575
+#: accounts/views.py:584
 msgid "Your profile update successfully."
 msgstr "Ihr Profil wurde erfolgreich aktualisiert."
 
-#: accounts/views.py:619
+#: accounts/views.py:628
 msgid "Your account has been deleted successfully."
 msgstr "Ihr Konto wurde erfolgreich gelöscht."
 
-#: accounts/views.py:622
+#: accounts/views.py:631
 msgid "Incorrect password. We're unable to delete your account."
 msgstr "Falsches Passwort. Wir können Ihr Konto nicht löschen."
 
-#: accounts/views.py:657 accounts/views.py:737
+#: accounts/views.py:649
+msgid "Unable to login with Google. Please check your connection and try again."
+msgstr "Anmeldung mit Google fehlgeschlagen. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
+
+#: accounts/views.py:668 accounts/views.py:750
 msgid "Google login failed. Please try again."
 msgstr "Google-Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut."
 
-#: accounts/views.py:688
+#: accounts/views.py:689
+#, fuzzy
+msgid "This Google account is already linked with another user account."
+msgstr "Die E-Mail ist bereits mit Ihrem Konto verifiziert."
+
+#: accounts/views.py:701
 msgid "Your Google account has been linked successfully."
 msgstr "Ihr Google-Konto wurde erfolgreich verknüpft."
 
-#: accounts/views.py:754
+#: accounts/views.py:767
 msgid "Something wrong with your request."
 msgstr "Bei Ihrer Anfrage ist ein Fehler aufgetreten."
 
-#: accounts/templates/base.html:37 accounts/templates/index.html:1
+#: accounts/templates/base.html:38 accounts/templates/index.html:1
 msgid "Home"
 msgstr "Startseite"
 
-#: accounts/templates/base.html:39
+#: accounts/templates/base.html:40
 msgid "Profile"
 msgstr "Profil"
 
-#: accounts/templates/base.html:40
+#: accounts/templates/base.html:41
 msgid "Reset Email"
 msgstr "E-Mail zurücksetzen"
 
-#: accounts/templates/base.html:41 accounts/templates/change_password.html:1
+#: accounts/templates/base.html:42 accounts/templates/change_password.html:1
 msgid "Change Password"
 msgstr "Passwort ändern"
 
-#: accounts/templates/base.html:42
+#: accounts/templates/base.html:43
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: accounts/templates/base.html:46
+#: accounts/templates/base.html:49
 msgid "Theme"
 msgstr "Design"
 
-#: accounts/templates/base.html:66
+#: accounts/templates/base.html:70
 msgid "Language"
 msgstr "Sprache"
 
-#: accounts/templates/base.html:84 accounts/templates/login.html:1
+#: accounts/templates/base.html:89 accounts/templates/login.html:1
 msgid "Login"
 msgstr "Anmelden"
 
-#: accounts/templates/base.html:86
+#: accounts/templates/base.html:91
 msgid "Signup"
 msgstr "Registrieren"
 
-#: accounts/templates/base.html:90
+#: accounts/templates/base.html:95
 msgid "Logout"
 msgstr "Abmelden"
 
-#: accounts/templates/base.html:104
+#: accounts/templates/base.html:109
 msgid "Source Code"
 msgstr "Quellcode"
 
@@ -333,9 +372,7 @@ msgstr "E-Mail bestätigen"
 
 #: accounts/templates/confirm_email.html:19
 msgid "To confirm your email address please click the button below."
-msgstr ""
-"Um Ihre E-Mail-Adresse zu bestätigen, klicken Sie bitte auf die "
-"Schaltfläche unten."
+msgstr "Um Ihre E-Mail-Adresse zu bestätigen, klicken Sie bitte auf die Schaltfläche unten."
 
 #: accounts/templates/confirm_email.html:30
 msgid "back to home"
@@ -370,7 +407,7 @@ msgstr "Sie haben noch kein Konto?"
 msgid "Sign Up"
 msgstr "Registrieren"
 
-#: accounts/templates/index.html:41 accounts/templates/settings.html:28
+#: accounts/templates/index.html:40 accounts/templates/settings.html:28
 msgid "Edit Profile"
 msgstr "Profil speichern"
 
@@ -563,9 +600,7 @@ msgstr "Zu viele Anfragen"
 
 #: accounts/templates/errors/429.html:12
 msgid "You have exceeded the request limit. Please try again later."
-msgstr ""
-"Sie haben das Anfrage-Limit überschritten. Bitte versuchen Sie es später "
-"erneut."
+msgstr "Sie haben das Anfrage-Limit überschritten. Bitte versuchen Sie es später erneut."
 
 #: accounts/templates/errors/500.html:1
 msgid "500 Internal Server Error"
@@ -578,4 +613,13 @@ msgstr "Interner Serverfehler"
 #: accounts/templates/errors/500.html:13
 msgid "Something went wrong with the internal server."
 msgstr "Bei Ihrer Anfrage ist ein Fehler aufgetreten."
+
+msgid "Field contains only alphabet."
+msgstr "Das Feld darf nur Buchstaben enthalten"
+
+msgid "Username contain only (A-Za-z0-9_-.) characters."
+msgstr "Der Benutzername darf nur die Zeichen (A-Za-z0-9_-.) enthalten."
+
+msgid "Please choose a strong password."
+msgstr "Bitte wählen Sie ein sicheres Passwort."
 
